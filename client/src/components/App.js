@@ -3,7 +3,7 @@ import { Router } from "@reach/router";
 import jwt_decode from "jwt-decode";
 
 import NotFound from "./pages/NotFound.js";
-import Skeleton from "./pages/Skeleton.js";
+import Skeleton from "./pages/SignIn.js";
 
 import "../utilities.css";
 

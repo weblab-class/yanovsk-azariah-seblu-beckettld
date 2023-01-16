@@ -32,6 +32,10 @@ router.get("/whoami", (req, res) => {
   res.send(req.user);
 });
 
+router.get("/allUsers", (req, res) => {
+  User.find({}).then((users) => res.send(users));
+});
+
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
   if (req.user)
