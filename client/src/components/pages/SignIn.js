@@ -12,7 +12,7 @@ const SignIn = ({ userId, handleLogin, handleLogout }) => {
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         {userId ? (
           <div>
-            <Start userId={userId} />
+            <Start userId={userId} handleLogout={handleLogout} />
           </div>
         ) : (
           <div className="googleLogin">

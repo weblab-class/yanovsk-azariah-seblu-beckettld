@@ -4,7 +4,7 @@ import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/goo
 import { get, post } from "../../utilities";
 
 const GOOGLE_CLIENT_ID = "935076536882-bngh1i4adlvn77n2ktm8eii4puqo02hn.apps.googleusercontent.com";
-const Start = ({ userId }) => {
+const Start = ({ userId, handleLogout }) => {
   const [userObj, setUserObj] = useState([]);
 
   useEffect(() => {
@@ -20,6 +20,14 @@ const Start = ({ userId }) => {
           Profile
           <br />
           Your name: {userObj[0].name} <br />
+          <button
+            onClick={() => {
+              googleLogout();
+              handleLogout();
+            }}
+          >
+            Logout
+          </button>
         </div>
       ) : (
         <div></div>
