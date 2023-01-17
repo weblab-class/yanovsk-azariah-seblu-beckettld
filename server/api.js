@@ -32,8 +32,10 @@ router.get("/whoami", (req, res) => {
   res.send(req.user);
 });
 
-router.get("/allUsers", (req, res) => {
-  User.find({}).then((users) => res.send(users));
+router.get("/user", (req, res) => {
+  User.find({ _id: req.query.id }).then((users) => {
+    res.send(users);
+  });
 });
 
 router.post("/initsocket", (req, res) => {

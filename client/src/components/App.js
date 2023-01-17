@@ -3,13 +3,15 @@ import { Router } from "@reach/router";
 import jwt_decode from "jwt-decode";
 
 import NotFound from "./pages/NotFound.js";
-import Skeleton from "./pages/SignIn.js";
+import SignIn from "./pages/SignIn.js";
 
 import "../utilities.css";
 
 import { socket } from "../client-socket.js";
 
 import { get, post } from "../utilities";
+import Start from "./pages/Start.js";
+import { Redirect } from "react-router-dom";
 
 /**
  * Define the "App" component
@@ -25,14 +27,18 @@ const App = () => {
       }
     });
   }, []);
-
+  const render = () => {
+    return <Redirect to="/start/" />;
+  };
   const handleLogin = (credentialResponse) => {
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken);
     console.log(`Logged in as ${decodedCredential.name}`);
+    render();
     post("/api/login", { token: userToken }).then((user) => {
       setUserId(user._id);
       post("/api/initsocket", { socketid: socket.id });
+      console.log("we close");
     });
   };
 
@@ -44,7 +50,8 @@ const App = () => {
   return (
     <>
       <Router>
-        <Skeleton path="/" handleLogin={handleLogin} handleLogout={handleLogout} userId={userId} />
+        <Start path="/start/" handleLogout={handleLogout} />
+        <SignIn path="/" handleLogin={handleLogin} handleLogout={handleLogout} userId={userId} />
         <NotFound default />
       </Router>
     </>
