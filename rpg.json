@@ -1,13 +1,7 @@
 {
-    "name": "My Game",
-    "short_name": "Game",
+    "name": "CodeLegends",
+    "short_name": "CodeLegends",
     "orientation": "landscape",
     "description": "Beautiful Game",
-    "background_color": "#ffffff",
-    "icons": [
-        {
-            "src": "icon.png",
-            "sizes": [96, 128, 192, 256]
-        }
-    ]
+    "background_color": "#ffffff"
 }
