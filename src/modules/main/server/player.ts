@@ -4,7 +4,7 @@ export const player: RpgPlayerHooks = {
     onConnected(player: RpgPlayer) {
         player.setGraphic('male012')
         player.setHitbox(16, 16)
-        player.changeMap('simplemap')
+        player.changeMap('map_1')
     },
     onInput(player: RpgPlayer, { input }) {
         if (input == Control.Back) {
