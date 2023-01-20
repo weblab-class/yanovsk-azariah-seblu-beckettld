@@ -1,13 +1,18 @@
 import { RpgEvent, EventData, RpgPlayer } from '@rpgjs/server'
 
 @EventData({
-    name: 'EV-1'
+    name: 'tower-1',
+    hitbox: {
+        width: 32,
+        height: 32
+    }
 })
-export class TowerEvent extends RpgEvent {
+export class TowerOneEvent extends RpgEvent {
     onInit() {
     }
-
-    onAction(player: RpgPlayer) {
-       // here, the controls on the player
+    async onPlayerTouch(player: RpgPlayer) {
+        await player.showText('Solve coding challenge', {
+            talkWith: this
+        })
     }
-}
+} 
