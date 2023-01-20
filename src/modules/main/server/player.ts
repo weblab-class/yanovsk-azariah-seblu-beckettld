@@ -16,7 +16,6 @@ export const player: RpgPlayerHooks = {
             return
         }
         await player.showText('Welcome to the U and I. Solve coding challenges with your friends (press SPACE)' )
-        await player.showText('Use arrows on your keyboard to move around the map')
         player.setVariable('AFTER_INTRO', true)
     }
 }
