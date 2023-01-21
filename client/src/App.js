@@ -9,6 +9,7 @@ const socket = io("http://localhost:9000");
 
 function App() {
   const [players, setPlayers] = useState(null);
+  const [playerData, setPlayerData] = useState({x:90, y:90});
 
   useEffect(() => {
     socket.on("connect", () => {});
@@ -28,7 +29,14 @@ function App() {
   socket.on("updatePlayers", (data) => {
     setPlayers(data);
   });
+
+  socket.on("update", (data) => {
+    console.log("In client", data)
+    setPlayerData(data)
+  })
+
   const sendPlayerInput = (childdata) => {
+
     socket.emit("update", childdata);
   };
   // const socketSend = () => {};
@@ -36,7 +44,7 @@ function App() {
   return (
     <div>
       <p>Players: {"" + players}</p>
-      <Game sendInput={sendPlayerInput} />
+      <Game playerData={playerData} sendInput={sendPlayerInput} /> 
     </div>
   );
 }

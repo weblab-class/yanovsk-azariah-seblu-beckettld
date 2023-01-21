@@ -5,6 +5,7 @@ const http = require('http');
 const { connect } = require('http2');
 const server = http.createServer(app);
 const socketIo = require("socket.io");
+const { playerMovement } = require('../client/src/Player');
 
 const io = socketIo(server,{ 
     cors: {
@@ -32,11 +33,19 @@ function connected(socket){
     io.emit('updatePlayers', players);
   });
   
-  // socket.on('update', (data) => {
-  //     console.log(data)
-  // })
+  socket.on('update', (data) => {
+    
+    if (data === "Up" && (players[socket.id])){
+      players[socket.id].y += 1  
+    }
+    console.log(players[socket.id])
+    io.emit('update', players)
+  })
+
   socket.on('newPlayer', data => { 
+    
     players[socket.id] = data
+
     console.log(`Starting position ${data.x}, ${data.y} player ${socket.id}`)
     console.log(`Current number of players ${Object.keys(players).length}`)
     console.log(`Current players ${Object.keys(players)}`)

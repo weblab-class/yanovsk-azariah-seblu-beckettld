@@ -36,17 +36,22 @@ function Game(props) {
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       towerSpawn(ctx, canvas, towerObj);
-      playerMovement(
-        ctx,
-        canvas,
-        playerObj,
-        playerRight,
-        playerLeft,
-        playerUp,
-        playerDown
-      );
+      // playerMovement(
+      //   ctx,
+      //   canvas,
+      //   playerObj,
+      //   playerRight,
+      //   playerLeft,
+      //   playerUp,
+      //   playerDown
+      // );
+      props.sendInput("Up");
+      console.log(`inside Game.js ${Object.values(props.playerData) }`)
+      playerObj = props.playerData
       requestAnimationFrame(render);
     };
+
+
     render();
   }, []);
   return (

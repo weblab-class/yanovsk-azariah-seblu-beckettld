@@ -1,4 +1,4 @@
-export function playerMovement(
+function playerMovement(
   ctx,
   canvas,
   playerObj,
