@@ -8,17 +8,14 @@ import io from "socket.io-client";
 const socket = io("http://localhost:9000");
 
 function App() {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [coordinates, setCoordinates] = useState("");
+  const [players, setPlayers] = useState(null);
 
   useEffect(() => {
-    socket.on("connect", () => {
-      setIsConnected(true);
-    });
+    socket.on("connect", () => {});
 
-    socket.on("disconnect", () => {
-      setIsConnected(false);
-    });
+    socket.on("disconnect", () => {});
+
+    socket.emit("newPlayer", { x: 100, y: 100 });
 
     return () => {
       socket.off("connect");
@@ -27,14 +24,18 @@ function App() {
   }, []);
 
   //need function to get players coordianted from canvas and emit to server
+
+  socket.on("updatePlayers", (data) => {
+    setPlayers(data);
+  });
   const sendPlayerInput = (childdata) => {
     socket.emit("update", childdata);
   };
-
   // const socketSend = () => {};
 
   return (
     <div>
+      <p>Players: {"" + players}</p>
       <Game sendInput={sendPlayerInput} />
     </div>
   );
