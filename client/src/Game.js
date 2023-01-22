@@ -49,7 +49,9 @@ function Game(props) {
   let lastKeyDown = "";
   document.addEventListener("keydown", function (playerWalk) {
     switch (playerWalk.key) {
+
       case "ArrowUp":
+        console.log("aroorw up")
         keys.ArrowUp.pressed = true;
         lastKeyDown = "ArrowUp";
         break;
@@ -88,16 +90,27 @@ function Game(props) {
         break;
     }
   });
+
+
+  
   const draw = (ctx, playerData) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.beginPath();
-    ctx.fillStyle = "red";
-    ctx.arc(playerData.x, playerData.y, playerData.rad, 0, 2 * Math.PI);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 1;
-    ctx.fill();
-    ctx.stroke();
+
+    if (playerData) {     
+      for (const [key, value] of Object.entries(playerData)) {
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(value.x, value.y, value.rad, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+      }
+
+    }
+  
   };
+
+
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");

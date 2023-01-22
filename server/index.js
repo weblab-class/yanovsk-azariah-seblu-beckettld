@@ -22,12 +22,21 @@ io.on("connection", connected);
 function connected(socket) {
   socket.on("disconnect", () => {
     delete players[socket.id];
-    console.log(`Current players ${Object.keys(players)}`);
+
+    console.log(
+      `<---- DISCONNECTED: ${socket.id}, `
+    );
+    console.log(`Currently: ${Object.keys(players).length} player(s): ` );
+
+    for (const [key, value] of Object.entries(players)) {
+      console.log(`${key}: ${Object.entries(value)}`);
+    }
+
     io.emit("updateFromServer", players);
+
   });
 
   socket.on("updateFromClient", (data) => {
-    console.log(data);
     if (data === "Up" && players[socket.id]) {
       players[socket.id].y += 3;
     }
@@ -42,8 +51,8 @@ function connected(socket) {
     if (data === "Left" && players[socket.id]) {
       players[socket.id].x -= 3;
     }
-
-    console.log(players[socket.id]);
+    //UNCOMMENT if you need to see how coordinates are updating
+    //console.log(`Player: ${socket.id} coord.:`, players[socket.id]);
     io.emit("updateFromServer", players);
   });
 
@@ -51,10 +60,13 @@ function connected(socket) {
     players[socket.id] = data;
 
     console.log(
-      `Starting position ${data.x}, ${data.y} player ${socket.id}, rad: ${data.rad}`
+      `-----> CONNECTED: ${socket.id}. start pos: ${data.x}, ${data.y} rad: ${data.rad}`
     );
-    console.log(`Current number of players ${Object.keys(players).length}`);
-    console.log(`Current players ${Object.keys(players)}`);
+    console.log(`Currently: ${Object.keys(players).length} player(s): ` );
+
+    for (const [key, value] of Object.entries(players)) {
+      console.log(`${key}: ${Object.entries(value)}`);
+    }
 
     io.emit("updateFromServer", players);
   });
