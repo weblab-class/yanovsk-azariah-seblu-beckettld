@@ -1,4 +1,4 @@
-function playerMovement(
+export function playerMovement(
   ctx,
   canvas,
   playerObj,
@@ -14,7 +14,7 @@ function playerMovement(
       this.rad = rad;
     }
 
-    move(ctx) {
+    draw(ctx) {
       ctx.beginPath();
       ctx.fillStyle = "red";
       ctx.arc(this.x, this.y, this.rad, 0, 2 * Math.PI);
@@ -25,14 +25,14 @@ function playerMovement(
     }
   }
 
-  // Check for wall collisions
-  if (playerRight && playerObj.x < canvas.width - playerObj.rad)
-    playerObj.x += 1.5;
-  if (playerLeft && playerObj.x > playerObj.rad) playerObj.x -= 1.5;
-  if (playerUp && playerObj.y > playerObj.rad) playerObj.y -= 1.5;
-  if (playerDown && playerObj.y < canvas.height - playerObj.rad)
-    playerObj.y += 1.5;
+  // // Check for wall collisions
+  // if (playerRight && playerObj.x < canvas.width - playerObj.rad)
+  //   playerObj.x += 1.5;
+  // if (playerLeft && playerObj.x > playerObj.rad) playerObj.x -= 1.5;
+  // if (playerUp && playerObj.y > playerObj.rad) playerObj.y -= 1.5;
+  // if (playerDown && playerObj.y < canvas.height - playerObj.rad)
+  //   playerObj.y += 1.5;
 
   let data = new Player(playerObj.x, playerObj.y, playerObj.rad);
-  data.move(ctx);
+  data.draw(ctx);
 }
