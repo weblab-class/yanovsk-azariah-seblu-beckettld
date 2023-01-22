@@ -20,10 +20,11 @@ function App() {
   }, []);
 
   socket.on("updateFromServer", (data) => {
-    setPlayerData(data[socket.id]);
+    setPlayerData(data);
     // console.log("On Client:", data[socket.id]);
     // console.log("On Client playerData:", playerData.x);
   });
+
 
   const fromClientToServer = (childdata) => {
     socket.emit("updateFromClient", childdata);
