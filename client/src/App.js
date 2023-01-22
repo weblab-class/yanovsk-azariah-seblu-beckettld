@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     socket.on("connect", () => {
-      socket.emit("newPlayer", { x: 100, y: 100, rad:5 });
+      socket.emit("newPlayer", { x: 100, y: 100, rad: 5 });
     });
     // return () => {
     //   socket.off("connect");
@@ -20,10 +20,9 @@ function App() {
   }, []);
 
   socket.on("updateFromServer", (data) => {
-    setPlayerData(data[socket.id])
-    console.log("On Client:", data[socket.id])
-    console.log("On Client playerData:", playerData.x)
-
+    setPlayerData(data[socket.id]);
+    // console.log("On Client:", data[socket.id]);
+    // console.log("On Client playerData:", playerData.x);
   });
 
   const fromClientToServer = (childdata) => {
@@ -32,8 +31,10 @@ function App() {
 
   return (
     <div>
-      <p style={{color: "#ffffff"}}>{'Players x:' + playerData.x +'y' + playerData.y }</p>
-      <Game playerData={playerData} fromClientToServer={fromClientToServer} /> 
+      <p style={{ color: "#ffffff" }}>
+        {"Players x:" + playerData.x + "y" + playerData.y}
+      </p>
+      <Game playerData={playerData} fromClientToServer={fromClientToServer} />
     </div>
   );
 }

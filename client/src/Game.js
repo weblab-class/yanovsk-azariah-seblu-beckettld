@@ -1,10 +1,11 @@
 import "./App.css";
-import React, { useRef, useEffect, useState} from "react";
+import React, { useRef, useEffect, useState } from "react";
 import data from "./data";
 import { playerMovement } from "./Player";
 import { towerSpawn } from "./Tower";
 function Game(props) {
   const canvasRef = useRef(null);
+  const [renderCount, setRenderCount] = useState(0);
   let { playerObj, towerObj } = data;
   let playerRight = false;
   let playerLeft = false;
@@ -14,8 +15,6 @@ function Game(props) {
   let acessingIDE = false;
   let withinRange = true;
 
-
-  
   // document.onkeydown = (e) => {
   //   if (e.key === "ArrowRight") playerRight = true;
   //   if (e.key === "ArrowLeft") playerLeft = true;
@@ -32,112 +31,103 @@ function Game(props) {
   //   if (e.key === "Enter") attemptingAccessIDE = false;
   // };
 
-
   const keys = {
     ArrowUp: {
-      pressed:false
+      pressed: false,
     },
     ArrowDown: {
-      pressed:false
+      pressed: false,
     },
     ArrowLeft: {
-      pressed:false
+      pressed: false,
     },
     ArrowRight: {
-      pressed:false
+      pressed: false,
+    },
+  };
+
+  let lastKeyDown = "";
+  document.addEventListener("keydown", function (playerWalk) {
+    switch (playerWalk.key) {
+      case "ArrowUp":
+        keys.ArrowUp.pressed = true;
+        lastKeyDown = "ArrowUp";
+        break;
+      case "ArrowDown":
+        keys.ArrowDown.pressed = true;
+        lastKeyDown = "ArrowDown";
+        break;
+      case "ArrowLeft":
+        keys.ArrowLeft.pressed = true;
+        lastKeyDown = "ArrowLeft";
+        break;
+      case "ArrowRight":
+        keys.ArrowRight.pressed = true;
+        lastKeyDown = "ArrowRight";
+        break;
+      default:
+        break;
     }
-  }
+  });
 
-let lastKeyDown = '';
-document.addEventListener('keydown', function(playerWalk) {
-  switch (playerWalk.key) {
-    case 'ArrowUp':
-      keys.ArrowUp.pressed = true
-      lastKeyDown = 'ArrowUp'
-    break;
-    case 'ArrowDown':
-      keys.ArrowDown.pressed = true
-      lastKeyDown = 'ArrowDown'
-    break;
-      case 'ArrowLeft':
-        keys.ArrowLeft.pressed = true
-        lastKeyDown = 'ArrowLeft'
-      break;
-      case 'ArrowRight':
-        keys.ArrowRight.pressed = true
-        lastKeyDown = 'ArrowRight'
-      break;
+  document.addEventListener("keyup", function (playerWalk) {
+    switch (playerWalk.key) {
+      case "ArrowUp":
+        keys.ArrowUp.pressed = false;
+        break;
+      case "ArrowDown":
+        keys.ArrowDown.pressed = false;
+        break;
+      case "ArrowLeft":
+        keys.ArrowLeft.pressed = false;
+        break;
+      case "ArrowRight":
+        keys.ArrowRight.pressed = false;
+        break;
       default:
-      break;
-  }
-});
-
-
-document.addEventListener('keyup', function(playerWalk) {
-  switch (playerWalk.key) {
-    case 'ArrowUp':
-      keys.ArrowUp.pressed = false
-    break;
-    case 'ArrowDown':
-      keys.ArrowDown.pressed = false
-    break;
-      case 'ArrowLeft':
-        keys.ArrowLeft.pressed = false
-      break;
-      case 'ArrowRight':
-        keys.ArrowRight.pressed = false
-      break;
-      default:
-      break;
-  }
-});
-
-
-
+        break;
+    }
+  });
+  const draw = (ctx, playerData) => {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.arc(playerData.x, playerData.y, playerData.rad, 0, 2 * Math.PI);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.fill();
+    ctx.stroke();
+  };
   useEffect(() => {
-    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let animationFrameId;
     const render = () => {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      draw(ctx, props.playerData);
       towerSpawn(ctx, canvas, towerObj);
-      playerMovement(
-        ctx,
-        canvas,
-        props.playerData,
-        playerRight,
-        playerLeft,
-        playerUp,
-        playerDown
-      );
 
-      if (keys.ArrowDown.pressed && lastKeyDown === 'ArrowDown')  {
+      if (keys.ArrowDown.pressed && lastKeyDown === "ArrowDown") {
         props.fromClientToServer("Up");
-      } 
-      else if (keys.ArrowUp.pressed && lastKeyDown === 'ArrowUp') {
+      } else if (keys.ArrowUp.pressed && lastKeyDown === "ArrowUp") {
         props.fromClientToServer("Down");
-      } 
-      
-      else if (keys.ArrowLeft.pressed && lastKeyDown === 'ArrowLeft') {
+      } else if (keys.ArrowLeft.pressed && lastKeyDown === "ArrowLeft") {
         props.fromClientToServer("Left");
-      } 
+      }
 
-      if (keys.ArrowRight.pressed && lastKeyDown === 'ArrowRight') {
+      if (keys.ArrowRight.pressed && lastKeyDown === "ArrowRight") {
         props.fromClientToServer("Right");
-      } 
+      }
+      animationFrameId = window.requestAnimationFrame(render);
+
       // props.sendPlayerInput("Right");
-
       // console.log(`inside Game.js ${Object.values(props.playerData) }`)
-      console.log("in game", props.playerData);
-
-
-      requestAnimationFrame(render);
     };
-
-
     render();
-  }, [props.playerData]);
 
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [draw]);
 
   return (
     <div id="rootdiv">
