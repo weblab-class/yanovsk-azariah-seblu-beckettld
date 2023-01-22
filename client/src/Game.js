@@ -13,23 +13,89 @@ function Game(props) {
   let attemptingAccessIDE = false;
   let acessingIDE = false;
   let withinRange = true;
+
+
+  
+  // document.onkeydown = (e) => {
+  //   if (e.key === "ArrowRight") playerRight = true;
+  //   if (e.key === "ArrowLeft") playerLeft = true;
+  //   if (e.key === "ArrowDown") playerDown = true;
+  //   if (e.key === "ArrowUp") playerUp = true;
+  //   if (e.key === "Enter" && withinRange === true) {
+  //   }
+  // };
+  // document.onkeyup = (e) => {
+  //   if (e.key === "ArrowRight") playerRight = false;
+  //   if (e.key === "ArrowLeft") playerLeft = false;
+  //   if (e.key === "ArrowDown") playerDown = false;
+  //   if (e.key === "ArrowUp") playerUp = false;
+  //   if (e.key === "Enter") attemptingAccessIDE = false;
+  // };
+
+
+  const keys = {
+    ArrowUp: {
+      pressed:false
+    },
+    ArrowDown: {
+      pressed:false
+    },
+    ArrowLeft: {
+      pressed:false
+    },
+    ArrowRight: {
+      pressed:false
+    }
+  }
+
+let lastKeyDown = '';
+document.addEventListener('keydown', function(playerWalk) {
+  switch (playerWalk.key) {
+    case 'ArrowUp':
+      keys.ArrowUp.pressed = true
+      lastKeyDown = 'ArrowUp'
+    break;
+    case 'ArrowDown':
+      keys.ArrowDown.pressed = true
+      lastKeyDown = 'ArrowDown'
+    break;
+      case 'ArrowLeft':
+        keys.ArrowLeft.pressed = true
+        lastKeyDown = 'ArrowLeft'
+      break;
+      case 'ArrowRight':
+        keys.ArrowRight.pressed = true
+        lastKeyDown = 'ArrowRight'
+      break;
+      default:
+      break;
+  }
+});
+
+
+document.addEventListener('keyup', function(playerWalk) {
+  switch (playerWalk.key) {
+    case 'ArrowUp':
+      keys.ArrowUp.pressed = false
+    break;
+    case 'ArrowDown':
+      keys.ArrowDown.pressed = false
+    break;
+      case 'ArrowLeft':
+        keys.ArrowLeft.pressed = false
+      break;
+      case 'ArrowRight':
+        keys.ArrowRight.pressed = false
+      break;
+      default:
+      break;
+  }
+});
+
+
+
   useEffect(() => {
     
-      document.onkeydown = (e) => {
-        if (e.key === "ArrowRight") playerRight = true;
-        if (e.key === "ArrowLeft") playerLeft = true;
-        if (e.key === "ArrowDown") playerDown = true;
-        if (e.key === "ArrowUp") playerUp = true;
-        if (e.key === "Enter" && withinRange === true) {
-        }
-      };
-      document.onkeyup = (e) => {
-        if (e.key === "ArrowRight") playerRight = false;
-        if (e.key === "ArrowLeft") playerLeft = false;
-        if (e.key === "ArrowDown") playerDown = false;
-        if (e.key === "ArrowUp") playerUp = false;
-        if (e.key === "Enter") attemptingAccessIDE = false;
-      };
     const render = () => {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
@@ -38,29 +104,31 @@ function Game(props) {
       playerMovement(
         ctx,
         canvas,
-        playerObj,
+        props.playerData,
         playerRight,
         playerLeft,
         playerUp,
         playerDown
       );
-      if (playerUp === true) {
-        props.sendPlayerInput("Up");
+
+      if (keys.ArrowDown.pressed && lastKeyDown === 'ArrowDown')  {
+        props.fromClientToServer("Up");
       } 
-      if (playerDown === true) {
-        props.sendPlayerInput("Down");
+      else if (keys.ArrowUp.pressed && lastKeyDown === 'ArrowUp') {
+        props.fromClientToServer("Down");
       } 
       
-      if (playerLeft === true) {
-        props.sendPlayerInput("Left");
+      else if (keys.ArrowLeft.pressed && lastKeyDown === 'ArrowLeft') {
+        props.fromClientToServer("Left");
       } 
 
-      if (playerRight === true) {
-        props.sendPlayerInput("Right");
+      if (keys.ArrowRight.pressed && lastKeyDown === 'ArrowRight') {
+        props.fromClientToServer("Right");
       } 
       // props.sendPlayerInput("Right");
 
       // console.log(`inside Game.js ${Object.values(props.playerData) }`)
+      console.log("in game", props.playerData);
 
 
       requestAnimationFrame(render);
@@ -68,7 +136,7 @@ function Game(props) {
 
 
     render();
-  }, []);
+  }, [props.playerData]);
 
 
   return (

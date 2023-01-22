@@ -23,17 +23,15 @@ app.get('/', (req, res) => {
 io.on('connection', connected);
 
 function connected(socket){
-  console.log('connected:', socket.id);
 
-  socket.emit('serverToClient', "hello client");
 
   socket.on('disconnect', () => {
     delete players[socket.id]
     console.log(`Current players ${Object.keys(players)}`)
-    io.emit('updatePlayers', players);
+    io.emit('updateFromServer', players);
   });
   
-  socket.on('update', (data) => {
+  socket.on('updateFromClient', (data) => {
     console.log(data)
     if (data === "Up" && (players[socket.id])){
       players[socket.id].y -= 1  
@@ -52,7 +50,7 @@ function connected(socket){
     }
 
     console.log(players[socket.id]);
-    io.emit('update1', players)
+    io.emit('updateFromServer', players)
   })
 
   socket.on('newPlayer', data => { 
@@ -63,12 +61,9 @@ function connected(socket){
     console.log(`Current number of players ${Object.keys(players).length}`)
     console.log(`Current players ${Object.keys(players)}`)
     
-    io.emit('updatePlayers', players);
+    io.emit('updateFromServer', players);
   })
 
-  socket.on('clientToClient', data => {
-      socket.broadcast.emit('serverToClient', data);
-  });
 
 }
 
