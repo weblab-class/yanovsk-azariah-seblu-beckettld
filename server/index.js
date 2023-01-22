@@ -23,17 +23,14 @@ function connected(socket) {
   socket.on("disconnect", () => {
     delete players[socket.id];
 
-    console.log(
-      `<---- DISCONNECTED: ${socket.id}, `
-    );
-    console.log(`Currently: ${Object.keys(players).length} player(s): ` );
+    console.log(`<---- DISCONNECTED: ${socket.id}, `);
+    console.log(`Currently: ${Object.keys(players).length} player(s): `);
 
     for (const [key, value] of Object.entries(players)) {
       console.log(`${key}: ${Object.entries(value)}`);
     }
 
     io.emit("updateFromServer", players);
-
   });
 
   socket.on("updateFromClient", (data) => {
@@ -62,14 +59,15 @@ function connected(socket) {
     console.log(
       `-----> CONNECTED: ${socket.id}. start pos: ${data.x}, ${data.y} rad: ${data.rad}`
     );
-    console.log(`Currently: ${Object.keys(players).length} player(s): ` );
+    console.log(`Currently: ${Object.keys(players).length} player(s): `);
 
     for (const [key, value] of Object.entries(players)) {
       console.log(`${key}: ${Object.entries(value)}`);
     }
-
     io.emit("updateFromServer", players);
   });
+
+  //ROOMS
 }
 
 server.listen(9000, () => {

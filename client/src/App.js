@@ -8,6 +8,7 @@ const socket = io("http://localhost:9000");
 
 function App() {
   const [playerData, setPlayerData] = useState({});
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -25,17 +26,18 @@ function App() {
     // console.log("On Client playerData:", playerData.x);
   });
 
-
   const fromClientToServer = (childdata) => {
     socket.emit("updateFromClient", childdata);
   };
 
   return (
     <div>
-      <p style={{ color: "#ffffff" }}>
-        {"Players x:" + playerData.x + "y" + playerData.y}
-      </p>
-      <Game playerData={playerData} fromClientToServer={fromClientToServer} />
+      <p>{"Players: " + Object.entries(playerData)}</p>
+      {isLoggedIn ? (
+        <Game playerData={playerData} fromClientToServer={fromClientToServer} />
+      ) : (
+        <p> Please enter room No</p>
+      )}
     </div>
   );
 }
