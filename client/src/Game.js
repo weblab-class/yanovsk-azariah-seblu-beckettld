@@ -13,15 +13,15 @@ function Game(props) {
   let playerUp = false;
   let playerDown = false;
   let attemptingAccessIDE = false;
-  let acessingIDE = false;
+  let accessingIDE = false;
   let withinRange = true;
 
   document.onkeydown = (e) => {
-    if (e.key === "ArrowRight") playerRight = true;
-    if (e.key === "ArrowLeft") playerLeft = true;
-    if (e.key === "ArrowDown") playerDown = true;
-    if (e.key === "ArrowUp") playerUp = true;
-    if (e.key === "Enter" && withinRange === true) {
+    if (!accessingIDE) {
+      if (e.key === "ArrowRight") playerRight = true;
+      if (e.key === "ArrowLeft") playerLeft = true;
+      if (e.key === "ArrowDown") playerDown = true;
+      if (e.key === "ArrowUp") playerUp = true;
     }
   };
   document.onkeyup = (e) => {
@@ -29,7 +29,10 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
-    if (e.key === "Enter") attemptingAccessIDE = false;
+    if (e.key === "Enter") {
+      accessingIDE = !accessingIDE;
+      props.toggleIDE();
+    }
   };
 
   const draw = (ctx, playerData) => {
@@ -52,8 +55,7 @@ function Game(props) {
     let animationFrameId;
     const render = () => {
       draw(ctx, props.playerData);
-      towerSpawn(ctx, canvas, towerObj);
-
+      towerSpawn(ctx, canvas, towerObj, props.tower);
       if (playerUp) {
         props.fromClientToServer("Up");
       } else if (playerDown) {
@@ -63,6 +65,7 @@ function Game(props) {
       } else if (playerRight) {
         props.fromClientToServer("Right");
       }
+
       animationFrameId = window.requestAnimationFrame(render);
 
       // props.sendPlayerInput("Right");
