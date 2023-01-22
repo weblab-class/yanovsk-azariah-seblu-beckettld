@@ -16,7 +16,10 @@ function App() {
   );
 
   const [tower, setTower] = useState(0);
+  const [IDEstatus, setIDEStatus] = useState(false);
+
   const toggleIDE = () => {
+    setIDEStatus(!IDEstatus);
     const IDE = document.getElementById("overlay");
     if (IDE.className == "inactive") IDE.className = "active";
     else IDE.className = "inactive";
@@ -62,6 +65,7 @@ function App() {
   return (
     <div>
       <div className="inactive" id="overlay">
+        <button onClick={toggleIDE}>Close</button>
         <CodeMirror
           value={code}
           height="600px"
@@ -77,6 +81,7 @@ function App() {
         fromClientToServer={fromClientToServer}
         toggleIDE={toggleIDE}
         tower={tower}
+        IDEstatus={IDEstatus}
       />
     </div>
   );

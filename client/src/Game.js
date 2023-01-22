@@ -13,11 +13,10 @@ function Game(props) {
   let playerUp = false;
   let playerDown = false;
   let attemptingAccessIDE = false;
-  let accessingIDE = false;
   let withinRange = true;
 
   document.onkeydown = (e) => {
-    if (!accessingIDE) {
+    if (!props.IDEstatus) {
       if (e.key === "ArrowRight") playerRight = true;
       if (e.key === "ArrowLeft") playerLeft = true;
       if (e.key === "ArrowDown") playerDown = true;
@@ -29,8 +28,7 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
-    if (e.key === "Enter") {
-      accessingIDE = !accessingIDE;
+    if (!props.IDEstatus && e.key === "Enter") {
       props.toggleIDE();
     }
   };
