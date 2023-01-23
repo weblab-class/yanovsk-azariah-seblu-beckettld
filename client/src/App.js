@@ -9,24 +9,12 @@ const socket = io("http://localhost:9000");
 
 function App() {
   const [playerData, setPlayerData] = useState({});
-  const [isActiveGame, setActiveGame] = useState(false);
   const [playerNumber, setPlayerNumber] = useState(0);
   const [roomId, setRoomId] = useState("");
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      socket.emit("newPlayer", { x: 100, y: 100, rad: 5 });
-    });
-    // return () => {
-    //   socket.off("connect");
-    //   socket.off("disconnect");
-    // };
-  }, []);
+  const [isActive, setActive] = useState(false);
 
   socket.on("updateFromServer", (data) => {
     setPlayerData(data);
-    // console.log("On Client:", data[socket.id]);
-    // console.log("On Client playerData:", playerData.x);
   });
 
   const fromClientToServer = (childdata) => {
@@ -37,9 +25,21 @@ function App() {
     socket.emit("newRoom");
   };
 
+  const joinRoom = (room_id) => {
+    console.log("join room called", room_id);
+    socket.emit("joinRoom", room_id);
+  };
+
   socket.on("init", (number) => {
+    console.log("HIT");
     setPlayerNumber(number);
   });
+
+  useEffect(() => {
+    if (playerNumber === 2) {
+      setActive(true);
+    }
+  }, [playerNumber]);
 
   socket.on("roomId", (id) => {
     setRoomId(id);
@@ -47,11 +47,20 @@ function App() {
 
   return (
     <div>
-      <Lobby createNewRoom={createNewRoom} roomId={roomId}></Lobby>
-      {isActiveGame ? (
-        <Game playerData={playerData} fromClientToServer={fromClientToServer} />
+      {isActive ? (
+        <>
+          <h1>Game Started</h1>
+          <Game
+            playerData={playerData}
+            fromClientToServer={fromClientToServer}
+          />
+        </>
       ) : (
-        <p></p>
+        <Lobby
+          createNewRoom={createNewRoom}
+          roomId={roomId}
+          joinRoom={joinRoom}
+        />
       )}
     </div>
   );
