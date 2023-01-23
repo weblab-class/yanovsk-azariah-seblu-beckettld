@@ -16,14 +16,23 @@ function App() {
   const [playerNumber, setPlayerNumber] = useState(0);
   const [roomId, setRoomId] = useState("");
   const [isActive, setActive] = useState(false);
-  const [code, setCode] = useState(
-    "#write a function that adds two terms together \n def(a,b): \n if __main__ ..."
-  );
+  const [code, setCode] = useState();
 
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
 
   const toggleIDE = () => {
+    //questionID: "63cec436f69993f5b4ecebb6"
+    axios
+      .get("http://localhost:9000/problem/", {
+        params: {
+          questionID: "63cec436f69993f5b4ecebb6",
+        },
+      })
+      .then((res) => {
+        setCode(res.data);
+      });
+
     setIDEStatus(!IDEstatus);
     const IDE = document.getElementById("overlay");
     if (IDE.className == "inactive") IDE.className = "active";

@@ -9,9 +9,24 @@ const socketIo = require("socket.io");
 const { makeid } = require("./utils");
 const PythonShell = require("python-shell").PythonShell;
 const cors = require("cors");
+const mongoose = require("mongoose"); // library to connect to MongoDB
+const mongoConnectionURL =
+  "mongodb+srv://azariah:nKrUSnvUQw2EN9pm@cluster0.ei5bxqk.mongodb.net/?retryWrites=true&w=majority";
+const databaseName = "Cluster0";
+mongoose
+  .connect(mongoConnectionURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: databaseName,
+  })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
+
+const Problem = require("./models/problem.js");
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const io = socketIo(server, {
   cors: {
@@ -22,16 +37,35 @@ const io = socketIo(server, {
 let players = {};
 let clientRooms = {};
 
-app.get("/", (req, res) => {
-  res.send("hello");
+app.get("/problem", (req, res) => {
+  console.log("req params below:");
+  console.log(req.query);
+  const currentProblem = Problem.find({ _id: req.query.questionID }).then(
+    (problem) => {
+      res.send(problem[0].problemText);
+    }
+  );
 });
-app.post("/submitCode", (req, res) => {
+app.post("/problem", (req, res) => {
+  const newProblem = new Problem({
+    problemText: req.body.problemText,
+    testCases: req.body.testCases,
+    difficulty: req.body.difficulty,
+  });
+
+  newProblem.save().then(() => {
+    res.send("n");
+  });
+});
+app.post("/submitCode", async (req, res) => {
   fs.writeFileSync("test.py", req.body.code);
-  const testCases = {
-    one: [1, 2, 3],
-    two: [2, 2, 4],
-    three: [2, -2, 0],
-  };
+  console.log(req.body.code);
+  const currentProblem = await Problem.find({
+    _id: "63cec436f69993f5b4ecebb6",
+  });
+  // console.log(currentProblem);
+
+  const testCases = currentProblem[0].testCases;
 
   const promises = [];
   const testCaseResults = [];
