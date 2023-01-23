@@ -1,10 +1,17 @@
 const express = require("express");
 const app = express();
+const fs = require("fs");
+
 const http = require("http");
 const { connect } = require("http2");
 const server = http.createServer(app);
 const socketIo = require("socket.io");
 const { makeid } = require("./utils");
+const PythonShell = require("python-shell").PythonShell;
+const cors = require("cors");
+
+app.use(cors());
+app.use(express.json());
 
 const io = socketIo(server, {
   cors: {
@@ -15,10 +22,69 @@ const io = socketIo(server, {
 let players = {};
 let clientRooms = {};
 
-io.on("connection", (socket) => {
+app.get("/", (req, res) => {
+  res.send("hello");
+});
+app.post("/submitCode", (req, res) => {
+  fs.writeFileSync("test.py", req.body.code);
+  const testCases = {
+    one: [1, 2, 3],
+    two: [2, 2, 4],
+    three: [2, -2, 0],
+  };
+
+  const promises = [];
+  const testCaseResults = [];
+
+  Object.keys(testCases).map((key) => {
+    promises.push(
+      new Promise((resolve, reject) => {
+        PythonShell.run(
+          "test.py",
+          {
+            mode: "text",
+            pythonOptions: ["-u"],
+            args: testCases[key],
+          },
+          function (err, results) {
+            if (err) {
+              reject(err.message);
+            } else {
+              if (results) {
+                testCaseResults.push(results[0]);
+                resolve(true);
+              }
+            }
+          }
+        );
+      })
+    );
+  });
+  Promise.all(promises)
+    .then(() => {
+      let overallResult = true;
+      for (result of testCaseResults) {
+        if (result === "False") {
+          overallResult = false;
+          break;
+        }
+      }
+      res.json({ testCaseResults, overallResult });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({ error: err });
+    });
+});
+
+io.on("connection", connected);
+
+function connected(socket) {
   socket.on("disconnect", () => {
     delete players[socket.id];
 
+    console.log(`<---- DISCONNECTED: ${socket.id}, `);
+    console.log(`Currently: ${Object.keys(players).length} player(s): `);
     console.log(`<---- DISCONNECTED: ${socket.id}, `);
     console.log(`Currently: ${Object.keys(players).length} player(s): `);
 
@@ -94,7 +160,7 @@ io.on("connection", (socket) => {
 
   socket.on("newRoom", handleNewRoom);
   socket.on("joinRoom", handleJoinRoom);
-});
+}
 
 server.listen(9000, () => {
   console.log("listening on *:9000");

@@ -9,5 +9,6 @@ export default {
     y: 50,
     width: 10,
     height: 10,
+    color: "green",
   },
 };

@@ -1,21 +1,23 @@
-export function towerSpawn(ctx, canvas, towerObj) {
+export function towerSpawn(ctx, canvas, towerObj, status) {
   class Tower {
     constructor(x, y, width, height) {
       this.x = x;
       this.y = y;
       this.width = width;
       this.height = height;
+      this.status = status;
     }
 
     draw(ctx) {
       ctx.beginPath();
       ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.fillStyle = "blue";
-      ctx.strokeStyle = "blue";
+      let color = status == 0 ? "blue" : "yellow";
+      ctx.fillStyle = color;
+      ctx.strokeStyle = "black";
       ctx.lineWidth = 1;
-      ctx.fillStyle = "blue";
+      ctx.fillStyle = color;
       ctx.shadowBlur = 0;
-      ctx.shadowColor = "blue";
+      ctx.shadowColor = color;
       ctx.strokeRect(this.x, this.y, this.width, this.height);
       ctx.fill();
     }
