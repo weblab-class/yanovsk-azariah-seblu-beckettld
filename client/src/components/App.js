@@ -43,10 +43,11 @@ const App = () => {
 
   return (
     <>
-      <Router>
+      <h1>HI</h1>
+      {/* <Router>
         <Skeleton path="/" handleLogin={handleLogin} handleLogout={handleLogout} userId={userId} />
         <NotFound default />
-      </Router>
+      </Router> */}
     </>
   );
 };
