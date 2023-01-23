@@ -3,14 +3,15 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Game from "./Game";
 import io from "socket.io-client";
+import Lobby from "./components/Lobby";
 
 const socket = io("http://localhost:9000");
 
 function App() {
   const [playerData, setPlayerData] = useState({});
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isActiveGame, setActiveGame] = useState(false);
   const [playerNumber, setPlayerNumber] = useState(0);
-  const [roomId, setRoomId] = useState("No room id");
+  const [roomId, setRoomId] = useState("");
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -38,19 +39,19 @@ function App() {
 
   socket.on("init", (number) => {
     setPlayerNumber(number);
-    setLoggedIn(true);
   });
+
   socket.on("roomId", (id) => {
     setRoomId(id);
   });
 
   return (
     <div>
-      <p>{"Players: " + Object.entries(playerData) + " Room Id: " + roomId}</p>
-      {isLoggedIn ? (
+      <Lobby createNewRoom={createNewRoom} roomId={roomId}></Lobby>
+      {isActiveGame ? (
         <Game playerData={playerData} fromClientToServer={fromClientToServer} />
       ) : (
-        <button onClick={createNewRoom}>Create new room</button>
+        <p></p>
       )}
     </div>
   );

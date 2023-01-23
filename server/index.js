@@ -4,6 +4,7 @@ const http = require("http");
 const { connect } = require("http2");
 const server = http.createServer(app);
 const socketIo = require("socket.io");
+const { makeid } = require("./utils");
 
 const io = socketIo(server, {
   cors: {
@@ -12,6 +13,7 @@ const io = socketIo(server, {
 }); //in case server and client run on different urls
 
 let players = {};
+let clientRooms = {};
 
 app.get("/", (req, res) => {
   res.send("hello");
@@ -53,6 +55,12 @@ function connected(socket) {
     io.emit("updateFromServer", players);
   });
 
+  const handleKeyDown = (key) => {
+    console.log(parseInt(keyCode));
+  };
+
+  socket.on("keydown", handleKeyDown);
+
   socket.on("newPlayer", (data) => {
     players[socket.id] = data;
 
@@ -68,6 +76,18 @@ function connected(socket) {
   });
 
   //ROOMS
+  //handleNewRomm is a callback function
+  const handleNewRoom = () => {
+    let roomId = makeid(5); //call makeId from utils.js to generate random 5 digit ID
+    clientRooms[socket.id] = roomId;
+    socket.emit("roomId", roomId);
+    //state[roomId] = initGame()
+    socket.join(roomId);
+    socket.number = 1;
+    socket.emit("init", 1);
+  };
+
+  socket.on("newRoom", handleNewRoom);
 }
 
 server.listen(9000, () => {
