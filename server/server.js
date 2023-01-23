@@ -18,6 +18,7 @@
 const validator = require("./validator");
 validator.checkSetup();
 
+require("dotenv").config();
 //import libraries needed for the webserver to work!
 const http = require("http");
 const express = require("express"); // backend framework for our node server.
@@ -26,15 +27,13 @@ const mongoose = require("mongoose"); // library to connect to MongoDB
 const path = require("path"); // provide utilities for working with file and directory paths
 
 const api = require("./api");
-const auth = require("./auth");
 
 // socket stuff
 const socketManager = require("./server-socket");
 
 // Server configuration below
 // TODO change connection URL after setting up your team database
-const mongoConnectionURL =
-  "mongodb+srv://azariah:nKrUSnvUQw2EN9pm@cluster0.ei5bxqk.mongodb.net/?retryWrites=true&w=majority";
+const mongoConnectionURL = process.env.MONGO_SRV;
 // TODO change database name to the name you chose
 const databaseName = "Cluster0";
 
@@ -97,10 +96,10 @@ app.use((err, req, res, next) => {
 });
 
 // hardcode port to 3000 for now
-const port = 3000;
+const port = process.env.PORT || 3000;
 const server = http.Server(app);
 socketManager.init(server);
 
-server.listen(process.env.PORT || port, () => {
+server.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 });
