@@ -69,6 +69,25 @@ app.use(
   })
 );
 
+app.get("/problem", (req, res) => {
+  console.log("req params below:");
+  console.log(req.query);
+  const currentProblem = Problem.find({ _id: req.query.questionID }).then((problem) => {
+    res.send(problem[0].problemText);
+  });
+});
+app.post("/problem", (req, res) => {
+  const newProblem = new Problem({
+    problemText: req.body.problemText,
+    testCases: req.body.testCases,
+    difficulty: req.body.difficulty,
+  });
+
+  newProblem.save().then(() => {
+    res.send("Your problem has been entered in DB");
+  });
+});
+
 app.post("/submitCode", async (req, res) => {
   fs.writeFileSync("test.py", req.body.code);
   console.log(req.body.code);

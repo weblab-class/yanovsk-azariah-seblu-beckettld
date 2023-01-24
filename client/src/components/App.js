@@ -23,16 +23,16 @@ const App = () => {
   const [IDEstatus, setIDEStatus] = useState(false);
 
   const toggleIDE = () => {
-    //questionID: "63cec436f69993f5b4ecebb6"
-    // axios
-    //   .get("http://localhost:9000/problem/", {
-    //     params: {
-    //       questionID: "63cec436f69993f5b4ecebb6",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setCode(res.data);
-    //   });
+    questionID: "63cec436f69993f5b4ecebb6";
+    axios
+      .get("http://localhost:3000/problem/", {
+        params: {
+          questionID: "63cec436f69993f5b4ecebb6",
+        },
+      })
+      .then((res) => {
+        setCode(res.data);
+      });
 
     setIDEStatus(!IDEstatus);
     const IDE = document.getElementById("overlay");
