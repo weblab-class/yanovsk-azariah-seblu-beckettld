@@ -10,7 +10,7 @@ import axios from "axios";
  * Define the "App" component
  */
 
-const socket = io();
+const socket = io(window.location.hosthame + ":" + window.location.port);
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
