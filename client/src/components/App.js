@@ -18,7 +18,8 @@ const App = () => {
   const [playerNumber, setPlayerNumber] = useState(0);
   const [roomId, setRoomId] = useState("");
   const [isActive, setActive] = useState(false);
-  const [code, setCode] = useState({ problemText: "", questionID: 0 });
+  const [code, setCode] = useState("");
+  const [questionID, setQuestionID] = useState(0);
 
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
@@ -27,15 +28,15 @@ const App = () => {
     //console.log(window.location.hostname);
     // questionID: "63cec436f69993f5b4ecebb6";
     axios
-      .get("http://localhost:9000", {
+      .get("http://localhost:3000/problem/", {
         // .get("https://skeletongame.herokuapp.com/problem", {
         params: {},
       })
       .then((res) => {
-        console.log(res.data);
-        setCode(res.data);
+        setCode(res.data.problemText);
+        setQuestionID(res.data.questionID);
       });
-
+    console.log(code);
     setIDEStatus(!IDEstatus);
     const IDE = document.getElementById("overlay");
     if (IDE.className == "inactive") IDE.className = "active";
@@ -47,10 +48,10 @@ const App = () => {
   const submitCode = () => {
     console.log({ code });
     axios
-      .post("http://localhost:9000/submitCode", {
-        // .post("https://skeletongame.herokuapp.com/submitCode/", {
-        code: code.problemText,
-        questionID: code.questionID,
+      // .post("http://localhost:3000/submitCode", {
+      .post("https://skeletongame.herokuapp.com/submitCode/", {
+        code: code,
+        questionID: questionID,
       })
       .then((res) => {
         if (res.data.error) {

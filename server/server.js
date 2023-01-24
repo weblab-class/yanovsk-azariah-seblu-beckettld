@@ -75,8 +75,7 @@ app.use(
 );
 
 app.get("/problem", (req, res) => {
-  console.log("req params below:");
-  console.log(req.query);
+  console.log("tig");
   const problem = Problem.find({ version: "mvp" }).then((problem) => {
     console.log(problem);
     console.log(Object.keys(problem));
