@@ -78,6 +78,7 @@ app.get("/problem", (req, res) => {
   console.log("req params below:");
   console.log(req.query);
   const currentProblem = Problem.find({ version: "mvp" }).then((problem) => {
+    console.log(currentProblem);
     console.log(Object.keys(currentProblem));
     console.log(Object.keys(currentProblem).length);
 
