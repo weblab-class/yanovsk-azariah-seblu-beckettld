@@ -18,7 +18,7 @@ const App = () => {
   const [playerNumber, setPlayerNumber] = useState(0);
   const [roomId, setRoomId] = useState("");
   const [isActive, setActive] = useState(false);
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState();
 
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
@@ -31,6 +31,7 @@ const App = () => {
         params: {},
       })
       .then((res) => {
+        console.log(res.data);
         setCode(res.data);
       });
 
