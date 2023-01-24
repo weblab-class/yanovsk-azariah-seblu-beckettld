@@ -4,6 +4,7 @@ const ProblemSchema = new mongoose.Schema({
   problemText: String,
   testCases: Array,
   difficulty: String,
+  version: String,
 });
 
 // compile model from schema

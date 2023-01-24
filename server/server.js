@@ -89,7 +89,7 @@ app.post("/problem", (req, res) => {
   });
 
   newProblem.save().then(() => {
-    res.send("Your problem has been entered in DB");
+    res.send(req.body);
   });
 });
 
