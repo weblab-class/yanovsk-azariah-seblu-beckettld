@@ -1,4 +1,3 @@
-#write a function that adds two terms together 
 import sys
 
 def add(a,b):

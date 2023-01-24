@@ -1,30 +1,33 @@
-import "./App.css";
-import React from "react";
-import { useState, useEffect } from "react";
-import Game from "./Game";
+import "./pages/App.css";
+import React, { useState, useEffect } from "react";
+import Game from "./pages/Game.js";
 import io from "socket.io-client";
-import Lobby from "./components/Lobby";
-
+import Lobby from "./pages/Lobby";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
-import { get, post } from "./utilities.js";
 import axios from "axios";
-const socket = io("http://localhost:9000");
+//import dotenv from "dotenv";
+/**
+ * Define the "App" component
+ */
+//const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
+const socket = io();
 
-function App() {
+const App = () => {
   const [playerData, setPlayerData] = useState({});
   const [playerNumber, setPlayerNumber] = useState(0);
   const [roomId, setRoomId] = useState("");
   const [isActive, setActive] = useState(false);
-  const [code, setCode] = useState();
+  const [code, setCode] = useState("");
 
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
 
   const toggleIDE = () => {
-    //questionID: "63cec436f69993f5b4ecebb6"
+    //console.log(window.location.hostname);
+    questionID: "63cec436f69993f5b4ecebb6";
     axios
-      .get("http://localhost:9000/problem/", {
+      .get("https://skeletongame.herokuapp.com/problem", {
         params: {
           questionID: "63cec436f69993f5b4ecebb6",
         },
@@ -43,7 +46,7 @@ function App() {
   };
   const submitCode = () => {
     console.log({ code });
-    axios.post("http://localhost:9000/submitCode/", { code }).then((res) => {
+    axios.post("https://skeletongame.herokuapp.com/submitCode/", { code }).then((res) => {
       if (res.data.error) {
         console.log(res.data.error);
       } else {
@@ -56,15 +59,16 @@ function App() {
       }
     });
   };
-  useEffect(() => {
-    socket.on("connect", () => {
-      socket.emit("newPlayer", { x: 100, y: 100, rad: 5 });
-    });
-    // return () => {
-    //   socket.off("connect");
-    //   socket.off("disconnect");
-    // };
-  }, []);
+
+  // useEffect(() => {
+  //   socket.on("connect", () => {
+  //     console.log(socket.id);
+  //   });
+  //   // return () => {
+  //   //   socket.off("connect");
+  //   //   socket.off("disconnect");
+  //   // };
+  // }, []);
 
   socket.on("updateFromServer", (data) => {
     setPlayerData(data);
@@ -102,6 +106,13 @@ function App() {
     <div>
       {isActive ? (
         <>
+          <Game
+            playerData={playerData}
+            fromClientToServer={fromClientToServer}
+            toggleIDE={toggleIDE}
+            tower={tower}
+            IDEstatus={IDEstatus}
+          />
           <h1>Game Started</h1>
           <div className="inactive" id="overlay">
             <button onClick={toggleIDE}>Close</button>
@@ -115,23 +126,12 @@ function App() {
             />
             <button onClick={submitCode}>Submit</button>
           </div>
-          <Game
-            playerData={playerData}
-            fromClientToServer={fromClientToServer}
-            toggleIDE={toggleIDE}
-            tower={tower}
-            IDEstatus={IDEstatus}
-          />
         </>
       ) : (
-        <Lobby
-          createNewRoom={createNewRoom}
-          roomId={roomId}
-          joinRoom={joinRoom}
-        />
+        <Lobby createNewRoom={createNewRoom} roomId={roomId} joinRoom={joinRoom} />
       )}
     </div>
   );
-}
+};
 
 export default App;

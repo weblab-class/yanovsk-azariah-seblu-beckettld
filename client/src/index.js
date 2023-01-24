@@ -1,8 +1,9 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import Game from "./Game";
+import ReactDOM from "react-dom";
+import App from "./components/App.js";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+// renders React Component "Root" into the DOM element with ID "root"
+ReactDOM.render(<App />, document.getElementById("root"));
+
+// allows for live updating
+module.hot.accept();

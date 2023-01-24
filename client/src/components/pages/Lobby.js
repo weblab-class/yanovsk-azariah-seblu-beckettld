@@ -20,12 +20,7 @@ function Lobby(props) {
         ""
       ) : (
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            id="room_id"
-            name="room_id"
-            placeholder="Room Id"
-          />
+          <input type="text" id="room_id" name="room_id" placeholder="Room Id" />
           <button type="submit">Submit</button>
         </form>
       )}

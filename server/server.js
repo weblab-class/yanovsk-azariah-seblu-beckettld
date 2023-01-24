@@ -1,18 +1,53 @@
-const express = require("express");
-const app = express();
-const fs = require("fs");
+/*
+|--------------------------------------------------------------------------
+| server.js -- The core of your server
+|--------------------------------------------------------------------------
+|
+| This file defines how your server starts up. Think of it as the main() of your server.
+| At a high level, this file does the following things:
+| - Connect to the database
+| - Sets up server middleware (i.e. addons that enable things like json parsing, user login)
+| - Hooks up all the backend routes specified in api.js
+| - Fowards frontend routes that should be handled by the React router
+| - Sets up error handling in case something goes wrong when handling a request
+| - Actually starts the webserver
+*/
 
-const http = require("http");
-const { connect } = require("http2");
-const server = http.createServer(app);
-const socketIo = require("socket.io");
-const { makeid } = require("./utils");
+// validator runs some basic checks to make sure you've set everything up correctly
+// this is a tool provided by staff, so you don't need to worry about it
+const PORT = process.env.PORT || 3000;
+
+const validator = require("./validator");
+validator.checkSetup();
+const fs = require("fs");
 const PythonShell = require("python-shell").PythonShell;
-const cors = require("cors");
+
+require("dotenv").config();
+//import libraries needed for the webserver to work!
+const express = require("express"); // backend framework for our node server.
+const socketIo = require("socket.io");
+
+const app = express();
+const session = require("express-session"); // library that stores info about each connected user
 const mongoose = require("mongoose"); // library to connect to MongoDB
-const mongoConnectionURL =
-  "mongodb+srv://azariah:nKrUSnvUQw2EN9pm@cluster0.ei5bxqk.mongodb.net/?retryWrites=true&w=majority";
+const path = require("path"); // provide utilities for working with file and directory paths
+const cors = require("cors");
+const { makeid } = require("./utils");
+
+// socket stuff
+// const socketManager = require("./server-socket");
+const Problem = require("./models/problem.js");
+
+// Server configuration below
+// TODO change connection URL after setting up your team database
+const mongoConnectionURL = process.env.MONGO_SRV;
+// TODO change database name to the name you chose
 const databaseName = "Cluster0";
+
+let players = {};
+let clientRooms = {};
+
+// connect to mongodb
 mongoose
   .connect(mongoConnectionURL, {
     useNewUrlParser: true,
@@ -22,29 +57,29 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
 
-const Problem = require("./models/problem.js");
+// create a new express server
+app.use(validator.checkRoutes);
 
-app.use(cors());
+// allow us to process POST requests
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-const io = socketIo(server, {
-  cors: {
-    origin: "http://localhost:3000",
-  },
-}); //in case server and client run on different urls
-
-let players = {};
-let clientRooms = {};
+// set up a session, which will persist login data across requests
+app.use(
+  session({
+    // TODO: add a SESSION_SECRET string in your .env file, and replace the secret with process.env.SESSION_SECRET
+    secret: "session-secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.get("/problem", (req, res) => {
   console.log("req params below:");
   console.log(req.query);
-  const currentProblem = Problem.find({ _id: req.query.questionID }).then(
-    (problem) => {
-      res.send(problem[0].problemText);
-    }
-  );
+  const currentProblem = Problem.find({ _id: req.query.questionID }).then((problem) => {
+    res.send(problem[0].problemText);
+  });
 });
 app.post("/problem", (req, res) => {
   const newProblem = new Problem({
@@ -54,9 +89,10 @@ app.post("/problem", (req, res) => {
   });
 
   newProblem.save().then(() => {
-    res.send("n");
+    res.send("Your problem has been entered in DB");
   });
 });
+
 app.post("/submitCode", async (req, res) => {
   fs.writeFileSync("test.py", req.body.code);
   console.log(req.body.code);
@@ -110,6 +146,37 @@ app.post("/submitCode", async (req, res) => {
       res.json({ error: err });
     });
 });
+
+// load the compiled react files, which will serve /index.html and /bundle.js
+const reactPath = path.resolve(__dirname, "..", "client", "dist");
+app.use(express.static(reactPath));
+
+// for all other routes, render index.html and let react router handle it
+app.get("*", (req, res) => {
+  res.sendFile(path.join(reactPath, "index.html"));
+});
+
+// any server errors cause this function to run
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  if (status === 500) {
+    // 500 means Internal Server Error
+    console.log("The server errored when processing a request!");
+    console.log(err);
+  }
+
+  res.status(status);
+  res.send({
+    status: status,
+    message: err.message,
+  });
+});
+// +++++++SOCKET STUFF++++++++
+
+var http = require("http");
+var server = http.createServer(app);
+
+const io = socketIo(server);
 
 io.on("connection", connected);
 
@@ -196,6 +263,6 @@ function connected(socket) {
   socket.on("joinRoom", handleJoinRoom);
 }
 
-server.listen(9000, () => {
-  console.log("listening on *:9000");
+server.listen(PORT, () => {
+  console.log(`Server running on port: ${PORT}`);
 });
