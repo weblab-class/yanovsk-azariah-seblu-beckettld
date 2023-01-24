@@ -18,14 +18,14 @@ const App = () => {
   const [playerNumber, setPlayerNumber] = useState(0);
   const [roomId, setRoomId] = useState("");
   const [isActive, setActive] = useState(false);
-  const [code, setCode] = useState();
+  const [code, setCode] = useState({ problemText: "", questionID: 0 });
 
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
 
   const toggleIDE = () => {
     //console.log(window.location.hostname);
-    questionID: "63cec436f69993f5b4ecebb6";
+    // questionID: "63cec436f69993f5b4ecebb6";
     axios
       .get("https://skeletongame.herokuapp.com/problem", {
         params: {},
@@ -121,7 +121,7 @@ const App = () => {
           <div className="inactive" id="overlay">
             <button onClick={toggleIDE}>Close</button>
             <CodeMirror
-              value={code.problemText}
+              value={code}
               height="600px"
               theme="dark"
               options={{ theme: "sublime" }}
