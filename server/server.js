@@ -24,7 +24,7 @@ require("dotenv").config();
 //import libraries needed for the webserver to work!
 const express = require("express"); // backend framework for our node server.
 const http = require("http");
-const socketIo = require("socket.io");
+const socketIo = require("socket.io")();
 
 const app = express();
 const server = http.createServer(app);

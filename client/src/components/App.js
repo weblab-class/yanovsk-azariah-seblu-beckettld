@@ -6,11 +6,12 @@ import Lobby from "./pages/Lobby";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
 import axios from "axios";
+import dotenv from "dotenv";
 /**
  * Define the "App" component
  */
-const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
-const socket = io(endpoint);
+//const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
+const socket = io("https://skeletongame.herokuapp.com/");
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
