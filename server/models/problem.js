@@ -8,4 +8,4 @@ const ProblemSchema = new mongoose.Schema({
 });
 
 // compile model from schema
-module.exports = mongoose.model("question", ProblemSchema);
+module.exports = mongoose.model("problem", ProblemSchema);

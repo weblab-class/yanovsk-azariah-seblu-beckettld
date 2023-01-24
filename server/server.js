@@ -85,6 +85,7 @@ app.post("/problem", (req, res) => {
   const newProblem = new Problem({
     problemText: req.body.problemText,
     testCases: req.body.testCases,
+    version: req.body.version,
     difficulty: req.body.difficulty,
   });
 
