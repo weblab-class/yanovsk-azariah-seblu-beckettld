@@ -78,7 +78,12 @@ app.get("/problem", (req, res) => {
   console.log("req params below:");
   console.log(req.query);
   const problem = Problem.find({ version: "mvp" }).then((problem) => {
-    res.send(problem[Math.floor(Math.random() * Object.keys(currentProblem).length)].problemText);
+    console.log(problem);
+    console.log(Object.keys(problem));
+    console.log(Object.keys(problem).length);
+
+    console.log(Math.floor(Math.random() * Object.keys(problem).length));
+    res.send(problem[Math.floor(Math.random() * Object.keys(problem).length)].problemText);
   });
 });
 app.post("/problem", (req, res) => {
