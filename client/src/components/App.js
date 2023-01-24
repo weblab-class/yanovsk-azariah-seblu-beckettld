@@ -1,7 +1,10 @@
+import "./pages/App.css";
 import React, { useState, useEffect } from "react";
 import Game from "./pages/Game.js";
 import io from "socket.io-client";
 import Lobby from "./pages/Lobby";
+import CodeMirror from "@uiw/react-codemirror";
+import { python } from "@codemirror/lang-python";
 
 /**
  * Define the "App" component
@@ -18,6 +21,42 @@ const App = () => {
 
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
+
+  const toggleIDE = () => {
+    //questionID: "63cec436f69993f5b4ecebb6"
+    // axios
+    //   .get("http://localhost:9000/problem/", {
+    //     params: {
+    //       questionID: "63cec436f69993f5b4ecebb6",
+    //     },
+    //   })
+    //   .then((res) => {
+    //     setCode(res.data);
+    //   });
+
+    setIDEStatus(!IDEstatus);
+    const IDE = document.getElementById("overlay");
+    if (IDE.className == "inactive") IDE.className = "active";
+    else IDE.className = "inactive";
+  };
+  const onChange = (value, viewUpdate) => {
+    setCode(value);
+  };
+  const submitCode = () => {
+    console.log({ code });
+    // axios.post("http://localhost:9000/submitCode/", { code }).then((res) => {
+    //   if (res.data.error) {
+    //     console.log(res.data.error);
+    //   } else {
+    //     console.log(res.data.testCaseResults);
+    //     console.log(res.data.overallResult);
+    //     if (res.data.overallResult === true) {
+    //       console.log("You got them all right!");
+    //       setTower(1);
+    //     } else console.log("Too bad!");
+    //   }
+    // });
+  };
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -65,7 +104,14 @@ const App = () => {
     <div>
       {isActive ? (
         <>
-          {/* <h1>Game Started</h1>
+          <Game
+            //playerData={playerData}
+            //fromClientToServer={fromClientToServer}
+            toggleIDE={toggleIDE}
+            tower={tower}
+            IDEstatus={IDEstatus}
+          />
+          <h1>Game Started</h1>
           <div className="inactive" id="overlay">
             <button onClick={toggleIDE}>Close</button>
             <CodeMirror
@@ -77,14 +123,7 @@ const App = () => {
               onChange={onChange}
             />
             <button onClick={submitCode}>Submit</button>
-          </div> */}
-          <Game
-          // playerData={playerData}
-          // fromClientToServer={fromClientToServer}
-          // toggleIDE={toggleIDE}
-          // tower={tower}
-          // IDEstatus={IDEstatus}
-          />
+          </div>
         </>
       ) : (
         <Lobby createNewRoom={createNewRoom} roomId={roomId} joinRoom={joinRoom} />
