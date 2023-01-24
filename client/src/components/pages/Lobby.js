@@ -1,4 +1,5 @@
 import React from "react";
+import "./App.css";
 
 function Lobby(props) {
   const handleSubmit = (e) => {
@@ -8,6 +9,7 @@ function Lobby(props) {
   return (
     <div>
       <h1>Welcome to CodeLegend</h1>
+      <p>You can either create new room or joining existing one</p>
       <button onClick={(e) => props.createNewRoom()}>Create Room</button>
 
       <p>{props.roomId !== "" ? "Room ID: " + props.roomId : ""}</p>

@@ -6,12 +6,19 @@ import Lobby from "./pages/Lobby";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
 import axios from "axios";
+import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/google";
+import jwt_decode from "jwt-decode";
+
+//const url = "http://localhost:3000";
+const url = "https://skeletongame.herokuapp.com";
 //import dotenv from "dotenv";
 /**
  * Define the "App" component
  */
 //const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
 const socket = io();
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
@@ -23,13 +30,12 @@ const App = () => {
 
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
+  const [userId, setUserId] = useState(undefined);
+  const [name, setName] = useState("");
 
   const toggleIDE = () => {
-    //console.log(window.location.hostname);
-    // questionID: "63cec436f69993f5b4ecebb6";
     axios
-      // .get("http://localhost:3000/problem/", {
-      .get("https://skeletongame.herokuapp.com/problem", {
+      .get(url + "/problem", {
         params: {},
       })
       .then((res) => {
@@ -48,8 +54,7 @@ const App = () => {
   const submitCode = () => {
     console.log({ code });
     axios
-      // .post("http://localhost:3000/submitCode", {
-      .post("https://skeletongame.herokuapp.com/submitCode/", {
+      .post(url + "/submitCode", {
         code: code,
         questionID: questionID,
       })
@@ -66,17 +71,6 @@ const App = () => {
         }
       });
   };
-
-  // useEffect(() => {
-  //   socket.on("connect", () => {
-  //     console.log(socket.id);
-  //   });
-  //   // return () => {
-  //   //   socket.off("connect");
-  //   //   socket.off("disconnect");
-  //   // };
-  // }, []);
-
   socket.on("updateFromServer", (data) => {
     setPlayerData(data);
   });
@@ -100,7 +94,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    if (playerNumber === 2) {
+    if (playerNumber >= 2) {
       setActive(true);
     }
   }, [playerNumber]);
@@ -109,34 +103,84 @@ const App = () => {
     setRoomId(id);
   });
 
+  useEffect(() => {
+    axios.get(url + "/whoami").then((user) => {
+      console.log(url + "/whoami");
+      if (user._id) {
+        // they are registed in the database, and currently logged in.
+        setUserId(user._id);
+      }
+    });
+
+    console.log(url + "/login");
+  }, []);
+
+  const handleLogin = (credentialResponse) => {
+    console.log("handle login");
+    const userToken = credentialResponse.credential;
+    const decodedCredential = jwt_decode(userToken);
+    console.log(`Logged in as ${decodedCredential.name}`);
+    axios.post(url + "/login", { token: userToken }).then((user) => {
+      console.log(url + "/login");
+      setUserId(user.data._id);
+      setName(user.data.name);
+    });
+  };
+
+  const handleLogout = () => {
+    socket.emit("playerLeft");
+    setUserId(undefined);
+    post(url + "/logout");
+  };
+
   return (
     <div>
-      {isActive ? (
-        <>
-          <Game
-            playerData={playerData}
-            fromClientToServer={fromClientToServer}
-            toggleIDE={toggleIDE}
-            tower={tower}
-            IDEstatus={IDEstatus}
-          />
-          <h1>Game Started</h1>
-          <div className="inactive" id="overlay">
-            <button onClick={toggleIDE}>Close</button>
-            <CodeMirror
-              value={code}
-              height="600px"
-              theme="dark"
-              options={{ theme: "sublime" }}
-              extensions={[python()]}
-              onChange={onChange}
-            />
-            <button onClick={submitCode}>Submit</button>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        {userId ? (
+          <div>
+            <button
+              onClick={() => {
+                googleLogout();
+                handleLogout();
+              }}
+            >
+              Logout from Game
+            </button>
+            {isActive ? (
+              <>
+                <Game
+                  playerData={playerData}
+                  fromClientToServer={fromClientToServer}
+                  toggleIDE={toggleIDE}
+                  tower={tower}
+                  IDEstatus={IDEstatus}
+                />
+                <h1>Game Started</h1>
+                <div className="inactive" id="overlay">
+                  <button onClick={toggleIDE}>Close</button>
+                  <CodeMirror
+                    value={code}
+                    height="600px"
+                    theme="dark"
+                    options={{ theme: "sublime" }}
+                    extensions={[python()]}
+                    onChange={onChange}
+                  />
+                  <button onClick={submitCode}>Submit</button>
+                </div>
+              </>
+            ) : (
+              <Lobby createNewRoom={createNewRoom} roomId={roomId} joinRoom={joinRoom} />
+            )}
           </div>
-        </>
-      ) : (
-        <Lobby createNewRoom={createNewRoom} roomId={roomId} joinRoom={joinRoom} />
-      )}
+        ) : (
+          <div>
+            <p>Welcome to CodeLegend MVP</p>
+            <p>Please log in with your Google Account to play </p>
+            <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
+          </div>
+        )}
+      </GoogleOAuthProvider>
     </div>
   );
 };
