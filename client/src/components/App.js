@@ -6,7 +6,7 @@ import Lobby from "./pages/Lobby";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
 import axios from "axios";
-import dotenv from "dotenv";
+//import dotenv from "dotenv";
 /**
  * Define the "App" component
  */
