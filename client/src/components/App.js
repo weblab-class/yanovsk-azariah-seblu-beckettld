@@ -18,8 +18,8 @@ const url = "https://skeletongame.herokuapp.com";
 //const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
 const socket = io();
 
-//const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+//const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
@@ -142,6 +142,7 @@ const App = () => {
   };
 
   const handleLogout = () => {
+    socket.emit("disconnect");
     setUserId(undefined);
     console.log(url + "/logout");
     post(url + "/logout");
