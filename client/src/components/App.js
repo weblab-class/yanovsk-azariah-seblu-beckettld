@@ -9,8 +9,8 @@ import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 
-const url = "http://localhost:3000";
-//const url = "https://skeletongame.herokuapp.com";
+//const url = "http://localhost:3000";
+const url = "https://skeletongame.herokuapp.com";
 //import dotenv from "dotenv";
 /**
  * Define the "App" component
@@ -18,8 +18,7 @@ const url = "http://localhost:3000";
 //const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
 const socket = io();
 
-//const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
