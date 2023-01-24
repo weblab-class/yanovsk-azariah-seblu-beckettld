@@ -22,17 +22,20 @@ const PythonShell = require("python-shell").PythonShell;
 
 require("dotenv").config();
 //import libraries needed for the webserver to work!
-const http = require("http");
 const express = require("express"); // backend framework for our node server.
+const http = require("http");
+const socketIo = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
 const session = require("express-session"); // library that stores info about each connected user
 const mongoose = require("mongoose"); // library to connect to MongoDB
 const path = require("path"); // provide utilities for working with file and directory paths
 const cors = require("cors");
-
-const api = require("./api");
+const { makeid } = require("./utils");
 
 // socket stuff
-const socketManager = require("./server-socket");
+// const socketManager = require("./server-socket");
 const Problem = require("./models/problem.js");
 
 // Server configuration below
@@ -40,6 +43,9 @@ const Problem = require("./models/problem.js");
 const mongoConnectionURL = process.env.MONGO_SRV;
 // TODO change database name to the name you chose
 const databaseName = "Cluster0";
+
+let players = {};
+let clientRooms = {};
 
 // connect to mongodb
 mongoose
@@ -52,7 +58,6 @@ mongoose
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
 
 // create a new express server
-const app = express();
 app.use(validator.checkRoutes);
 
 // allow us to process POST requests
@@ -166,11 +171,102 @@ app.use((err, req, res, next) => {
     message: err.message,
   });
 });
+// +++++++SOCKET STUFF++++++++
+
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+}); //
+
+io.on("connection", connected);
+
+function connected(socket) {
+  socket.on("disconnect", () => {
+    delete players[socket.id];
+
+    console.log(`<---- DISCONNECTED: ${socket.id}, `);
+    console.log(`Currently: ${Object.keys(players).length} player(s): `);
+    console.log(`<---- DISCONNECTED: ${socket.id}, `);
+    console.log(`Currently: ${Object.keys(players).length} player(s): `);
+
+    for (const [key, value] of Object.entries(players)) {
+      console.log(`${key}: ${Object.entries(value)}`);
+    }
+
+    io.emit("updateFromServer", players);
+  });
+
+  socket.on("updateFromClient", (data) => {
+    if (data === "Up" && players[socket.id]) {
+      players[socket.id].y += 3;
+    }
+
+    if (data === "Down" && players[socket.id]) {
+      players[socket.id].y -= 3;
+    }
+
+    if (data === "Right" && players[socket.id]) {
+      players[socket.id].x += 3;
+    }
+    if (data === "Left" && players[socket.id]) {
+      players[socket.id].x -= 3;
+    }
+    //UNCOMMENT if you need to see how coordinates are updating
+    //console.log(`Player: ${socket.id} coord.:`, players[socket.id]);
+    io.emit("updateFromServer", players);
+  });
+
+  // socket.on("newPlayer", (data) => {
+  //   console.log(
+  //     `-----> CONNECTED: ${socket.id}. start pos: ${data.x}, ${data.y} rad: ${data.rad}`
+  //   );
+  //   console.log(`Currently: ${Object.keys(players).length} player(s): `);
+
+  //   for (const [key, value] of Object.entries(players)) {
+  //     console.log(`${key}: ${Object.entries(value)}`);
+  //   }
+  //   io.emit("updateFromServer", players);
+  // });
+
+  //ROOMS
+  //handleNewRomm is a callback function
+  const handleNewRoom = () => {
+    players[socket.id] = { x: 100, y: 100, rad: 5 };
+    console.log(`-----> HandleNew: ${socket.id}`);
+    let roomId = makeid(5); //call makeId from utils.js to generate random 5 digit ID
+    clientRooms[socket.id] = roomId;
+    socket.emit("roomId", roomId);
+    //state[roomId] = initGame()
+    socket.join(roomId);
+    console.log(io.sockets.adapter.rooms);
+    console.log(io.sockets.adapter.rooms.get(roomId));
+
+    socket.number = 1;
+    io.emit("init", 1);
+    io.emit("updateFromServer", players);
+  };
+
+  const handleJoinRoom = (room_id) => {
+    console.log(`-> Handle Join: ${socket.id}`);
+    const room = io.sockets.adapter.rooms.get(room_id);
+    console.log("Room: ", room);
+    players[socket.id] = { x: 110, y: 110, rad: 5 };
+
+    clientRooms[socket.id] = room_id;
+    socket.join(room_id);
+    socket.number = 2;
+    io.emit("init", 2);
+    io.emit("updateFromServer", players);
+  };
+
+  socket.on("newRoom", handleNewRoom);
+  socket.on("joinRoom", handleJoinRoom);
+}
 
 // hardcode port to 3000 for now
 const port = process.env.PORT || 3000;
-const server = http.Server(app);
-socketManager.init(server);
+//socketManager.init(server);
 
 server.listen(port, () => {
   console.log(`Server running on port: ${port}`);
