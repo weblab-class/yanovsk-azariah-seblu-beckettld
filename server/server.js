@@ -83,7 +83,8 @@ app.get("/problem", (req, res) => {
     console.log(Object.keys(problem).length);
 
     console.log(Math.floor(Math.random() * Object.keys(problem).length));
-    res.send(problem[Math.floor(Math.random() * Object.keys(problem).length)].problemText);
+    const random = Math.floor(Math.random() * Object.keys(problem).length);
+    res.json({ problemText: problem[random].problemText, questionID: problem[random]._id });
   });
 });
 app.post("/problem", (req, res) => {
@@ -103,7 +104,7 @@ app.post("/submitCode", async (req, res) => {
   fs.writeFileSync("test.py", req.body.code);
   console.log(req.body.code);
   const currentProblem = await Problem.find({
-    _id: "63cec436f69993f5b4ecebb6",
+    _id: req.body.questionID,
   });
   // console.log(currentProblem);
 

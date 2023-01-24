@@ -28,9 +28,7 @@ const App = () => {
     questionID: "63cec436f69993f5b4ecebb6";
     axios
       .get("https://skeletongame.herokuapp.com/problem", {
-        params: {
-          questionID: "63cec436f69993f5b4ecebb6",
-        },
+        params: {},
       })
       .then((res) => {
         setCode(res.data);
@@ -46,18 +44,23 @@ const App = () => {
   };
   const submitCode = () => {
     console.log({ code });
-    axios.post("https://skeletongame.herokuapp.com/submitCode/", { code }).then((res) => {
-      if (res.data.error) {
-        console.log(res.data.error);
-      } else {
-        console.log(res.data.testCaseResults);
-        console.log(res.data.overallResult);
-        if (res.data.overallResult === true) {
-          console.log("You got them all right!");
-          setTower(1);
-        } else console.log("Too bad!");
-      }
-    });
+    axios
+      .post("https://skeletongame.herokuapp.com/submitCode/", {
+        code: code.problemText,
+        questionID: code.questionID,
+      })
+      .then((res) => {
+        if (res.data.error) {
+          console.log(res.data.error);
+        } else {
+          console.log(res.data.testCaseResults);
+          console.log(res.data.overallResult);
+          if (res.data.overallResult === true) {
+            console.log("You got them all right!");
+            setTower(1);
+          } else console.log("Too bad!");
+        }
+      });
   };
 
   // useEffect(() => {
@@ -117,7 +120,7 @@ const App = () => {
           <div className="inactive" id="overlay">
             <button onClick={toggleIDE}>Close</button>
             <CodeMirror
-              value={code}
+              value={code.problemText}
               height="600px"
               theme="dark"
               options={{ theme: "sublime" }}
