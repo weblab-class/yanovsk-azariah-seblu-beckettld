@@ -9,8 +9,8 @@ import axios from "axios";
 /**
  * Define the "App" component
  */
-
-const socket = io(window.location.hosthame + ":" + window.location.port);
+const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
+const socket = io(endpoint);
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
@@ -23,7 +23,7 @@ const App = () => {
   const [IDEstatus, setIDEStatus] = useState(false);
 
   const toggleIDE = () => {
-    console.log(window.location.hostname);
+    //console.log(window.location.hostname);
     questionID: "63cec436f69993f5b4ecebb6";
     axios
       .get("http://localhost:3000/problem/", {
