@@ -78,7 +78,7 @@ app.get("/problem", (req, res) => {
   console.log("req params below:");
   console.log(req.query);
   const currentProblem = Problem.find({ version: "mvp" }).then((problem) => {
-    res.send(problem[2].problemText);
+    res.send(problem[currentProblem.length - 3].problemText);
   });
 });
 app.post("/problem", (req, res) => {
