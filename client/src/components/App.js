@@ -28,8 +28,8 @@ const App = () => {
     //console.log(window.location.hostname);
     // questionID: "63cec436f69993f5b4ecebb6";
     axios
-      .get("http://localhost:3000/problem/", {
-        // .get("https://skeletongame.herokuapp.com/problem", {
+      // .get("http://localhost:3000/problem/", {
+      .get("https://skeletongame.herokuapp.com/problem", {
         params: {},
       })
       .then((res) => {
