@@ -15,6 +15,8 @@
 
 // validator runs some basic checks to make sure you've set everything up correctly
 // this is a tool provided by staff, so you don't need to worry about it
+const PORT = process.env.PORT || 3000;
+
 const validator = require("./validator");
 validator.checkSetup();
 const fs = require("fs");
@@ -23,11 +25,9 @@ const PythonShell = require("python-shell").PythonShell;
 require("dotenv").config();
 //import libraries needed for the webserver to work!
 const express = require("express"); // backend framework for our node server.
-const http = require("http");
-const socketIo = require("socket.io")();
+const socketIo = require("socket.io");
 
 const app = express();
-const server = http.createServer(app);
 const session = require("express-session"); // library that stores info about each connected user
 const mongoose = require("mongoose"); // library to connect to MongoDB
 const path = require("path"); // provide utilities for working with file and directory paths
@@ -173,11 +173,10 @@ app.use((err, req, res, next) => {
 });
 // +++++++SOCKET STUFF++++++++
 
-const io = socketIo(server, {
-  cors: {
-    origin: "http://localhost:3000",
-  },
-}); //
+var http = require("http");
+var server = http.createServer(app);
+
+const io = socketIo(server);
 
 io.on("connection", connected);
 
@@ -264,10 +263,6 @@ function connected(socket) {
   socket.on("joinRoom", handleJoinRoom);
 }
 
-// hardcode port to 3000 for now
-const port = process.env.PORT || 3000;
-//socketManager.init(server);
-
-server.listen(port, () => {
-  console.log(`Server running on port: ${port}`);
+server.listen(PORT, () => {
+  console.log(`Server running on port: ${PORT}`);
 });

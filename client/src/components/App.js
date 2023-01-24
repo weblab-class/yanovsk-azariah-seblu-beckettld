@@ -11,7 +11,7 @@ import axios from "axios";
  * Define the "App" component
  */
 //const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
-const socket = io("https://skeletongame.herokuapp.com/");
+const socket = io();
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
