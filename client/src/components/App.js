@@ -142,9 +142,7 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    socket.emit("disconnect");
     setUserId(undefined);
-    console.log(url + "/logout");
     post(url + "/logout");
   };
 
