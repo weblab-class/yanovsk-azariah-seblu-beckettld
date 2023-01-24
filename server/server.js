@@ -74,17 +74,17 @@ app.use(
   })
 );
 
-app.get("/problem", (req, res) => {
+app.get("/problem", async (req, res) => {
   console.log("req params below:");
   console.log(req.query);
-  const currentProblem = Problem.find({ version: "mvp" }).then((problem) => {
-    console.log(currentProblem);
-    console.log(Object.keys(currentProblem));
-    console.log(Object.keys(currentProblem).length);
+  const currentProblem = await Problem.find({ version: "mvp" });
 
-    console.log(Math.floor(Math.random() * Object.keys(currentProblem).length));
-    res.send(problem[Math.floor(Math.random() * Object.keys(currentProblem).length)].problemText);
-  });
+  console.log(currentProblem);
+  console.log(Object.keys(currentProblem));
+  console.log(Object.keys(currentProblem).length);
+
+  console.log(Math.floor(Math.random() * Object.keys(currentProblem).length));
+  //res.send(problem[Math.floor(Math.random() * Object.keys(currentProblem).length)].problemText);
 });
 app.post("/problem", (req, res) => {
   const newProblem = new Problem({
