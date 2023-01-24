@@ -9,8 +9,8 @@ import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 
-// const url = "http://localhost:3000";
-const url = "https://skeletongame.herokuapp.com";
+const url = "http://localhost:3000";
+//const url = "https://skeletongame.herokuapp.com";
 //import dotenv from "dotenv";
 /**
  * Define the "App" component
@@ -18,7 +18,8 @@ const url = "https://skeletongame.herokuapp.com";
 //const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
 const socket = io();
 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+//const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
@@ -31,10 +32,9 @@ const App = () => {
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
   const [userId, setUserId] = useState(undefined);
+  const [name, setName] = useState("");
 
   const toggleIDE = () => {
-    //console.log(window.location.hostname);
-    // questionID: "63cec436f69993f5b4ecebb6";
     axios
       .get(url + "/problem", {
         params: {},
@@ -56,7 +56,6 @@ const App = () => {
     console.log({ code });
     axios
       .post(url + "/submitCode", {
-        //.post("https://skeletongame.herokuapp.com/submitCode/", {
         code: code,
         questionID: questionID,
       })
@@ -73,17 +72,6 @@ const App = () => {
         }
       });
   };
-
-  // useEffect(() => {
-  //   socket.on("connect", () => {
-  //     console.log(socket.id);
-  //   });
-  //   // return () => {
-  //   //   socket.off("connect");
-  //   //   socket.off("disconnect");
-  //   // };
-  // }, []);
-
   socket.on("updateFromServer", (data) => {
     setPlayerData(data);
   });
@@ -107,7 +95,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    if (playerNumber === 2) {
+    if (playerNumber >= 2) {
       setActive(true);
     }
   }, [playerNumber]);
@@ -136,11 +124,12 @@ const App = () => {
     axios.post(url + "/login", { token: userToken }).then((user) => {
       console.log(url + "/login");
       setUserId(user.data._id);
-      //post("/api/initsocket", { socketid: socket.id });
+      setName(user.data.name);
     });
   };
 
   const handleLogout = () => {
+    socket.emit("playerLeft");
     setUserId(undefined);
     post(url + "/logout");
   };
@@ -150,14 +139,13 @@ const App = () => {
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         {userId ? (
           <div>
-            <p>You are {userId}</p>
             <button
               onClick={() => {
                 googleLogout();
                 handleLogout();
               }}
             >
-              Logout
+              Logout from Game
             </button>
             {isActive ? (
               <>
@@ -188,6 +176,8 @@ const App = () => {
           </div>
         ) : (
           <div>
+            <p>Welcome to CodeLegend MVP</p>
+            <p>Please log in with your Google Account to play </p>
             <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
           </div>
         )}

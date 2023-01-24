@@ -203,6 +203,12 @@ function connected(socket) {
     io.emit("updateFromServer", players);
   });
 
+  socket.on("playerLeft", () => {
+    delete players[socket.id];
+
+    io.emit("updateFromServer", players);
+  });
+
   socket.on("updateFromClient", (data) => {
     if (data === "Up" && players[socket.id]) {
       players[socket.id].y -= 3;
