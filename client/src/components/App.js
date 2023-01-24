@@ -119,11 +119,14 @@ const App = () => {
 
   useEffect(() => {
     axios.get(url + "/whoami").then((user) => {
+      console.log(url + "/whoami");
       if (user._id) {
         // they are registed in the database, and currently logged in.
         setUserId(user._id);
       }
     });
+
+    console.log(url + "/login");
   }, []);
 
   const handleLogin = (credentialResponse) => {
@@ -132,7 +135,7 @@ const App = () => {
     const decodedCredential = jwt_decode(userToken);
     console.log(`Logged in as ${decodedCredential.name}`);
     axios.post("http://localhost:3000/login", { token: userToken }).then((user) => {
-      console.log("IN APP JS", user);
+      console.log(url + "/login");
       setUserId(user.data._id);
       //post("/api/initsocket", { socketid: socket.id });
     });
@@ -140,6 +143,7 @@ const App = () => {
 
   const handleLogout = () => {
     setUserId(undefined);
+    console.log(url + "/logout");
     post(url + "/logout");
   };
 
