@@ -27,7 +27,7 @@ const App = () => {
     //console.log(window.location.hostname);
     questionID: "63cec436f69993f5b4ecebb6";
     axios
-      .get("http://localhost:3000/problem/", {
+      .get("https://skeletongame.herokuapp.com/", {
         params: {
           questionID: "63cec436f69993f5b4ecebb6",
         },
@@ -46,7 +46,7 @@ const App = () => {
   };
   const submitCode = () => {
     console.log({ code });
-    axios.post("http://localhost:3000/submitCode/", { code }).then((res) => {
+    axios.post("https://skeletongame.herokuapp.com/submitCode/", { code }).then((res) => {
       if (res.data.error) {
         console.log(res.data.error);
       } else {
