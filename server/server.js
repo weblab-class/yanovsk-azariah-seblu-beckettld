@@ -43,6 +43,7 @@ const Problem = require("./models/problem.js");
 const mongoConnectionURL = process.env.MONGO_SRV;
 // TODO change database name to the name you chose
 const databaseName = "Cluster0";
+const auth = require("./auth");
 
 let players = {};
 let clientRooms = {};
@@ -233,6 +234,20 @@ function connected(socket) {
   //   }
   //   io.emit("updateFromServer", players);
   // });
+
+  //GOOGLE AUTH
+  app.get("/whoami", (req, res) => {
+    if (!req.user) {
+      // not logged in
+      return res.send({});
+    }
+    console.log(req.user);
+    res.send(req.user);
+  });
+
+  app.post("/login", auth.login);
+
+  app.post("/logout", auth.logout);
 
   //ROOMS
   //handleNewRomm is a callback function
