@@ -23,6 +23,7 @@ const App = () => {
   const [IDEstatus, setIDEStatus] = useState(false);
 
   const toggleIDE = () => {
+    console.log(window.location.hostname);
     questionID: "63cec436f69993f5b4ecebb6";
     axios
       .get("http://localhost:3000/problem/", {
