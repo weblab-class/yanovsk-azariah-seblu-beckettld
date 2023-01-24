@@ -134,7 +134,7 @@ const App = () => {
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken);
     console.log(`Logged in as ${decodedCredential.name}`);
-    axios.post("http://localhost:3000/login", { token: userToken }).then((user) => {
+    axios.post(url + "/login", { token: userToken }).then((user) => {
       console.log(url + "/login");
       setUserId(user.data._id);
       //post("/api/initsocket", { socketid: socket.id });
