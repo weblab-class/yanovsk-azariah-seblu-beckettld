@@ -18,7 +18,7 @@ const App = () => {
   const [playerNumber, setPlayerNumber] = useState(0);
   const [roomId, setRoomId] = useState("");
   const [isActive, setActive] = useState(false);
-  const [code, setCode] = useState();
+  const [code, setCode] = useState("");
 
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
@@ -27,7 +27,7 @@ const App = () => {
     //console.log(window.location.hostname);
     questionID: "63cec436f69993f5b4ecebb6";
     axios
-      .get("https://skeletongame.herokuapp.com/", {
+      .get("https://skeletongame.herokuapp.com/problem", {
         params: {
           questionID: "63cec436f69993f5b4ecebb6",
         },
