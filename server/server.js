@@ -198,11 +198,11 @@ function connected(socket) {
 
   socket.on("updateFromClient", (data) => {
     if (data === "Up" && players[socket.id]) {
-      players[socket.id].y += 3;
+      players[socket.id].y -= 3;
     }
 
     if (data === "Down" && players[socket.id]) {
-      players[socket.id].y -= 3;
+      players[socket.id].y += 3;
     }
 
     if (data === "Right" && players[socket.id]) {
