@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import Lobby from "./pages/Lobby";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
-
+import axios from "axios";
 /**
  * Define the "App" component
  */
@@ -44,18 +44,18 @@ const App = () => {
   };
   const submitCode = () => {
     console.log({ code });
-    // axios.post("http://localhost:9000/submitCode/", { code }).then((res) => {
-    //   if (res.data.error) {
-    //     console.log(res.data.error);
-    //   } else {
-    //     console.log(res.data.testCaseResults);
-    //     console.log(res.data.overallResult);
-    //     if (res.data.overallResult === true) {
-    //       console.log("You got them all right!");
-    //       setTower(1);
-    //     } else console.log("Too bad!");
-    //   }
-    // });
+    axios.post("http://localhost:3000/submitCode/", { code }).then((res) => {
+      if (res.data.error) {
+        console.log(res.data.error);
+      } else {
+        console.log(res.data.testCaseResults);
+        console.log(res.data.overallResult);
+        if (res.data.overallResult === true) {
+          console.log("You got them all right!");
+          setTower(1);
+        } else console.log("Too bad!");
+      }
+    });
   };
 
   useEffect(() => {

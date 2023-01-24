@@ -17,6 +17,8 @@
 // this is a tool provided by staff, so you don't need to worry about it
 const validator = require("./validator");
 validator.checkSetup();
+const fs = require("fs");
+const PythonShell = require("python-shell").PythonShell;
 
 require("dotenv").config();
 //import libraries needed for the webserver to work!
@@ -25,12 +27,13 @@ const express = require("express"); // backend framework for our node server.
 const session = require("express-session"); // library that stores info about each connected user
 const mongoose = require("mongoose"); // library to connect to MongoDB
 const path = require("path"); // provide utilities for working with file and directory paths
+const cors = require("cors");
 
 const api = require("./api");
-const auth = require("./auth");
 
 // socket stuff
 const socketManager = require("./server-socket");
+const Problem = require("./models/problem.js");
 
 // Server configuration below
 // TODO change connection URL after setting up your team database
@@ -54,6 +57,7 @@ app.use(validator.checkRoutes);
 
 // allow us to process POST requests
 app.use(express.json());
+app.use(cors());
 
 // set up a session, which will persist login data across requests
 app.use(
@@ -65,11 +69,59 @@ app.use(
   })
 );
 
-// this checks if the user is logged in, and populates "req.user"
-app.use(auth.populateCurrentUser);
+app.post("/submitCode", async (req, res) => {
+  fs.writeFileSync("test.py", req.body.code);
+  console.log(req.body.code);
+  const currentProblem = await Problem.find({
+    _id: "63cec436f69993f5b4ecebb6",
+  });
+  // console.log(currentProblem);
 
-// connect user-defined routes
-app.use("/api", api);
+  const testCases = currentProblem[0].testCases;
+
+  const promises = [];
+  const testCaseResults = [];
+
+  Object.keys(testCases).map((key) => {
+    promises.push(
+      new Promise((resolve, reject) => {
+        PythonShell.run(
+          "test.py",
+          {
+            mode: "text",
+            pythonOptions: ["-u"],
+            args: testCases[key],
+          },
+          function (err, results) {
+            if (err) {
+              reject(err.message);
+            } else {
+              if (results) {
+                testCaseResults.push(results[0]);
+                resolve(true);
+              }
+            }
+          }
+        );
+      })
+    );
+  });
+  Promise.all(promises)
+    .then(() => {
+      let overallResult = true;
+      for (result of testCaseResults) {
+        if (result === "False") {
+          overallResult = false;
+          break;
+        }
+      }
+      res.json({ testCaseResults, overallResult });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({ error: err });
+    });
+});
 
 // load the compiled react files, which will serve /index.html and /bundle.js
 const reactPath = path.resolve(__dirname, "..", "client", "dist");
