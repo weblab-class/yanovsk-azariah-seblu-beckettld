@@ -216,14 +216,14 @@ function connected(socket) {
     //io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
-  const handleJoinRoom = (room_id) => {
+  const handleJoinRoom = async (room_id) => {
     socket.join(room_id);
     socketToRoom[socket.id] = room_id;
 
     socket.number = 2;
     initGameState(room_id, socket.id, 2);
 
-    const towerQuestions = Problem.find({ version: "mvp" });
+    const towerQuestions = await Problem.find({ version: "mvp" });
     allTowers[room_id] = {
       0: {
         questionID: towerQuestions[0]._id,
