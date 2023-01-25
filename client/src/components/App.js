@@ -11,8 +11,11 @@ import Game from "./pages/Game.js";
 import Lobby from "./pages/Lobby";
 
 //==========LOCAL/HEROKU===========//
-const url = "https://codeleg.herokuapp.com";
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+// const url = "https://codeleg.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
+const url = "http://localhost:3000";
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 
 const socket = io();
 
@@ -26,6 +29,8 @@ const App = () => {
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
   const [userId, setUserId] = useState(undefined);
+  const [canvasHeight, setCanvasHeight] = useState("500px");
+  const [canvasWidth, setCanvasWidth] = useState("800px");
 
   //==========GOOGLE AUTH===========//
   useEffect(() => {
@@ -92,7 +97,7 @@ const App = () => {
 
   //==========SOCKETS===========//
   useEffect(() => {
-    if (playerNumber >= 2) setActive(true);
+    if (playerNumber === 2) setActive(true);
   }, [playerNumber]);
 
   const fromClientToServer = (childdata) => {
@@ -140,6 +145,8 @@ const App = () => {
                   toggleIDE={toggleIDE}
                   tower={tower}
                   IDEstatus={IDEstatus}
+                  canvasHeight={canvasHeight}
+                  canvasWidth={canvasWidth}
                 />
                 <h1>Game Started</h1>
                 <div className="inactive" id="overlay">

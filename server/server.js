@@ -16,6 +16,12 @@ const cors = require("cors");
 const { makeid } = require("./utils");
 const Problem = require("./models/problem.js");
 const auth = require("./auth");
+//==========STORAGE===========//
+let players = {};
+let socketToRoom = {};
+let allGameStates = {};
+let canvaslength = "1000px";
+let canvasheight = "600px";
 
 app.use(validator.checkRoutes);
 app.use(express.json());
@@ -138,8 +144,6 @@ app.use((err, req, res, next) => {
 });
 
 //==========SOCKETS===========//
-let players = {};
-let clientRooms = {};
 
 var http = require("http");
 var server = http.createServer(app);
@@ -161,39 +165,42 @@ function connected(socket) {
 
   socket.on("updateFromClient", (data) => {
     if (data === "Up" && players[socket.id]) {
-      players[socket.id].y -= 3;
+      players[socket.id].y -= 1;
     } else if (data === "Down" && players[socket.id]) {
-      players[socket.id].y += 3;
+      players[socket.id].y += 1;
     } else if (data === "Right" && players[socket.id]) {
-      players[socket.id].x += 3;
+      players[socket.id].x += 1;
     } else if (data === "Left" && players[socket.id]) {
-      players[socket.id].x -= 3;
+      players[socket.id].x -= 1;
     }
     io.emit("updateFromServer", players);
   });
 
-  //==========GOOGLE AUTH===========//
-  app.get("/whoami", (req, res) => {
-    if (!req.user) {
-      // not logged in
-      return res.send({});
+  const initGameState = (room_id, socket_id, socket_number) => {
+    if (socket_number === 1) {
+      // allGameStates.room_id.socket_id_1 = socket_id;
+      allGameStates[room_id] = {
+        [socket_id]: {
+          position: { x: 100, y: 100, rad: 5 },
+          tower_status: [0, 0, 0],
+        },
+      };
+      //allGameStates.room_id.socket_id_1.position = { x: 100, y: 100, rad: 5 };
+      //allGameStates.room_id.socket_id_1.tower_status = [0, 0, 0];
+      console.log(allGameStates[room_id][socket_id]);
     }
-    console.log(req.user);
-    res.send(req.user);
-  });
-
-  app.post("/login", auth.login);
-  app.post("/logout", auth.logout);
+  };
 
   const handleNewRoom = () => {
     players[socket.id] = { x: 100, y: 100, rad: 5 };
     console.log(`-----> HandleNew: ${socket.id}`);
-    let roomId = makeid(5); //call makeId from utils.js to generate random 5 digit ID
-    clientRooms[socket.id] = roomId;
-    socket.emit("roomId", roomId);
-    //state[roomId] = initGame()
-    socket.join(roomId);
+    let room_id = makeid(5);
+    socketToRoom[socket.id] = room_id;
+    socket.emit("room_id", room_id);
+    socket.join(room_id);
     socket.number = 1;
+    initGameState(room_id, socket, 1);
+
     io.emit("init", 1);
     io.emit("updateFromServer", players);
   };
@@ -201,9 +208,8 @@ function connected(socket) {
   const handleJoinRoom = (room_id) => {
     console.log(`-> Handle Join: ${socket.id}`);
     const room = io.sockets.adapter.rooms.get(room_id);
-    console.log("Room: ", room);
     players[socket.id] = { x: 110, y: 110, rad: 5 };
-    clientRooms[socket.id] = room_id;
+    //clientRooms[socket.id] = room_id;
     socket.join(room_id);
     socket.number = 2;
     io.emit("init", 2);
@@ -213,6 +219,19 @@ function connected(socket) {
   socket.on("newRoom", handleNewRoom);
   socket.on("joinRoom", handleJoinRoom);
 }
+
+//==========GOOGLE AUTH===========//
+app.get("/whoami", (req, res) => {
+  if (!req.user) {
+    // not logged in
+    return res.send({});
+  }
+  console.log(req.user);
+  res.send(req.user);
+});
+
+app.post("/login", auth.login);
+app.post("/logout", auth.logout);
 
 server.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);

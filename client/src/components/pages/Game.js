@@ -34,7 +34,7 @@ function Game(props) {
       for (const [key, value] of Object.entries(playerData)) {
         ctx.fillStyle = "red";
         ctx.beginPath();
-        ctx.arc(value.x, value.y, value.rad, 0, 2 * Math.PI);
+        ctx.arc(value.x, value.y, 30, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
       }
@@ -68,7 +68,7 @@ function Game(props) {
 
   return (
     <div id="rootdiv">
-      <canvas id="canvas" ref={canvasRef} />
+      <canvas id="canvas" width={props.canvasWidth} height={props.canvasHeight} ref={canvasRef} />
     </div>
   );
 }
