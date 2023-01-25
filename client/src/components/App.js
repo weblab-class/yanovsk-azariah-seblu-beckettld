@@ -120,7 +120,7 @@ const App = () => {
     setPlayerNumber(number);
   });
 
-  socket.on("roomId", (id) => {
+  socket.on("assignedRoomId", (id) => {
     setRoomId(id);
   });
 

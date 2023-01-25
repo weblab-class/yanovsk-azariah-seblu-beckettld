@@ -31,10 +31,13 @@ function Game(props) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     if (playerData) {
+      console.log(playerData);
       for (const [key, value] of Object.entries(playerData)) {
+        console.log(key, value);
+
         ctx.fillStyle = "red";
         ctx.beginPath();
-        ctx.arc(value.x, value.y, 30, 0, 2 * Math.PI);
+        ctx.arc(value.position.x, value.position.y, 30, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
       }
