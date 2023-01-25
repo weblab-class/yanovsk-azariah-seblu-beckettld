@@ -17,9 +17,9 @@ const { makeid } = require("./utils");
 const Problem = require("./models/problem.js");
 const auth = require("./auth");
 //==========STORAGE===========//
-let players = {};
 let socketToRoom = {};
 let allGameStates = {};
+let allTowers = {};
 let canvaslength = "1000px";
 let canvasheight = "600px";
 
@@ -212,8 +212,8 @@ function connected(socket) {
     socket.number = 1;
     initGameState(room_id, socket.id, 1);
 
-    io.emit("init", 1);
-    io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    io.to(room_id).emit("init", 1);
+    //io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
   const handleJoinRoom = (room_id) => {
@@ -223,8 +223,39 @@ function connected(socket) {
     socket.number = 2;
     initGameState(room_id, socket.id, 2);
 
-    io.emit("init", 2);
-    io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    const towerQuestions = Problem.find({ version: "mvp" });
+    allTowers[room_id] = {
+      0: {
+        questionID: towerQuestions[0]._id,
+        questionCode: towerQuestions[0].code,
+        position: { x: 320, y: 300 },
+      },
+      1: {
+        questionID: towerQuestions[1]._id,
+        questionCode: towerQuestions[1].code,
+        position: { x: 311, y: 574 },
+      },
+      2: {
+        questionID: towerQuestions[2]._id,
+        questionCode: towerQuestions[2].code,
+        position: { x: 282, y: 119 },
+      },
+      3: {
+        questionID: towerQuestions[3]._id,
+        questionCode: towerQuestions[3].code,
+        position: { x: 581, y: 202 },
+      },
+      4: {
+        questionID: towerQuestions[4]._id,
+        questionCode: towerQuestions[4].code,
+        position: { x: 221, y: 172 },
+      },
+    };
+
+    io.to(room_id).emit("init", 2);
+    io.to(room_id).emit("initTowers", allTowers[room_id]);
+
+    //io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
   socket.on("newRoom", handleNewRoom);
