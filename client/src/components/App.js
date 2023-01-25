@@ -1,24 +1,20 @@
-import "./pages/App.css";
+//==========LIBRARIES===========//
 import React, { useState, useEffect } from "react";
-import Game from "./pages/Game.js";
+import jwt_decode from "jwt-decode";
 import io from "socket.io-client";
-import Lobby from "./pages/Lobby";
+import axios from "axios";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
-import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/google";
-import jwt_decode from "jwt-decode";
+//==========COMPONENTS===========//
+import Game from "./pages/Game.js";
+import Lobby from "./pages/Lobby";
 
-//const url = "http://localhost:3000";
+//==========LOCAL/HEROKU===========//
 const url = "https://skeletongame.herokuapp.com";
-//import dotenv from "dotenv";
-/**
- * Define the "App" component
- */
-//const endpoint = "https://skeletongame.herokuapp.com/" + process.env.port;
-const socket = io();
-
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
+const socket = io();
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
@@ -27,11 +23,35 @@ const App = () => {
   const [isActive, setActive] = useState(false);
   const [code, setCode] = useState("");
   const [questionID, setQuestionID] = useState(0);
-
   const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
   const [userId, setUserId] = useState(undefined);
-  const [name, setName] = useState("");
+
+  //==========GOOGLE AUTH===========//
+  useEffect(() => {
+    axios.get(url + "/whoami").then((user) => {
+      if (user._id) setUserId(user._id);
+    });
+  }, []);
+
+  const handleLogin = (credentialResponse) => {
+    const userToken = credentialResponse.credential;
+    const decodedCredential = jwt_decode(userToken);
+    axios.post(url + "/login", { token: userToken }).then((user) => {
+      setUserId(user.data._id);
+    });
+  };
+
+  const handleLogout = () => {
+    socket.emit("playerLeft");
+    setUserId(undefined);
+    post(url + "/logout");
+  };
+
+  //==========CODE SUBMISSION===========//
+  const onChange = (value, viewUpdate) => {
+    setCode(value);
+  };
 
   const toggleIDE = () => {
     axios
@@ -42,15 +62,12 @@ const App = () => {
         setCode(res.data.problemText);
         setQuestionID(res.data.questionID);
       });
-    console.log(code);
     setIDEStatus(!IDEstatus);
     const IDE = document.getElementById("overlay");
     if (IDE.className == "inactive") IDE.className = "active";
     else IDE.className = "inactive";
   };
-  const onChange = (value, viewUpdate) => {
-    setCode(value);
-  };
+
   const submitCode = () => {
     console.log({ code });
     axios
@@ -71,9 +88,11 @@ const App = () => {
         }
       });
   };
-  socket.on("updateFromServer", (data) => {
-    setPlayerData(data);
-  });
+
+  //==========SOCKETS===========//
+  useEffect(() => {
+    if (playerNumber >= 2) setActive(true);
+  }, [playerNumber]);
 
   const fromClientToServer = (childdata) => {
     socket.emit("updateFromClient", childdata);
@@ -84,54 +103,20 @@ const App = () => {
   };
 
   const joinRoom = (room_id) => {
-    console.log("join room called", room_id);
     socket.emit("joinRoom", room_id);
   };
 
-  socket.on("init", (number) => {
-    console.log("HIT");
-    setPlayerNumber(number);
+  socket.on("updateFromServer", (data) => {
+    setPlayerData(data);
   });
 
-  useEffect(() => {
-    if (playerNumber >= 2) {
-      setActive(true);
-    }
-  }, [playerNumber]);
+  socket.on("init", (number) => {
+    setPlayerNumber(number);
+  });
 
   socket.on("roomId", (id) => {
     setRoomId(id);
   });
-
-  useEffect(() => {
-    axios.get(url + "/whoami").then((user) => {
-      console.log(url + "/whoami");
-      if (user._id) {
-        // they are registed in the database, and currently logged in.
-        setUserId(user._id);
-      }
-    });
-
-    console.log(url + "/login");
-  }, []);
-
-  const handleLogin = (credentialResponse) => {
-    console.log("handle login");
-    const userToken = credentialResponse.credential;
-    const decodedCredential = jwt_decode(userToken);
-    console.log(`Logged in as ${decodedCredential.name}`);
-    axios.post(url + "/login", { token: userToken }).then((user) => {
-      console.log(url + "/login");
-      setUserId(user.data._id);
-      setName(user.data.name);
-    });
-  };
-
-  const handleLogout = () => {
-    socket.emit("playerLeft");
-    setUserId(undefined);
-    post(url + "/logout");
-  };
 
   return (
     <div>
@@ -175,8 +160,7 @@ const App = () => {
           </div>
         ) : (
           <div>
-            <p>Welcome to CodeLegend MVP</p>
-            <p>Please log in with your Google Account to play </p>
+            <p>Welcome to CodeLegend MVP. Please log in with your Google Account to play </p>
             <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
           </div>
         )}

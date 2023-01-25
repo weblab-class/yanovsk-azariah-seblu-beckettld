@@ -1,19 +1,13 @@
 import "./App.css";
 import React, { useRef, useEffect, useState } from "react";
 import data from "./data";
-import { playerMovement } from "./Player";
 import { towerSpawn } from "./Tower";
 
 function Game(props) {
   const canvasRef = useRef(null);
-  const [renderCount, setRenderCount] = useState(0);
-  let { playerObj, towerObj } = data;
-  let playerRight = false;
-  let playerLeft = false;
-  let playerUp = false;
-  let playerDown = false;
-  let attemptingAccessIDE = false;
-  let withinRange = true;
+  let { towerObj } = data;
+  let playerRight, playerLeft, playerUp, playerDown;
+  [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
 
   document.onkeydown = (e) => {
     if (!props.IDEstatus) {
@@ -63,11 +57,7 @@ function Game(props) {
       } else if (playerRight) {
         props.fromClientToServer("Right");
       }
-
       animationFrameId = window.requestAnimationFrame(render);
-
-      // props.sendPlayerInput("Right");
-      // console.log(`inside Game.js ${Object.values(props.playerData) }`)
     };
     render();
 
