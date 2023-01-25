@@ -21,6 +21,7 @@ const socket = io();
 
 const App = () => {
   const [playerData, setPlayerData] = useState({});
+  const [towerData, setTowerData] = useState({});
   const [playerNumber, setPlayerNumber] = useState(0);
   const [roomId, setRoomId] = useState("");
   const [isActive, setActive] = useState(false);
@@ -116,6 +117,10 @@ const App = () => {
     setPlayerData(data);
   });
 
+  socket.on("initTowers", (data) => {
+    setTowerData(data);
+  });
+
   socket.on("init", (number) => {
     setPlayerNumber(number);
   });
@@ -147,6 +152,7 @@ const App = () => {
                   IDEstatus={IDEstatus}
                   canvasHeight={canvasHeight}
                   canvasWidth={canvasWidth}
+                  towerData={towerData}
                 />
                 <h1>Game Started</h1>
                 <div className="inactive" id="overlay">
