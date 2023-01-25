@@ -1,54 +1,39 @@
-/*
-|--------------------------------------------------------------------------
-| server.js -- The core of your server
-|--------------------------------------------------------------------------
-|
-| This file defines how your server starts up. Think of it as the main() of your server.
-| At a high level, this file does the following things:
-| - Connect to the database
-| - Sets up server middleware (i.e. addons that enable things like json parsing, user login)
-| - Hooks up all the backend routes specified in api.js
-| - Fowards frontend routes that should be handled by the React router
-| - Sets up error handling in case something goes wrong when handling a request
-| - Actually starts the webserver
-*/
-
-// validator runs some basic checks to make sure you've set everything up correctly
-// this is a tool provided by staff, so you don't need to worry about it
 const PORT = process.env.PORT || 3000;
-
 const validator = require("./validator");
 validator.checkSetup();
+require("dotenv").config();
+//==========LIBRARIES===========//
 const fs = require("fs");
 const PythonShell = require("python-shell").PythonShell;
-
-require("dotenv").config();
-//import libraries needed for the webserver to work!
-const express = require("express"); // backend framework for our node server.
+const express = require("express");
 const socketIo = require("socket.io");
-
 const app = express();
-const session = require("express-session"); // library that stores info about each connected user
-const mongoose = require("mongoose"); // library to connect to MongoDB
-const path = require("path"); // provide utilities for working with file and directory paths
+const session = require("express-session");
+const mongoose = require("mongoose");
+const path = require("path");
 const cors = require("cors");
+//==========FILES===========//
 const { makeid } = require("./utils");
-
-// socket stuff
-// const socketManager = require("./server-socket");
 const Problem = require("./models/problem.js");
-
-// Server configuration below
-// TODO change connection URL after setting up your team database
-const mongoConnectionURL = process.env.MONGO_SRV;
-// TODO change database name to the name you chose
-const databaseName = "Cluster0";
 const auth = require("./auth");
 
-let players = {};
-let clientRooms = {};
+app.use(validator.checkRoutes);
+app.use(express.json());
+app.use(cors());
 
-// connect to mongodb
+app.use(
+  session({
+    secret: "session-secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+//==========MONGO DB===========//
+const mongoConnectionURL = process.env.MONGO_SRV;
+
+const databaseName = "Cluster0";
+
 mongoose
   .connect(mongoConnectionURL, {
     useNewUrlParser: true,
@@ -58,30 +43,9 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
 
-// create a new express server
-app.use(validator.checkRoutes);
-
-// allow us to process POST requests
-app.use(express.json());
-app.use(cors());
-
-// set up a session, which will persist login data across requests
-app.use(
-  session({
-    // TODO: add a SESSION_SECRET string in your .env file, and replace the secret with process.env.SESSION_SECRET
-    secret: "session-secret",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
 app.get("/problem", (req, res) => {
   console.log("tig");
   const problem = Problem.find({ version: "mvp" }).then((problem) => {
-    console.log(problem);
-    console.log(Object.keys(problem));
-    console.log(Object.keys(problem).length);
-
     console.log(Math.floor(Math.random() * Object.keys(problem).length));
     const random = Math.floor(Math.random() * Object.keys(problem).length);
     res.json({ problemText: problem[random].problemText, questionID: problem[random]._id });
@@ -106,10 +70,7 @@ app.post("/submitCode", async (req, res) => {
   const currentProblem = await Problem.find({
     _id: req.body.questionID,
   });
-  // console.log(currentProblem);
-
   const testCases = currentProblem[0].testCases;
-
   const promises = [];
   const testCaseResults = [];
 
@@ -154,20 +115,17 @@ app.post("/submitCode", async (req, res) => {
     });
 });
 
-// load the compiled react files, which will serve /index.html and /bundle.js
+//==========SERVER ===========//
 const reactPath = path.resolve(__dirname, "..", "client", "dist");
 app.use(express.static(reactPath));
 
-// for all other routes, render index.html and let react router handle it
 app.get("*", (req, res) => {
   res.sendFile(path.join(reactPath, "index.html"));
 });
 
-// any server errors cause this function to run
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   if (status === 500) {
-    // 500 means Internal Server Error
     console.log("The server errored when processing a request!");
     console.log(err);
   }
@@ -178,11 +136,13 @@ app.use((err, req, res, next) => {
     message: err.message,
   });
 });
-// +++++++SOCKET STUFF++++++++
+
+//==========SOCKETS===========//
+let players = {};
+let clientRooms = {};
 
 var http = require("http");
 var server = http.createServer(app);
-
 const io = socketIo(server);
 
 io.on("connection", connected);
@@ -190,58 +150,29 @@ io.on("connection", connected);
 function connected(socket) {
   socket.on("disconnect", () => {
     delete players[socket.id];
-
     console.log(`<---- DISCONNECTED: ${socket.id}, `);
-    console.log(`Currently: ${Object.keys(players).length} player(s): `);
-    console.log(`<---- DISCONNECTED: ${socket.id}, `);
-    console.log(`Currently: ${Object.keys(players).length} player(s): `);
-
-    for (const [key, value] of Object.entries(players)) {
-      console.log(`${key}: ${Object.entries(value)}`);
-    }
-
     io.emit("updateFromServer", players);
   });
 
   socket.on("playerLeft", () => {
     delete players[socket.id];
-
     io.emit("updateFromServer", players);
   });
 
   socket.on("updateFromClient", (data) => {
     if (data === "Up" && players[socket.id]) {
       players[socket.id].y -= 3;
-    }
-
-    if (data === "Down" && players[socket.id]) {
+    } else if (data === "Down" && players[socket.id]) {
       players[socket.id].y += 3;
-    }
-
-    if (data === "Right" && players[socket.id]) {
+    } else if (data === "Right" && players[socket.id]) {
       players[socket.id].x += 3;
-    }
-    if (data === "Left" && players[socket.id]) {
+    } else if (data === "Left" && players[socket.id]) {
       players[socket.id].x -= 3;
     }
-    //UNCOMMENT if you need to see how coordinates are updating
-    //console.log(`Player: ${socket.id} coord.:`, players[socket.id]);
     io.emit("updateFromServer", players);
   });
 
-  // socket.on("newPlayer", (data) => {
-  //   console.log(
-  //     `-----> CONNECTED: ${socket.id}. start pos: ${data.x}, ${data.y} rad: ${data.rad}`
-  //   );
-  //   console.log(`Currently: ${Object.keys(players).length} player(s): `);
-
-  //   for (const [key, value] of Object.entries(players)) {
-  //     console.log(`${key}: ${Object.entries(value)}`);
-  //   }
-  //   io.emit("updateFromServer", players);
-  // });
-
-  //GOOGLE AUTH
+  //==========GOOGLE AUTH===========//
   app.get("/whoami", (req, res) => {
     if (!req.user) {
       // not logged in
@@ -252,11 +183,8 @@ function connected(socket) {
   });
 
   app.post("/login", auth.login);
-
   app.post("/logout", auth.logout);
 
-  //ROOMS
-  //handleNewRomm is a callback function
   const handleNewRoom = () => {
     players[socket.id] = { x: 100, y: 100, rad: 5 };
     console.log(`-----> HandleNew: ${socket.id}`);
@@ -265,9 +193,6 @@ function connected(socket) {
     socket.emit("roomId", roomId);
     //state[roomId] = initGame()
     socket.join(roomId);
-    console.log(io.sockets.adapter.rooms);
-    console.log(io.sockets.adapter.rooms.get(roomId));
-
     socket.number = 1;
     io.emit("init", 1);
     io.emit("updateFromServer", players);
@@ -278,7 +203,6 @@ function connected(socket) {
     const room = io.sockets.adapter.rooms.get(room_id);
     console.log("Room: ", room);
     players[socket.id] = { x: 110, y: 110, rad: 5 };
-
     clientRooms[socket.id] = room_id;
     socket.join(room_id);
     socket.number = 2;

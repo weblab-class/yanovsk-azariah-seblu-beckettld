@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 
 function Lobby(props) {
   const handleSubmit = (e) => {
