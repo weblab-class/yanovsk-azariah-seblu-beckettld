@@ -25,6 +25,10 @@ app.use(cors());
 let players = {};
 let clientRooms = {};
 
+app.get("/", (req, res) => {
+  res.send("Connected to server");
+});
+
 //==========MONGO DB===========//
 const mongoConnectionURL = process.env.MONGO_SRV;
 const databaseName = "Cluster0";
