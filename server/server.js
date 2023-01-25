@@ -1,41 +1,37 @@
+const PORT = process.env.PORT || 3000;
 const validator = require("./validator");
 validator.checkSetup();
 require("dotenv").config();
 //==========LIBRARIES===========//
-const express = require("express");
-const socketIo = require("socket.io");
 const fs = require("fs");
 const PythonShell = require("python-shell").PythonShell;
+const express = require("express");
+const socketIo = require("socket.io");
+const app = express();
 const session = require("express-session");
 const mongoose = require("mongoose");
 const path = require("path");
 const cors = require("cors");
-
 //==========FILES===========//
 const { makeid } = require("./utils");
 const Problem = require("./models/problem.js");
 const auth = require("./auth");
 
-//==========MISC===========//
-const PORT = process.env.PORT || 3000;
-const app = express();
 app.use(validator.checkRoutes);
 app.use(express.json());
 app.use(cors());
-let players = {};
-let clientRooms = {};
 
-// load the compiled react files, which will serve /index.html and /bundle.js
-const reactPath = path.resolve(__dirname, "..", "client", "dist");
-app.use(express.static(reactPath));
-
-// for all other routes, render index.html and let react router handle it
-app.get("*", (req, res) => {
-  res.sendFile(path.join(reactPath, "index.html"));
-});
+app.use(
+  session({
+    secret: "session-secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 //==========MONGO DB===========//
 const mongoConnectionURL = process.env.MONGO_SRV;
+
 const databaseName = "Cluster0";
 
 mongoose
@@ -47,17 +43,10 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-//==========CODE SUBMISSION===========//
 app.get("/problem", (req, res) => {
+  console.log("tig");
   const problem = Problem.find({ version: "mvp" }).then((problem) => {
+    console.log(Math.floor(Math.random() * Object.keys(problem).length));
     const random = Math.floor(Math.random() * Object.keys(problem).length);
     res.json({ problemText: problem[random].problemText, questionID: problem[random]._id });
   });
@@ -69,6 +58,7 @@ app.post("/problem", (req, res) => {
     version: req.body.version,
     difficulty: req.body.difficulty,
   });
+
   newProblem.save().then(() => {
     res.send(req.body);
   });
@@ -76,10 +66,10 @@ app.post("/problem", (req, res) => {
 
 app.post("/submitCode", async (req, res) => {
   fs.writeFileSync("test.py", req.body.code);
+  console.log(req.body.code);
   const currentProblem = await Problem.find({
     _id: req.body.questionID,
   });
-
   const testCases = currentProblem[0].testCases;
   const promises = [];
   const testCaseResults = [];
@@ -125,18 +115,32 @@ app.post("/submitCode", async (req, res) => {
     });
 });
 
-//==========GOOGLE AUTH===========//
-app.post("/login", auth.login);
-app.post("/logout", auth.logout);
+//==========SERVER ===========//
+const reactPath = path.resolve(__dirname, "..", "client", "dist");
+app.use(express.static(reactPath));
 
-app.get("/whoami", (req, res) => {
-  if (!req.user) {
-    return res.send({});
+app.get("*", (req, res) => {
+  res.sendFile(path.join(reactPath, "index.html"));
+});
+
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  if (status === 500) {
+    console.log("The server errored when processing a request!");
+    console.log(err);
   }
-  res.send(req.user);
+
+  res.status(status);
+  res.send({
+    status: status,
+    message: err.message,
+  });
 });
 
 //==========SOCKETS===========//
+let players = {};
+let clientRooms = {};
+
 var http = require("http");
 var server = http.createServer(app);
 const io = socketIo(server);
@@ -146,6 +150,7 @@ io.on("connection", connected);
 function connected(socket) {
   socket.on("disconnect", () => {
     delete players[socket.id];
+    console.log(`<---- DISCONNECTED: ${socket.id}, `);
     io.emit("updateFromServer", players);
   });
 
@@ -155,21 +160,35 @@ function connected(socket) {
   });
 
   socket.on("updateFromClient", (data) => {
-    if (data === "Up") {
+    if (data === "Up" && players[socket.id]) {
       players[socket.id].y -= 3;
-    } else if (data === "Down") {
+    } else if (data === "Down" && players[socket.id]) {
       players[socket.id].y += 3;
-    } else if (data === "Right") {
+    } else if (data === "Right" && players[socket.id]) {
       players[socket.id].x += 3;
-    } else if (data === "Left") {
+    } else if (data === "Left" && players[socket.id]) {
       players[socket.id].x -= 3;
     }
     io.emit("updateFromServer", players);
   });
 
+  //==========GOOGLE AUTH===========//
+  app.get("/whoami", (req, res) => {
+    if (!req.user) {
+      // not logged in
+      return res.send({});
+    }
+    console.log(req.user);
+    res.send(req.user);
+  });
+
+  app.post("/login", auth.login);
+  app.post("/logout", auth.logout);
+
   const handleNewRoom = () => {
-    let roomId = makeid(5);
     players[socket.id] = { x: 100, y: 100, rad: 5 };
+    console.log(`-----> HandleNew: ${socket.id}`);
+    let roomId = makeid(5); //call makeId from utils.js to generate random 5 digit ID
     clientRooms[socket.id] = roomId;
     socket.emit("roomId", roomId);
     //state[roomId] = initGame()
@@ -180,9 +199,10 @@ function connected(socket) {
   };
 
   const handleJoinRoom = (room_id) => {
+    console.log(`-> Handle Join: ${socket.id}`);
     const room = io.sockets.adapter.rooms.get(room_id);
+    console.log("Room: ", room);
     players[socket.id] = { x: 110, y: 110, rad: 5 };
-
     clientRooms[socket.id] = room_id;
     socket.join(room_id);
     socket.number = 2;

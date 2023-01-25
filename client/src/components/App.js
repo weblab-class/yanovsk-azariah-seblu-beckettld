@@ -11,8 +11,11 @@ import Game from "./pages/Game.js";
 import Lobby from "./pages/Lobby";
 
 //==========LOCAL/HEROKU===========//
-const url = "https://skeletongame.herokuapp.com";
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+// const url = "https://skeletongame.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
+const url = "http://localhost:3000";
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 
 const socket = io();
 
@@ -49,9 +52,6 @@ const App = () => {
   };
 
   //==========CODE SUBMISSION===========//
-  const onChange = (value, viewUpdate) => {
-    setCode(value);
-  };
 
   const toggleIDE = () => {
     axios
@@ -66,6 +66,10 @@ const App = () => {
     const IDE = document.getElementById("overlay");
     if (IDE.className == "inactive") IDE.className = "active";
     else IDE.className = "inactive";
+  };
+
+  const onChange = (value, viewUpdate) => {
+    setCode(value);
   };
 
   const submitCode = () => {
