@@ -11,7 +11,7 @@ import Game from "./pages/Game.js";
 import Lobby from "./pages/Lobby";
 
 //==========LOCAL/HEROKU===========//
-const url = "https://skeletongame.herokuapp.com";
+const url = "https://codeleg.herokuapp.com";
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 const socket = io();
