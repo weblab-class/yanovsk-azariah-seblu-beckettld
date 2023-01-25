@@ -6,22 +6,34 @@ import { towerSpawn } from "./Tower";
 function Game(props) {
   const canvasRef = useRef(null);
   let { towerObj } = data;
-  let playerRight, playerLeft, playerUp, playerDown;
-  [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
+  // let playerRight, playerLeft, playerUp, playerDown;
+  // [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
+  const [playerRight, setPlayerRight] = useState(false);
+  const [playerLeft, setPlayerLeft] = useState(false);
+  const [playerDown, setPlayerDown] = useState(false);
+  const [playerUp, setPlayerUp] = useState(false);
+  const [counter, changeCounter] = useState(0);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      changeCounter(counter + 1);
+    }, 1);
+
+    return () => clearInterval(interval);
+  }, [counter]);
   document.onkeydown = (e) => {
     if (!props.IDEstatus) {
-      if (e.key === "ArrowRight") playerRight = true;
-      if (e.key === "ArrowLeft") playerLeft = true;
-      if (e.key === "ArrowDown") playerDown = true;
-      if (e.key === "ArrowUp") playerUp = true;
+      if (e.key === "ArrowRight") setPlayerRight(true);
+      if (e.key === "ArrowLeft") setPlayerLeft(true);
+      if (e.key === "ArrowDown") setPlayerDown(true);
+      if (e.key === "ArrowUp") setPlayerUp(true);
     }
   };
   document.onkeyup = (e) => {
-    if (e.key === "ArrowRight") playerRight = false;
-    if (e.key === "ArrowLeft") playerLeft = false;
-    if (e.key === "ArrowDown") playerDown = false;
-    if (e.key === "ArrowUp") playerUp = false;
+    if (e.key === "ArrowRight") setPlayerRight(false);
+    if (e.key === "ArrowLeft") setPlayerLeft(false);
+    if (e.key === "ArrowDown") setPlayerDown(false);
+    if (e.key === "ArrowUp") setPlayerUp(false);
     if (!props.IDEstatus && e.key === "Enter") {
       props.toggleIDE();
     }
@@ -64,7 +76,7 @@ function Game(props) {
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     };
-  }, [draw]);
+  }, [counter]);
 
   return (
     <div id="rootdiv">
