@@ -20,8 +20,6 @@ const auth = require("./auth");
 let socketToRoom = {};
 let allGameStates = {};
 let allTowers = {};
-let canvaslength = "1000px";
-let canvasheight = "600px";
 
 app.use(validator.checkRoutes);
 app.use(express.json());
@@ -217,6 +215,26 @@ function connected(socket) {
   };
 
   const handleJoinRoom = async (room_id) => {
+    const room = io.sockets.adapter.rooms[room_id];
+    let allUsers;
+    if (room) {
+      allUsers = room.sockets;
+    }
+
+    let numSockets = 0;
+    if (allUsers) {
+      numSockets = Object.keys(allUsers).length;
+    }
+
+    if (numSockets === 0) {
+      socket.emit("badConnection", "Room Code Doesn't Exist");
+      console.log("doesnt exist");
+      return;
+    } else if (numSockets > 1) {
+      socket.emit("badConnection", "Too many players");
+      return;
+    }
+
     socket.join(room_id);
     socketToRoom[socket.id] = room_id;
 

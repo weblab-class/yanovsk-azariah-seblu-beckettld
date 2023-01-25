@@ -32,6 +32,7 @@ const App = () => {
   const [userId, setUserId] = useState(undefined);
   const [canvasHeight, setCanvasHeight] = useState("500px");
   const [canvasWidth, setCanvasWidth] = useState("800px");
+  const [roomConnection, setRoomConnection] = useState("");
 
   //==========GOOGLE AUTH===========//
   useEffect(() => {
@@ -129,6 +130,10 @@ const App = () => {
     setRoomId(id);
   });
 
+  socket.on("badConnection", (reason) => {
+    setRoomConnection(reason);
+  });
+
   return (
     <div>
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
@@ -169,7 +174,12 @@ const App = () => {
                 </div>
               </>
             ) : (
-              <Lobby createNewRoom={createNewRoom} roomId={roomId} joinRoom={joinRoom} />
+              <Lobby
+                createNewRoom={createNewRoom}
+                roomId={roomId}
+                joinRoom={joinRoom}
+                roomConnection={roomConnection}
+              />
             )}
           </div>
         ) : (

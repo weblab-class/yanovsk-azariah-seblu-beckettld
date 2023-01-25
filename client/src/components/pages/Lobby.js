@@ -5,6 +5,7 @@ function Lobby(props) {
     e.preventDefault();
     props.joinRoom(e.target.room_id.value);
   };
+
   return (
     <div>
       <h1>Welcome to CodeLegend</h1>
@@ -20,10 +21,13 @@ function Lobby(props) {
       {props.roomId !== "" ? (
         ""
       ) : (
-        <form onSubmit={handleSubmit}>
-          <input type="text" id="room_id" name="room_id" placeholder="Room Id" />
-          <button type="submit">Submit</button>
-        </form>
+        <>
+          <form onSubmit={handleSubmit}>
+            <input type="text" id="room_id" name="room_id" placeholder="Room Id" />
+            <button type="submit">Submit</button>
+          </form>
+          <p>{props.roomConnection}</p>
+        </>
       )}
     </div>
   );
