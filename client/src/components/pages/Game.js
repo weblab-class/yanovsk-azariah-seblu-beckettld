@@ -17,7 +17,7 @@ function Game(props) {
   useEffect(() => {
     const interval = setInterval(() => {
       changeCounter(counter + 1);
-    }, 1);
+    }, 10);
 
     return () => clearInterval(interval);
   }, [counter]);
