@@ -162,6 +162,7 @@ function connected(socket) {
       delete allGameStates[room_id][socket.id];
       io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
     }
+    socket.disconnect();
   });
 
   socket.on("updateFromClient", (data) => {
@@ -184,14 +185,14 @@ function connected(socket) {
       allGameStates[room_id] = {};
       allGameStates[room_id][socket_id] = {
         position: { x: 100, y: 100 },
-        tower_status: [0, 0, 0],
+        tower_status: [0, 0, 0, 0, 0],
       };
       socket.emit("assignedRoomId", room_id);
     }
     if (socket_number === 2) {
       allGameStates[room_id][socket_id] = {
         position: { x: 110, y: 110 },
-        tower_status: [0, 0, 0],
+        tower_status: [0, 0, 0, 0, 0],
       };
     }
   };
@@ -219,13 +220,12 @@ function connected(socket) {
     } else if (numPlayers > 1) {
       socket.emit("badConnection", "Too many players");
       return;
+    } else {
+      socket.join(room_id);
+      socketToRoom[socket.id] = room_id;
+      socket.number = 2;
+      initGameState(room_id, socket.id, 2);
     }
-
-    socket.join(room_id);
-    socketToRoom[socket.id] = room_id;
-
-    socket.number = 2;
-    initGameState(room_id, socket.id, 2);
 
     const towerQuestions = await Problem.find({ version: "mvp" });
     allTowers[room_id] = {
