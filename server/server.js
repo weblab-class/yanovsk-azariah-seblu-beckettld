@@ -48,9 +48,7 @@ mongoose
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
 
 app.get("/problem", (req, res) => {
-  console.log("tig");
   const problem = Problem.find({ version: "mvp" }).then((problem) => {
-    console.log(Math.floor(Math.random() * Object.keys(problem).length));
     const random = Math.floor(Math.random() * Object.keys(problem).length);
     res.json({ problemText: problem[random].problemText, questionID: problem[random]._id });
   });
@@ -151,7 +149,6 @@ io.on("connection", connected);
 
 function connected(socket) {
   socket.on("disconnect", () => {
-    console.log(`<---- DISCONNECTED: ${socket.id}, `);
     room_id = socketToRoom[socket.id];
     if (room_id) {
       delete allGameStates[room_id][socket.id];
@@ -168,9 +165,7 @@ function connected(socket) {
   });
 
   socket.on("updateFromClient", (data) => {
-    //first get room of socket
     room_id = socketToRoom[socket.id];
-    console.log("Socket updating in room", room_id);
 
     if (data === "Up") {
       allGameStates[room_id][socket.id].position.y -= 1;
@@ -202,7 +197,6 @@ function connected(socket) {
   };
 
   const handleNewRoom = () => {
-    console.log(`-----> HandleNew: ${socket.id}`);
     let room_id = makeid(5);
     socketToRoom[socket.id] = room_id;
     socket.join(room_id);
@@ -217,7 +211,6 @@ function connected(socket) {
     let numPlayers;
     if (allGameStates[room_id]) {
       numPlayers = Object.keys(allGameStates[room_id]).length;
-      console.log("ROOM EXISTS ", Object.keys(allGameStates[room_id]).length);
     }
 
     if (numPlayers === 0 || numPlayers === undefined) {
@@ -278,7 +271,6 @@ app.get("/whoami", (req, res) => {
     // not logged in
     return res.send({});
   }
-  console.log(req.user);
   res.send(req.user);
 });
 
