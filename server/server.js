@@ -204,9 +204,8 @@ function connected(socket) {
   const handleNewRoom = () => {
     console.log(`-----> HandleNew: ${socket.id}`);
     let room_id = makeid(5);
-    socket.join(room_id);
     socketToRoom[socket.id] = room_id;
-
+    socket.join(room_id);
     socket.number = 1;
     initGameState(room_id, socket.id, 1);
 
@@ -215,22 +214,16 @@ function connected(socket) {
   };
 
   const handleJoinRoom = async (room_id) => {
-    const room = io.sockets.adapter.rooms[room_id];
-    let allUsers;
-    if (room) {
-      allUsers = room.sockets;
+    let numPlayers;
+    if (allGameStates[room_id]) {
+      numPlayers = Object.keys(allGameStates[room_id]).length;
+      console.log("ROOM EXISTS ", Object.keys(allGameStates[room_id]).length);
     }
 
-    let numSockets = 0;
-    if (allUsers) {
-      numSockets = Object.keys(allUsers).length;
-    }
-
-    if (numSockets === 0) {
+    if (numPlayers === 0 || numPlayers === undefined) {
       socket.emit("badConnection", "Room Code Doesn't Exist");
-      console.log("doesnt exist");
       return;
-    } else if (numSockets > 1) {
+    } else if (numPlayers > 1) {
       socket.emit("badConnection", "Too many players");
       return;
     }
@@ -272,7 +265,6 @@ function connected(socket) {
 
     io.to(`${room_id}`).emit("init", 2);
     io.to(`${room_id}`).emit("initTowers", allTowers[room_id]);
-
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
