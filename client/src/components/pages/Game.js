@@ -53,6 +53,7 @@ function Game(props) {
     }
   };
   const drawTowers = (ctx, towerData) => {
+    const color = "blue";
     for (const [key, value] of Object.entries(towerData)) {
       ctx.beginPath();
       ctx.rect(value.position.x, value.position.y, 50, 50);
@@ -73,10 +74,7 @@ function Game(props) {
     let animationFrameId;
     const render = () => {
       drawPlayers(ctx, props.playerData);
-      if (!towersDrawn && props.towerData) {
-        drawTowers(ctx, props.towerData);
-        setTowersDrawn(false);
-      }
+      drawTowers(ctx, props.towerData);
       if (playerUp) {
         props.fromClientToServer("Up");
       } else if (playerDown) {

@@ -213,7 +213,7 @@ function connected(socket) {
     initGameState(room_id, socket.id, 1);
 
     io.to(`${room_id}`).emit("init", 1);
-    //io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
   const handleJoinRoom = async (room_id) => {
@@ -255,7 +255,7 @@ function connected(socket) {
     io.to(`${room_id}`).emit("init", 2);
     io.to(`${room_id}`).emit("initTowers", allTowers[room_id]);
 
-    //io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
   socket.on("newRoom", handleNewRoom);
