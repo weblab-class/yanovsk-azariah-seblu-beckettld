@@ -1,7 +1,6 @@
 import "./App.css";
 import React, { useRef, useEffect, useState } from "react";
 import data from "./data";
-import { towerSpawn } from "./Tower";
 
 function Game(props) {
   const canvasRef = useRef(null);
