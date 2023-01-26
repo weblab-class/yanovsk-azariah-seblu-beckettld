@@ -14,6 +14,7 @@ function Game(props) {
   const [playerUp, setPlayerUp] = useState(false);
   const [counter, changeCounter] = useState(0);
   const [towersDrawn, setTowersDrawn] = useState(false);
+
   useEffect(() => {
     const interval = setInterval(() => {
       changeCounter(counter + 1);
@@ -21,6 +22,7 @@ function Game(props) {
 
     return () => clearInterval(interval);
   }, [counter]);
+
   document.onkeydown = (e) => {
     if (!props.IDEstatus) {
       if (e.key === "ArrowRight") setPlayerRight(true);
@@ -41,15 +43,12 @@ function Game(props) {
 
   const drawPlayers = (ctx, playerData) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    if (playerData) {
-      for (const [key, value] of Object.entries(playerData)) {
-        ctx.fillStyle = "red";
-        ctx.beginPath();
-        ctx.arc(value.position.x, value.position.y, 30, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.stroke();
-      }
+    for (const [key, value] of Object.entries(playerData)) {
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.arc(value.position.x, value.position.y, 30, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
     }
   };
   const drawTowers = (ctx, towerData) => {
@@ -74,7 +73,7 @@ function Game(props) {
     let animationFrameId;
     const render = () => {
       drawPlayers(ctx, props.playerData);
-      drawTowers(ctx, props.towerData);
+      //drawTowers(ctx, props.towerData);
       if (playerUp) {
         props.fromClientToServer("Up");
       } else if (playerDown) {

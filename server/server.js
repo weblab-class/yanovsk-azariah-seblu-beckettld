@@ -177,7 +177,6 @@ function connected(socket) {
     } else if (data === "Left") {
       allGameStates[room_id][socket.id].position.x -= 1;
     }
-    console.log("UPDATE FROM CLIENT FIRES");
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   });
 
