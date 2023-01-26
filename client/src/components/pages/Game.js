@@ -2,6 +2,8 @@ import "./App.css";
 import React, { useRef, useEffect, useState } from "react";
 import data from "./data";
 import { trueFunc } from "boolbase";
+import CodeMirror from "@uiw/react-codemirror";
+import { python } from "@codemirror/lang-python";
 
 function Game(props) {
   const canvasRef = useRef(null);
@@ -120,7 +122,28 @@ function Game(props) {
 
   return (
     <div id="rootdiv">
+      <button
+        onClick={() => {
+          props.handleLogout();
+          navigate("/thankyou");
+        }}
+      >
+        Logout from Game
+      </button>
+      <h1> Your score {props.selfPlayerScore}</h1>
       <canvas id="canvas" width={props.canvasWidth} height={props.canvasHeight} ref={canvasRef} />
+      <div className="inactive" id="overlay">
+        <button onClick={props.closeIDE}>Close</button>
+        <CodeMirror
+          value={props.code}
+          height="600px"
+          theme="dark"
+          options={{ theme: "sublime" }}
+          extensions={[python()]}
+          onChange={props.onChange}
+        />
+        <button onClick={props.submitCode}>Submit</button>
+      </div>
     </div>
   );
 }

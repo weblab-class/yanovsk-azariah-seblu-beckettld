@@ -1,14 +1,17 @@
 //==========LIBRARIES===========//
 import React, { useState, useEffect } from "react";
-import jwt_decode from "jwt-decode";
 import io from "socket.io-client";
 import axios from "axios";
-import CodeMirror from "@uiw/react-codemirror";
-import { python } from "@codemirror/lang-python";
-import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/google";
+
+import jwt_decode from "jwt-decode";
+
+import { Routes, Route, Link, NavLink, useNavigate } from "react-router-dom";
+
 //==========COMPONENTS===========//
+import Login from "./pages/Login.js";
 import Game from "./pages/Game.js";
-import Lobby from "./pages/Lobby";
+import Lobby from "./pages/Lobby.js";
+import ThankYou from "./pages/ThankYou";
 
 //==========LOCAL/HEROKU===========//
 // const url = "https://codeleg.herokuapp.com";
@@ -37,6 +40,7 @@ const App = () => {
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
 
   const [currentTower, setCurrentTower] = useState(0);
+  const navigate = useNavigate();
 
   //==========GOOGLE AUTH===========//
   useEffect(() => {
@@ -51,9 +55,12 @@ const App = () => {
     axios.post(url + "/login", { token: userToken }).then((user) => {
       setUserId(user.data._id);
     });
+    navigate("/lobby");
   };
 
   const handleLogout = () => {
+    navigate("/thankyou");
+    //googleLogout();
     socket.emit("playerLeft");
     setUserId(undefined);
     post(url + "/logout");
@@ -73,8 +80,6 @@ const App = () => {
 
     // setCode(res.data.problemText);
     if (selfTowerStatus[currentTower] !== 1) {
-      console.log(selfTowerStatus);
-      console.log(currentTower);
       const IDE = document.getElementById("overlay");
       IDE.className = "active";
       setCode(towerCode);
@@ -94,10 +99,6 @@ const App = () => {
   };
 
   const submitCode = () => {
-    console.log({ code });
-    console.log(towerData.currentTower);
-    console.log(towerData[currentTower]);
-
     axios
       .post(url + "/submitCode", {
         code: code,
@@ -107,8 +108,6 @@ const App = () => {
         if (res.data.error) {
           console.log(res.data.error);
         } else {
-          console.log(res.data.testCaseResults);
-          console.log(res.data.overallResult);
           if (res.data.overallResult === true) {
             console.log("You got them all right!");
             fromClientToServer(currentTower);
@@ -120,7 +119,7 @@ const App = () => {
 
   //==========SOCKETS===========//
   useEffect(() => {
-    if (playerNumber === 2) setActive(true);
+    if (playerNumber === 2) navigate("/game");
   }, [playerNumber]);
 
   useEffect(() => {
@@ -166,62 +165,43 @@ const App = () => {
   };
 
   return (
-    <div>
-      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        {userId ? (
-          <div>
-            <button
-              onClick={() => {
-                googleLogout();
-                handleLogout();
-              }}
-            >
-              Logout from Game
-            </button>
-            {isActive ? (
-              <>
-                <Game
-                  playerData={playerData}
-                  fromClientToServer={fromClientToServer}
-                  attemptToggleIDE={attemptToggleIDE}
-                  IDEstatus={IDEstatus}
-                  canvasHeight={canvasHeight}
-                  canvasWidth={canvasWidth}
-                  towerData={towerData}
-                  selfPlayerPosition={selfPlayerPosition}
-                  setCurrentTower={setCurrentTower}
-                />
-                <h1>Your score {selfPlayerScore}</h1>
-                <div className="inactive" id="overlay">
-                  <button onClick={closeIDE}>Close</button>
-                  <CodeMirror
-                    value={code}
-                    height="600px"
-                    theme="dark"
-                    options={{ theme: "sublime" }}
-                    extensions={[python()]}
-                    onChange={onChange}
-                  />
-                  <button onClick={submitCode}>Submit</button>
-                </div>
-              </>
-            ) : (
-              <Lobby
-                createNewRoom={createNewRoom}
-                roomId={roomId}
-                joinRoom={joinRoom}
-                roomConnection={roomConnection}
-              />
-            )}
-          </div>
-        ) : (
-          <div>
-            <p>Welcome to CodeLegend MVP. Please log in with your Google Account to play </p>
-            <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
-          </div>
-        )}
-      </GoogleOAuthProvider>
-    </div>
+    <Routes>
+      <Route index element={<Login handleLogin={handleLogin} handleLogout={handleLogout} />} />
+      <Route
+        path="lobby"
+        element={
+          <Lobby
+            createNewRoom={createNewRoom}
+            roomId={roomId}
+            joinRoom={joinRoom}
+            roomConnection={roomConnection}
+          />
+        }
+      />
+      <Route
+        path="game"
+        element={
+          <Game
+            playerData={playerData}
+            fromClientToServer={fromClientToServer}
+            IDEstatus={IDEstatus}
+            canvasHeight={canvasHeight}
+            canvasWidth={canvasWidth}
+            towerData={towerData}
+            code={code}
+            onChange={onChange}
+            attemptToggleIDE={attemptToggleIDE}
+            handleLogout={handleLogout}
+            selfPlayerPosition={selfPlayerPosition}
+            selfPlayerScore={selfPlayerScore}
+            submitCode={submitCode}
+            setCurrentTower={setCurrentTower}
+            closeIDE={closeIDE}
+          />
+        }
+      />
+      <Route path="thankyou" element={<ThankYou />} />
+    </Routes>
   );
 };
 
