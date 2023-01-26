@@ -103,10 +103,6 @@ const App = () => {
   }, [playerNumber]);
 
   useEffect(() => {
-    socket.on("updateFromServer", (data) => {
-      setPlayerData(data);
-    });
-
     socket.on("initTowers", (data) => {
       setTowerData(data);
     });
@@ -121,6 +117,10 @@ const App = () => {
 
     socket.on("badConnection", (reason) => {
       setRoomConnection(reason);
+    });
+
+    socket.on("updateFromServer", (data) => {
+      setPlayerData(data);
     });
   }, []);
 

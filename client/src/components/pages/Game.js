@@ -68,29 +68,32 @@ function Game(props) {
   };
 
   useEffect(() => {
+    if (playerUp) {
+      props.fromClientToServer("Up");
+    } else if (playerDown) {
+      props.fromClientToServer("Down");
+    } else if (playerLeft) {
+      props.fromClientToServer("Left");
+    } else if (playerRight) {
+      props.fromClientToServer("Right");
+    }
+  }, [counter]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    let animationFrameId;
-    const render = () => {
-      drawPlayers(ctx, props.playerData);
-      //drawTowers(ctx, props.towerData);
-      if (playerUp) {
-        props.fromClientToServer("Up");
-      } else if (playerDown) {
-        props.fromClientToServer("Down");
-      } else if (playerLeft) {
-        props.fromClientToServer("Left");
-      } else if (playerRight) {
-        props.fromClientToServer("Right");
-      }
-      animationFrameId = window.requestAnimationFrame(render);
-    };
-    render();
+    // let animationFrameId;
+    // const render = () => {
+    // };
+    drawPlayers(ctx, props.playerData);
+    //drawTowers(ctx, props.towerData);
 
-    return () => {
-      window.cancelAnimationFrame(animationFrameId);
-    };
-  }, [counter]);
+    // window.requestAnimationFrame(render);
+
+    // return () => {
+    //   window.cancelAnimationFrame(animationFrameId);
+    // };
+  }, [props.playerData]);
 
   return (
     <div id="rootdiv">
