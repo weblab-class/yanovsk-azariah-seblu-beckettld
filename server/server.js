@@ -168,13 +168,13 @@ function connected(socket) {
   socket.on("updateFromClient", (data) => {
     room_id = socketToRoom[socket.id];
     if (data === "Up") {
-      allGameStates[room_id][socket.id].position.y -= 1;
+      allGameStates[room_id][socket.id].position.y -= 5;
     } else if (data === "Down") {
-      allGameStates[room_id][socket.id].position.y += 1;
+      allGameStates[room_id][socket.id].position.y += 5;
     } else if (data === "Right") {
-      allGameStates[room_id][socket.id].position.x += 1;
+      allGameStates[room_id][socket.id].position.x += 5;
     } else if (data === "Left") {
-      allGameStates[room_id][socket.id].position.x -= 1;
+      allGameStates[room_id][socket.id].position.x -= 5;
     } else {
       if (data in ["1", "2", "3", "4", "5"]) {
         const numData = parseInt(data);
