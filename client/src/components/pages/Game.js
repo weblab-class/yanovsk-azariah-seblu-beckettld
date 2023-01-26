@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useRef, useEffect, useState } from "react";
 import data from "./data";
-import { towerSpawn } from "./Tower";
+import { trueFunc } from "boolbase";
 
 function Game(props) {
   const canvasRef = useRef(null);
@@ -37,7 +37,10 @@ function Game(props) {
     if (e.key === "ArrowDown") setPlayerDown(false);
     if (e.key === "ArrowUp") setPlayerUp(false);
     if (!props.IDEstatus && e.key === "Enter") {
-      props.toggleIDE();
+      const whichTower = inTowers(props.selfPlayerPosition);
+      if (whichTower !== -1) {
+        props.setCurrentTower(whichTower);
+      }
     }
   };
 
@@ -50,6 +53,27 @@ function Game(props) {
       ctx.fill();
       ctx.stroke();
     }
+  };
+  function getDistance(x1, y1, x2, y2) {
+    let y = x2 - x1;
+    let x = y2 - y1;
+
+    return Math.sqrt(x * x + y * y);
+  }
+  const near = (player, tower) => {
+    if (getDistance(player.x, player.y, tower.x, tower.y) < 50) {
+      return true;
+    }
+  };
+  const inTowers = (position) => {
+    for (const [key, value] of Object.entries(props.towerData)) {
+      if (near(position, value.position)) {
+        console.log(value);
+        props.attemptToggleIDE(value.questionCode);
+        return key;
+      }
+    }
+    return -1;
   };
   const drawTowers = (ctx, towerData) => {
     const color = "blue";

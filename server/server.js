@@ -232,28 +232,23 @@ function connected(socket) {
     allTowers[room_id] = {
       0: {
         questionID: towerQuestions[0]._id,
-        questionCode: towerQuestions[0].code,
+        questionCode: towerQuestions[0].problemText,
         position: { x: 320, y: 300 },
       },
       1: {
         questionID: towerQuestions[1]._id,
-        questionCode: towerQuestions[1].code,
-        position: { x: 311, y: 574 },
+        questionCode: towerQuestions[1].problemText,
+        position: { x: 500, y: 100 },
       },
       2: {
         questionID: towerQuestions[2]._id,
-        questionCode: towerQuestions[2].code,
+        questionCode: towerQuestions[2].problemText,
         position: { x: 282, y: 119 },
       },
       3: {
         questionID: towerQuestions[3]._id,
-        questionCode: towerQuestions[3].code,
-        position: { x: 581, y: 202 },
-      },
-      4: {
-        questionID: towerQuestions[4]._id,
-        questionCode: towerQuestions[4].code,
-        position: { x: 221, y: 172 },
+        questionCode: towerQuestions[3].problemText,
+        position: { x: 581, y: 300 },
       },
     };
 

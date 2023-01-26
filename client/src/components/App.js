@@ -11,11 +11,11 @@ import Game from "./pages/Game.js";
 import Lobby from "./pages/Lobby";
 
 //==========LOCAL/HEROKU===========//
-const url = "https://codeleg.herokuapp.com";
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+// const url = "https://codeleg.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
-// const url = "http://localhost:3000";
-// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+const url = "http://localhost:3000";
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 
 const socket = io();
 
@@ -27,12 +27,13 @@ const App = () => {
   const [isActive, setActive] = useState(false);
   const [code, setCode] = useState("");
   const [questionID, setQuestionID] = useState(0);
-  const [tower, setTower] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
   const [userId, setUserId] = useState(undefined);
   const [canvasHeight, setCanvasHeight] = useState("500px");
   const [canvasWidth, setCanvasWidth] = useState("800px");
   const [roomConnection, setRoomConnection] = useState("");
+  const [selfPlayerPosition, setSelfPlayerPosition] = useState("");
+  const [currentTower, setCurrentTower] = useState(-1);
 
   //==========GOOGLE AUTH===========//
   useEffect(() => {
@@ -57,19 +58,28 @@ const App = () => {
 
   //==========CODE SUBMISSION===========//
 
-  const toggleIDE = () => {
-    axios
-      .get(url + "/problem", {
-        params: {},
-      })
-      .then((res) => {
-        setCode(res.data.problemText);
-        setQuestionID(res.data.questionID);
-      });
-    setIDEStatus(!IDEstatus);
+  const attemptToggleIDE = (towerCode) => {
+    // axios
+    //   .get(url + "/problem", {
+    //     params: {},
+    //   })
+    //   .then((res) => {
+    //     setCode(res.data.problemText);
+    //     setQuestionID(res.data.questionID);
+    //   });
+
+    // setCode(res.data.problemText);
     const IDE = document.getElementById("overlay");
-    if (IDE.className == "inactive") IDE.className = "active";
-    else IDE.className = "inactive";
+    IDE.className = "active";
+    setCode(towerCode);
+    setIDEStatus(true);
+  };
+
+  const closeIDE = () => {
+    towerData[currentTower].questionCode = code;
+    const IDE = document.getElementById("overlay");
+    IDE.className = "inactive";
+    setIDEStatus(false);
   };
 
   const onChange = (value, viewUpdate) => {
@@ -78,10 +88,13 @@ const App = () => {
 
   const submitCode = () => {
     console.log({ code });
+    console.log(towerData.currentTower);
+    console.log(towerData[currentTower]);
+
     axios
       .post(url + "/submitCode", {
         code: code,
-        questionID: questionID,
+        questionID: towerData[currentTower].questionID,
       })
       .then((res) => {
         if (res.data.error) {
@@ -91,7 +104,7 @@ const App = () => {
           console.log(res.data.overallResult);
           if (res.data.overallResult === true) {
             console.log("You got them all right!");
-            setTower(1);
+            closeIDE();
           } else console.log("Too bad!");
         }
       });
@@ -120,6 +133,12 @@ const App = () => {
     });
 
     socket.on("updateFromServer", (data) => {
+      for (const [key, value] of Object.entries(data)) {
+        if (key === socket.id) {
+          setSelfPlayerPosition(value.position);
+        }
+      }
+
       setPlayerData(data);
     });
   }, []);
@@ -154,16 +173,17 @@ const App = () => {
                 <Game
                   playerData={playerData}
                   fromClientToServer={fromClientToServer}
-                  toggleIDE={toggleIDE}
-                  tower={tower}
+                  attemptToggleIDE={attemptToggleIDE}
                   IDEstatus={IDEstatus}
                   canvasHeight={canvasHeight}
                   canvasWidth={canvasWidth}
                   towerData={towerData}
+                  selfPlayerPosition={selfPlayerPosition}
+                  setCurrentTower={setCurrentTower}
                 />
                 <h1>Game Started</h1>
                 <div className="inactive" id="overlay">
-                  <button onClick={toggleIDE}>Close</button>
+                  <button onClick={closeIDE}>Close</button>
                   <CodeMirror
                     value={code}
                     height="600px"
