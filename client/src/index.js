@@ -1,9 +1,17 @@
+import App from "./components/App.js";
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./components/App.js";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ErrorPage from "./components/pages/errorpage.jsx";
 
-// renders React Component "Root" into the DOM element with ID "root"
-ReactDOM.render(<App />, document.getElementById("root"));
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <ErrorPage />,
+  },
+]);
 
-// allows for live updating
+ReactDOM.render(<RouterProvider router={router} />, document.getElementById("root"));
+
 module.hot.accept();
