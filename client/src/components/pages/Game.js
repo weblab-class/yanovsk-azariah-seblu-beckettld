@@ -8,41 +8,38 @@ import { python } from "@codemirror/lang-python";
 function Game(props) {
   const canvasRef = useRef(null);
   let { towerObj } = data;
-  // let playerRight, playerLeft, playerUp, playerDown;
-  // [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
-  const [playerRight, setPlayerRight] = useState(false);
-  const [playerLeft, setPlayerLeft] = useState(false);
-  const [playerDown, setPlayerDown] = useState(false);
-  const [playerUp, setPlayerUp] = useState(false);
-  const [counter, changeCounter] = useState(0);
-  const [towersDrawn, setTowersDrawn] = useState(false);
+  let playerRight, playerLeft, playerUp, playerDown;
+  [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
+  // const [playerRight, setPlayerRight] = useState(false);
+  // const [playerLeft, setPlayerLeft] = useState(false);
+  // const [playerDown, setPlayerDown] = useState(false);
+  // const [playerUp, setPlayerUp] = useState(false);
+  // const [counter, changeCounter] = useState(0);
+  // const [towersDrawn, setTowersDrawn] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      changeCounter(counter + 1);
-    }, 10);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     changeCounter(counter + 1);
+  //   }, 10);
 
-    return () => clearInterval(interval);
-  }, [counter]);
+  //   return () => clearInterval(interval);
+  // }, [counter]);
 
   document.onkeydown = (e) => {
     if (!props.IDEstatus) {
-      if (e.key === "ArrowRight") setPlayerRight(true);
-      if (e.key === "ArrowLeft") setPlayerLeft(true);
-      if (e.key === "ArrowDown") setPlayerDown(true);
-      if (e.key === "ArrowUp") setPlayerUp(true);
+      if (e.key === "ArrowRight") playerRight = true;
+      if (e.key === "ArrowLeft") playerLeft = true;
+      if (e.key === "ArrowDown") playerDown = true;
+      if (e.key === "ArrowUp") playerUp = true;
     }
   };
   document.onkeyup = (e) => {
-    if (e.key === "ArrowRight") setPlayerRight(false);
-    if (e.key === "ArrowLeft") setPlayerLeft(false);
-    if (e.key === "ArrowDown") setPlayerDown(false);
-    if (e.key === "ArrowUp") setPlayerUp(false);
+    if (e.key === "ArrowRight") playerRight = false;
+    if (e.key === "ArrowLeft") playerLeft = false;
+    if (e.key === "ArrowDown") playerDown = false;
+    if (e.key === "ArrowUp") playerUp = false;
     if (!props.IDEstatus && e.key === "Enter") {
-      const whichTower = inTowers(props.selfPlayerPosition);
-      if (whichTower !== -1) {
-        props.setCurrentTower(whichTower);
-      }
+      props.toggleIDE();
     }
   };
 
@@ -93,32 +90,45 @@ function Game(props) {
   };
 
   useEffect(() => {
-    if (playerUp) {
-      props.fromClientToServer("Up");
-    } else if (playerDown) {
-      props.fromClientToServer("Down");
-    } else if (playerLeft) {
-      props.fromClientToServer("Left");
-    } else if (playerRight) {
-      props.fromClientToServer("Right");
-    }
-  }, [counter]);
-
-  useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    // let animationFrameId;
-    // const render = () => {
-    // };
-    drawPlayers(ctx, props.playerData);
-    drawTowers(ctx, props.towerData);
+    let animationFrameId;
+    const render = () => {
+      drawPlayers(ctx, props.playerData);
 
-    // window.requestAnimationFrame(render);
+      if (playerUp) {
+        props.fromClientToServer("Up");
+      } else if (playerDown) {
+        props.fromClientToServer("Down");
+      } else if (playerLeft) {
+        props.fromClientToServer("Left");
+      } else if (playerRight) {
+        props.fromClientToServer("Right");
+      }
+      animationFrameId = window.requestAnimationFrame(render);
+    };
+    render();
 
-    // return () => {
-    //   window.cancelAnimationFrame(animationFrameId);
-    // };
-  }, [props.playerData]);
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [drawPlayers]);
+
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext("2d");
+  //   // let animationFrameId;
+  //   // const render = () => {
+  //   // };
+  //   drawPlayers(ctx, props.playerData);
+  //   drawTowers(ctx, props.towerData);
+
+  //   // window.requestAnimationFrame(render);
+
+  //   // return () => {
+  //   //   window.cancelAnimationFrame(animationFrameId);
+  //   // };
+  // }, []);
 
   return (
     <div id="rootdiv">
