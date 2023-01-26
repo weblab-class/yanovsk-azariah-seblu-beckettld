@@ -85,7 +85,6 @@ function Game(props) {
     // let animationFrameId;
     // const render = () => {
     // };
-    console.log("RENDER IS CALLED");
     drawPlayers(ctx, props.playerData);
     //drawTowers(ctx, props.towerData);
 
