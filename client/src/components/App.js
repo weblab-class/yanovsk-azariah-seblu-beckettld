@@ -11,11 +11,11 @@ import Game from "./pages/Game.js";
 import Lobby from "./pages/Lobby";
 
 //==========LOCAL/HEROKU===========//
-const url = "https://codeleg.herokuapp.com";
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+// const url = "https://codeleg.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
-// const url = "http://localhost:3000";
-// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+const url = "http://localhost:3000";
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 
 const socket = io();
 
@@ -102,6 +102,29 @@ const App = () => {
     if (playerNumber === 2) setActive(true);
   }, [playerNumber]);
 
+  useEffect(() => {
+    socket.on("updateFromServer", (data) => {
+      console.log("update from server fires");
+      setPlayerData(data);
+    });
+
+    socket.on("initTowers", (data) => {
+      setTowerData(data);
+    });
+
+    socket.on("init", (number) => {
+      setPlayerNumber(number);
+    });
+
+    socket.on("assignedRoomId", (id) => {
+      setRoomId(id);
+    });
+
+    socket.on("badConnection", (reason) => {
+      setRoomConnection(reason);
+    });
+  }, []);
+
   const fromClientToServer = (childdata) => {
     socket.emit("updateFromClient", childdata);
   };
@@ -113,26 +136,6 @@ const App = () => {
   const joinRoom = (room_id) => {
     socket.emit("joinRoom", room_id);
   };
-
-  socket.on("updateFromServer", (data) => {
-    setPlayerData(data);
-  });
-
-  socket.on("initTowers", (data) => {
-    setTowerData(data);
-  });
-
-  socket.on("init", (number) => {
-    setPlayerNumber(number);
-  });
-
-  socket.on("assignedRoomId", (id) => {
-    setRoomId(id);
-  });
-
-  socket.on("badConnection", (reason) => {
-    setRoomConnection(reason);
-  });
 
   return (
     <div>
