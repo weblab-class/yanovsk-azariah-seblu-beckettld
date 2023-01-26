@@ -228,34 +228,34 @@ function connected(socket) {
       initGameState(room_id, socket.id, 2);
     }
 
-    const towerQuestions = await Problem.find({ version: "mvp" });
-    allTowers[room_id] = {
-      0: {
-        questionID: towerQuestions[0]._id,
-        questionCode: towerQuestions[0].code,
-        position: { x: 320, y: 300 },
-      },
-      1: {
-        questionID: towerQuestions[1]._id,
-        questionCode: towerQuestions[1].code,
-        position: { x: 311, y: 574 },
-      },
-      2: {
-        questionID: towerQuestions[2]._id,
-        questionCode: towerQuestions[2].code,
-        position: { x: 282, y: 119 },
-      },
-      3: {
-        questionID: towerQuestions[3]._id,
-        questionCode: towerQuestions[3].code,
-        position: { x: 581, y: 202 },
-      },
-      4: {
-        questionID: towerQuestions[4]._id,
-        questionCode: towerQuestions[4].code,
-        position: { x: 221, y: 172 },
-      },
-    };
+    // const towerQuestions = await Problem.find({ version: "mvp" });
+    // allTowers[room_id] = {
+    //   0: {
+    //     questionID: towerQuestions[0]._id,
+    //     questionCode: towerQuestions[0].code,
+    //     position: { x: 320, y: 300 },
+    //   },
+    //   1: {
+    //     questionID: towerQuestions[1]._id,
+    //     questionCode: towerQuestions[1].code,
+    //     position: { x: 311, y: 574 },
+    //   },
+    //   2: {
+    //     questionID: towerQuestions[2]._id,
+    //     questionCode: towerQuestions[2].code,
+    //     position: { x: 282, y: 119 },
+    //   },
+    //   3: {
+    //     questionID: towerQuestions[3]._id,
+    //     questionCode: towerQuestions[3].code,
+    //     position: { x: 581, y: 202 },
+    //   },
+    //   4: {
+    //     questionID: towerQuestions[4]._id,
+    //     questionCode: towerQuestions[4].code,
+    //     position: { x: 221, y: 172 },
+    //   },
+    // };
 
     io.to(`${room_id}`).emit("init", 2);
     io.to(`${room_id}`).emit("initTowers", allTowers[room_id]);

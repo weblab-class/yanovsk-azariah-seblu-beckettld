@@ -1,14 +1,17 @@
 //==========LIBRARIES===========//
 import React, { useState, useEffect } from "react";
-import jwt_decode from "jwt-decode";
 import io from "socket.io-client";
 import axios from "axios";
-import CodeMirror from "@uiw/react-codemirror";
-import { python } from "@codemirror/lang-python";
-import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/google";
+
+import jwt_decode from "jwt-decode";
+
+import { Routes, Route, Link, NavLink, useNavigate } from "react-router-dom";
+
 //==========COMPONENTS===========//
+import Login from "./pages/Login.js";
 import Game from "./pages/Game.js";
-import Lobby from "./pages/Lobby";
+import Lobby from "./pages/Lobby.js";
+import ThankYou from "./pages/ThankYou";
 
 //==========LOCAL/HEROKU===========//
 const url = "https://codeleg.herokuapp.com";
@@ -33,6 +36,7 @@ const App = () => {
   const [canvasHeight, setCanvasHeight] = useState("500px");
   const [canvasWidth, setCanvasWidth] = useState("800px");
   const [roomConnection, setRoomConnection] = useState("");
+  const navigate = useNavigate();
 
   //==========GOOGLE AUTH===========//
   useEffect(() => {
@@ -47,16 +51,18 @@ const App = () => {
     axios.post(url + "/login", { token: userToken }).then((user) => {
       setUserId(user.data._id);
     });
+    navigate("/lobby");
   };
 
   const handleLogout = () => {
+    navigate("/thankyou");
+    //googleLogout();
     socket.emit("playerLeft");
     setUserId(undefined);
     post(url + "/logout");
   };
 
   //==========CODE SUBMISSION===========//
-
   const toggleIDE = () => {
     axios
       .get(url + "/problem", {
@@ -99,7 +105,7 @@ const App = () => {
 
   //==========SOCKETS===========//
   useEffect(() => {
-    if (playerNumber === 2) setActive(true);
+    if (playerNumber === 2) navigate("/game");
   }, [playerNumber]);
 
   useEffect(() => {
@@ -137,61 +143,39 @@ const App = () => {
   };
 
   return (
-    <div>
-      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        {userId ? (
-          <div>
-            <button
-              onClick={() => {
-                googleLogout();
-                handleLogout();
-              }}
-            >
-              Logout from Game
-            </button>
-            {isActive ? (
-              <>
-                <Game
-                  playerData={playerData}
-                  fromClientToServer={fromClientToServer}
-                  toggleIDE={toggleIDE}
-                  tower={tower}
-                  IDEstatus={IDEstatus}
-                  canvasHeight={canvasHeight}
-                  canvasWidth={canvasWidth}
-                  towerData={towerData}
-                />
-                <h1>Game Started</h1>
-                <div className="inactive" id="overlay">
-                  <button onClick={toggleIDE}>Close</button>
-                  <CodeMirror
-                    value={code}
-                    height="600px"
-                    theme="dark"
-                    options={{ theme: "sublime" }}
-                    extensions={[python()]}
-                    onChange={onChange}
-                  />
-                  <button onClick={submitCode}>Submit</button>
-                </div>
-              </>
-            ) : (
-              <Lobby
-                createNewRoom={createNewRoom}
-                roomId={roomId}
-                joinRoom={joinRoom}
-                roomConnection={roomConnection}
-              />
-            )}
-          </div>
-        ) : (
-          <div>
-            <p>Welcome to CodeLegend MVP. Please log in with your Google Account to play </p>
-            <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
-          </div>
-        )}
-      </GoogleOAuthProvider>
-    </div>
+    <Routes>
+      <Route index element={<Login handleLogin={handleLogin} handleLogout={handleLogout} />} />
+      <Route
+        path="lobby"
+        element={
+          <Lobby
+            createNewRoom={createNewRoom}
+            roomId={roomId}
+            joinRoom={joinRoom}
+            roomConnection={roomConnection}
+          />
+        }
+      />
+      <Route
+        path="game"
+        element={
+          <Game
+            playerData={playerData}
+            fromClientToServer={fromClientToServer}
+            tower={tower}
+            IDEstatus={IDEstatus}
+            canvasHeight={canvasHeight}
+            canvasWidth={canvasWidth}
+            towerData={towerData}
+            code={code}
+            onChange={onChange}
+            toggleIDE={toggleIDE}
+            handleLogout={handleLogout}
+          />
+        }
+      />
+      <Route path="thankyou" element={<ThankYou />} />
+    </Routes>
   );
 };
 

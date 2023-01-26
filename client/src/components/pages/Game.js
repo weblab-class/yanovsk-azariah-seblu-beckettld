@@ -1,6 +1,8 @@
 import "./App.css";
 import React, { useRef, useEffect, useState } from "react";
 import data from "./data";
+import CodeMirror from "@uiw/react-codemirror";
+import { python } from "@codemirror/lang-python";
 import { towerSpawn } from "./Tower";
 
 function Game(props) {
@@ -97,7 +99,26 @@ function Game(props) {
 
   return (
     <div id="rootdiv">
+      <button
+        onClick={() => {
+          props.handleLogout();
+          navigate("/thankyou");
+        }}
+      >
+        Logout from Game
+      </button>
       <canvas id="canvas" width={props.canvasWidth} height={props.canvasHeight} ref={canvasRef} />
+      <div className="inactive" id="overlay">
+        <button onClick={props.toggleIDE}>Close</button>
+        <CodeMirror
+          value={props.code}
+          height="600px"
+          theme="dark"
+          options={{ theme: "sublime" }}
+          extensions={[python()]}
+          onChange={props.onChange}
+        />
+      </div>
     </div>
   );
 }
