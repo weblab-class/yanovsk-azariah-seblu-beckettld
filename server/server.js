@@ -237,7 +237,7 @@ function connected(socket) {
       1: {
         questionID: towerQuestions[1]._id,
         questionCode: towerQuestions[1].problemText,
-        position: { x: 311, y: 574 },
+        position: { x: 500, y: 100 },
       },
       2: {
         questionID: towerQuestions[2]._id,
@@ -247,12 +247,7 @@ function connected(socket) {
       3: {
         questionID: towerQuestions[3]._id,
         questionCode: towerQuestions[3].problemText,
-        position: { x: 581, y: 202 },
-      },
-      4: {
-        questionID: towerQuestions[4]._id,
-        questionCode: towerQuestions[4].problemText,
-        position: { x: 221, y: 172 },
+        position: { x: 581, y: 300 },
       },
     };
 

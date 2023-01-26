@@ -76,6 +76,7 @@ const App = () => {
   };
 
   const closeIDE = () => {
+    towerData[currentTower].questionCode = code;
     const IDE = document.getElementById("overlay");
     IDE.className = "inactive";
     setIDEStatus(false);
@@ -87,10 +88,13 @@ const App = () => {
 
   const submitCode = () => {
     console.log({ code });
+    console.log(towerData.currentTower);
+    console.log(towerData[currentTower]);
+
     axios
       .post(url + "/submitCode", {
         code: code,
-        questionID: questionID,
+        questionID: towerData[currentTower].questionID,
       })
       .then((res) => {
         if (res.data.error) {
@@ -99,8 +103,8 @@ const App = () => {
           console.log(res.data.testCaseResults);
           console.log(res.data.overallResult);
           if (res.data.overallResult === true) {
-            //change tower color
             console.log("You got them all right!");
+            closeIDE();
           } else console.log("Too bad!");
         }
       });
