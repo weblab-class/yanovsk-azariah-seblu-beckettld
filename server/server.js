@@ -167,7 +167,6 @@ function connected(socket) {
 
   socket.on("updateFromClient", (data) => {
     room_id = socketToRoom[socket.id];
-
     if (data === "Up") {
       allGameStates[room_id][socket.id].position.y -= 1;
     } else if (data === "Down") {
@@ -176,6 +175,14 @@ function connected(socket) {
       allGameStates[room_id][socket.id].position.x += 1;
     } else if (data === "Left") {
       allGameStates[room_id][socket.id].position.x -= 1;
+    } else {
+      if (data in ["1", "2", "3", "4", "5"]) {
+        const numData = parseInt(data);
+        if (allGameStates[room_id][socket.id].tower_status[numData] == 0) {
+          allGameStates[room_id][socket.id].tower_status[numData] = 1;
+          allGameStates[room_id][socket.id].score += 1;
+        }
+      }
     }
 
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
@@ -187,6 +194,7 @@ function connected(socket) {
       allGameStates[room_id][socket_id] = {
         position: { x: 100, y: 100 },
         tower_status: [0, 0, 0, 0, 0],
+        score: 0,
       };
       socket.emit("assignedRoomId", room_id);
     }
@@ -194,6 +202,7 @@ function connected(socket) {
       allGameStates[room_id][socket_id] = {
         position: { x: 110, y: 110 },
         tower_status: [0, 0, 0, 0, 0],
+        score: 0,
       };
     }
   };

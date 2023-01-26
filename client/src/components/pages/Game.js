@@ -61,14 +61,13 @@ function Game(props) {
     return Math.sqrt(x * x + y * y);
   }
   const near = (player, tower) => {
-    if (getDistance(player.x, player.y, tower.x, tower.y) < 50) {
+    if (getDistance(player.x, player.y, tower.x + 25, tower.y + 25) < 55) {
       return true;
     }
   };
   const inTowers = (position) => {
     for (const [key, value] of Object.entries(props.towerData)) {
       if (near(position, value.position)) {
-        console.log(value);
         props.attemptToggleIDE(value.questionCode);
         return key;
       }
@@ -110,7 +109,7 @@ function Game(props) {
     // const render = () => {
     // };
     drawPlayers(ctx, props.playerData);
-    //drawTowers(ctx, props.towerData);
+    drawTowers(ctx, props.towerData);
 
     // window.requestAnimationFrame(render);
 

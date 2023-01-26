@@ -33,7 +33,10 @@ const App = () => {
   const [canvasWidth, setCanvasWidth] = useState("800px");
   const [roomConnection, setRoomConnection] = useState("");
   const [selfPlayerPosition, setSelfPlayerPosition] = useState("");
-  const [currentTower, setCurrentTower] = useState(-1);
+  const [selfPlayerScore, setSelfPlayerScore] = useState(0);
+  const [selfTowerStatus, setSelfTowerStatus] = useState([]);
+
+  const [currentTower, setCurrentTower] = useState(0);
 
   //==========GOOGLE AUTH===========//
   useEffect(() => {
@@ -69,10 +72,14 @@ const App = () => {
     //   });
 
     // setCode(res.data.problemText);
-    const IDE = document.getElementById("overlay");
-    IDE.className = "active";
-    setCode(towerCode);
-    setIDEStatus(true);
+    if (selfTowerStatus[currentTower] !== 1) {
+      console.log(selfTowerStatus);
+      console.log(currentTower);
+      const IDE = document.getElementById("overlay");
+      IDE.className = "active";
+      setCode(towerCode);
+      setIDEStatus(true);
+    }
   };
 
   const closeIDE = () => {
@@ -104,6 +111,7 @@ const App = () => {
           console.log(res.data.overallResult);
           if (res.data.overallResult === true) {
             console.log("You got them all right!");
+            fromClientToServer(currentTower);
             closeIDE();
           } else console.log("Too bad!");
         }
@@ -136,6 +144,8 @@ const App = () => {
       for (const [key, value] of Object.entries(data)) {
         if (key === socket.id) {
           setSelfPlayerPosition(value.position);
+          setSelfPlayerScore(value.score);
+          setSelfTowerStatus(value.tower_status);
         }
       }
 
@@ -181,7 +191,7 @@ const App = () => {
                   selfPlayerPosition={selfPlayerPosition}
                   setCurrentTower={setCurrentTower}
                 />
-                <h1>Game Started</h1>
+                <h1>Your score {selfPlayerScore}</h1>
                 <div className="inactive" id="overlay">
                   <button onClick={closeIDE}>Close</button>
                   <CodeMirror
