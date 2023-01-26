@@ -104,7 +104,6 @@ const App = () => {
 
   useEffect(() => {
     socket.on("updateFromServer", (data) => {
-      console.log("update from server fires");
       setPlayerData(data);
     });
 
