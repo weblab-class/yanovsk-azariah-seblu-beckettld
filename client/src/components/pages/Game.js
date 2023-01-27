@@ -92,8 +92,8 @@ function Game(props) {
       });
   };
 
-  const attemptToggleIDE = (towerCode) => {
-    if (selfTowerStatus[currentTower] !== 1) {
+  const attemptToggleIDE = (towerCode, key) => {
+    if (selfTowerStatus[key] !== 1) {
       setCode(towerCode);
       setIDEStatus(true);
     }
@@ -125,6 +125,7 @@ function Game(props) {
   }, []);
 
   document.onkeydown = (e) => {
+    console.log("tiger");
     if (!IDEstatus) {
       if (e.key === "ArrowRight") playerRight = true;
       if (e.key === "ArrowLeft") playerLeft = true;
@@ -137,8 +138,10 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
-
+    console.log("before");
     if (!IDEstatus && e.key === "Enter") {
+      console.log("after");
+
       const whichTower = inTowers(selfPlayerPosition);
       if (whichTower !== -1) {
         setCurrentTower(whichTower);
@@ -169,7 +172,7 @@ function Game(props) {
     for (const [key, value] of Object.entries(towerData)) {
       if (near(position, value.position)) {
         console.log(position, value.position);
-        attemptToggleIDE(value.questionCode);
+        attemptToggleIDE(value.questionCode, key);
         return key;
       }
     }
@@ -192,6 +195,13 @@ function Game(props) {
     }
   };
 
+  const fromClientToServer = (childdata) => {
+    // socket.emit("updateFromClient", childdata);
+    if (result === "") {
+      socket.emit("updateFromClient", childdata);
+    }
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -200,13 +210,13 @@ function Game(props) {
       drawPlayers(ctx, playerData);
       drawTowers(ctx, towerData);
       if (playerUp) {
-        socket.emit("updateFromClient", "Up");
+        fromClientToServer("Up");
       } else if (playerDown) {
-        socket.emit("updateFromClient", "Down");
+        fromClientToServer("Down");
       } else if (playerLeft) {
-        socket.emit("updateFromClient", "Left");
+        fromClientToServer("Left");
       } else if (playerRight) {
-        socket.emit("updateFromClient", "Right");
+        fromClientToServer("Right");
       }
       animationFrameId = window.requestAnimationFrame(render);
     };
