@@ -42,6 +42,7 @@ function Game(props) {
   const closeIDE = () => {
     towerData[currentTower].questionCode = code;
     setIDEStatus(false);
+    setIDEFeedback([]);
   };
 
   const onChange = (value, viewUpdate) => {
@@ -56,7 +57,7 @@ function Game(props) {
       })
       .then((res) => {
         if (res.data.error) {
-          console.log(res.data.error);
+          setIDEFeedback([res.data.error]);
         } else {
           const finalArr = [];
           for (const obj of res.data.testCaseResultsWithMessages) {
@@ -81,9 +82,8 @@ function Game(props) {
 
           if (res.data.overallResult === true) {
             console.log("You got them all right!");
-            //fromClientToServer(currentTower);
+            // fromClientToServer(currentTower);
             socket.emit("updateFromClient", currentTower);
-            closeIDE();
           } else console.log("Too bad!");
         }
       });
@@ -232,11 +232,7 @@ function Game(props) {
         <h1>
           You {selfPlayerScore} - {opponentPlayerScore} Opponent
         </h1>
-        <h1>
-          {IDEFeedback.map((message) => (
-            <li>{message}</li>
-          ))}
-        </h1>
+
         <h1> {result}</h1>
       </>
 
@@ -252,6 +248,11 @@ function Game(props) {
             onChange={onChange}
           />
           <button onClick={submitCode}>Submit</button>
+          <h1>
+            {IDEFeedback.map((message) => (
+              <li>{message}</li>
+            ))}
+          </h1>
         </>
       ) : (
         ""
