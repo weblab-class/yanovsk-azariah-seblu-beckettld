@@ -8,6 +8,7 @@ import Login from "./pages/Login.js";
 import Game from "./pages/Game.js";
 import Lobby from "./pages/Lobby.js";
 import ThankYou from "./pages/ThankYou";
+import ChooseMap from "./pages/ChooseMap";
 import { SocketContext, socket } from "./context/socket.js";
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="lobby" element={<Lobby />} />
         <Route path="game" element={<Game />} />
         <Route path="thankyou" element={<ThankYou />} />
+        <Route path="choosemap" element={<ChooseMap />} />
       </Routes>
     </SocketContext.Provider>
   );

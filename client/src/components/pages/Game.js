@@ -41,7 +41,6 @@ function Game(props) {
 
   const closeIDE = () => {
     towerData[currentTower].questionCode = code;
-    const IDE = document.getElementById("overlay");
     setIDEStatus(false);
   };
 
@@ -92,7 +91,6 @@ function Game(props) {
 
   const attemptToggleIDE = (towerCode) => {
     if (selfTowerStatus[currentTower] !== 1) {
-      const IDE = document.getElementById("overlay");
       setCode(towerCode);
       setIDEStatus(true);
     }
@@ -136,6 +134,7 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
+
     if (!IDEstatus && e.key === "Enter") {
       const whichTower = inTowers(selfPlayerPosition);
       if (whichTower !== -1) {
@@ -214,31 +213,33 @@ function Game(props) {
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     };
-  }, [playerData]);
+  }, [playerData, IDEstatus]);
 
   return (
-    <div id="rootdiv">
-      <button
-        onClick={() => {
-          socket.emit("playerLeft");
-          //axios.post(url + "/logout");
-          axios.post("http://localhost:3000/logout");
-          navigate("/thankyou");
-        }}
-      >
-        Logout from Game (Doesnt work)
-      </button>
-      <h1>
-        {" "}
-        You {selfPlayerScore} - {opponentPlayerScore} Opponent
-      </h1>
-      <h1> {result}</h1>
-      <canvas id="canvas" width={"800px"} height={"500px"} ref={canvasRef} />
-      <h1>
-        {IDEFeedback.map((message) => (
-          <li>{message}</li>
-        ))}
-      </h1>
+    <div>
+      <>
+        <canvas id="canvas" width={"800px"} height={"500px"} ref={canvasRef} />
+        <button
+          onClick={() => {
+            socket.emit("playerLeft");
+            //axios.post(url + "/logout");
+            axios.post("http://localhost:3000/logout");
+            navigate("/thankyou");
+          }}
+        >
+          Logout from Game (Doesnt work)
+        </button>
+        <h1>
+          You {selfPlayerScore} - {opponentPlayerScore} Opponent
+        </h1>
+        <h1>
+          {IDEFeedback.map((message) => (
+            <li>{message}</li>
+          ))}
+        </h1>
+        <h1> {result}</h1>
+      </>
+
       {IDEstatus ? (
         <>
           <button onClick={closeIDE}>Close</button>
@@ -253,7 +254,7 @@ function Game(props) {
           <button onClick={submitCode}>Submit</button>
         </>
       ) : (
-        <></>
+        ""
       )}
     </div>
   );
