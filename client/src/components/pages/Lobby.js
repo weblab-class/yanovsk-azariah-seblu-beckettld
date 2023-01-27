@@ -22,7 +22,8 @@ function Lobby(props) {
   useEffect(() => {
     socket.on("init", (number) => {
       if (number == 2) {
-        navigate("/lobby/choosemap");
+        navigate("/game");
+        //navigate("/lobby/choosemap");
       }
     });
 

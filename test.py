@@ -1,15 +1,27 @@
 import sys
+# Given an integer array arr, count how many elements x there are, such that x + 1 
+# is also in arr. If there are duplicates in arr, count them separately.
 
-#Given an array of integers, write a function that finds the sum of all the integers in the array
+# Example Input: arr = [1,2,3] Output: 2
+# 1+1 = 2, 2+1=3 , so there are 2 elements that meet the x+1 condition
 
-def arr_sum(arr):ewf
-    total=0
-    for term in arr:
-        total+=term
-    return total
+# Example Input 2: arr = [1,1,3,3,5,5] Output: 0 
+# No element meets x + 1 condition 
 
+# Constraints: 1 <= arr.length <= 1000
+
+def countElems(arr):
+        sets = set(arr)
+        cnt =0
+        for i in arr:
+            if i+1 in sets:
+                cnt +=1
+                
+        return cnt
+
+#DO NOT EDIT CODE BELOW
 if __name__ == "__main__":
-    arr = sys.argv[1].split(',')
-    arr = [int(x) for x in arr]
-    result = int(sys.argv[2])
-    print(arr_sum(arr)==result)
+  s_input = sys.argv[1]
+  result = int(sys.argv[2])
+  s_input_list = [int(c) for c in s_input]
+  print(countElems(s_input_list)==result)
