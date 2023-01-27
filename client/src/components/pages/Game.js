@@ -6,6 +6,10 @@ import CodeMirror from "@uiw/react-codemirror";
 import axios from "axios";
 import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
+import Map from "../assets/map_1.png";
+import Sprite from "../assets/sprite.png";
+
+import Tower from "../assets/tower.png";
 
 //==========LOCAL/HEROKU===========//
 // const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -16,13 +20,12 @@ const url = "http://localhost:3000";
 
 function Game(props) {
   const socket = useContext(SocketContext);
-  const [playerData, setPlayerData] = useState({});
-
   const canvasRef = useRef(null);
   let { towerObj } = data;
   let playerRight, playerLeft, playerUp, playerDown;
   [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
 
+  const [playerData, setPlayerData] = useState({});
   const [selfPlayerPosition, setSelfPlayerPosition] = useState("");
   const [selfPlayerScore, setSelfPlayerScore] = useState(0);
   const [opponentPlayerScore, setOpponentPlayerScore] = useState(0);
@@ -146,11 +149,9 @@ function Game(props) {
   const drawPlayers = (ctx, playerData) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const [key, value] of Object.entries(playerData)) {
-      ctx.fillStyle = "red";
-      ctx.beginPath();
-      ctx.arc(value.position.x, value.position.y, 30, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.stroke();
+      const spriteImage = new Image();
+      spriteImage.src = Sprite;
+      ctx.drawImage(spriteImage, value.position.x, value.position.y, 50, 50);
     }
   };
   function getDistance(x1, y1, x2, y2) {
@@ -178,15 +179,16 @@ function Game(props) {
     const color = "blue";
     for (const [key, value] of Object.entries(towerData)) {
       ctx.beginPath();
-      ctx.rect(value.position.x, value.position.y, 50, 50);
-      ctx.fillStyle = color;
-      ctx.strokeStyle = "black";
-      ctx.lineWidth = 1;
-      ctx.fillStyle = color;
-      ctx.shadowBlur = 0;
-      ctx.shadowColor = color;
-      ctx.strokeRect(value.position.x, value.position.y, 50, 50);
-      ctx.fill();
+
+      const towerImage = new Image();
+      towerImage.src = Tower;
+
+      if (selfTowerStatus[key] === 0) {
+        ctx.drawImage(towerImage, value.position.x, value.position.y, 50, 50);
+      } else {
+        ctx.fillStyle = color;
+        ctx.strokeRect(value.position.x, value.position.y, 50, 50);
+      }
     }
   };
 
@@ -218,7 +220,6 @@ function Game(props) {
   return (
     <div>
       <>
-        <canvas id="canvas" width={"800px"} height={"500px"} ref={canvasRef} />
         <button
           onClick={() => {
             socket.emit("playerLeft");
@@ -234,6 +235,13 @@ function Game(props) {
         </h1>
 
         <h1> {result}</h1>
+        <canvas
+          id="canvas"
+          width={"800px"}
+          height={"500px"}
+          ref={canvasRef}
+          style={{ backgroundImage: `url(${Map})` }}
+        />
       </>
 
       {IDEstatus ? (

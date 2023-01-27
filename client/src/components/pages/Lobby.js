@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
+import ThankYou from "./ThankYou.js";
 
 function Lobby(props) {
   const socket = useContext(SocketContext);
@@ -21,8 +22,7 @@ function Lobby(props) {
   useEffect(() => {
     socket.on("init", (number) => {
       if (number == 2) {
-        console.log("here");
-        navigate("/game");
+        navigate("/lobby/choosemap");
       }
     });
 
@@ -58,6 +58,8 @@ function Lobby(props) {
           <p>{roomConnection}</p>
         </>
       )}
+
+      <Outlet />
     </div>
   );
 }

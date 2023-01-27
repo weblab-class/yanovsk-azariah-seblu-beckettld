@@ -1,7 +1,7 @@
 //==========LIBRARIES===========//
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { Routes, Route, Link, NavLink, useNavigate } from "react-router-dom";
+import { Routes, Route, Link, NavLink, useNavigate, Outlet } from "react-router-dom";
 
 //==========COMPONENTS===========//
 import Login from "./pages/Login.js";
@@ -18,10 +18,11 @@ const App = () => {
     <SocketContext.Provider value={socket}>
       <Routes>
         <Route index element={<Login />} />
-        <Route path="lobby" element={<Lobby />} />
+        <Route path="lobby" element={<Lobby />}>
+          <Route path="choosemap" element={<ChooseMap />} />
+        </Route>
         <Route path="game" element={<Game />} />
         <Route path="thankyou" element={<ThankYou />} />
-        <Route path="choosemap" element={<ChooseMap />} />
       </Routes>
     </SocketContext.Provider>
   );

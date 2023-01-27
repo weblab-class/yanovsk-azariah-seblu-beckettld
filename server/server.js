@@ -178,6 +178,7 @@ function connected(socket) {
 
   socket.on("updateFromClient", (data) => {
     room_id = socketToRoom[socket.id];
+
     if (data === "Up") {
       allGameStates[room_id][socket.id].position.y -= 10;
     } else if (data === "Down") {
@@ -249,6 +250,7 @@ function connected(socket) {
     }
 
     const towerQuestions = await Problem.find({ version: "mvp" });
+
     allTowers[room_id] = {
       0: {
         questionID: towerQuestions[0]._id,
