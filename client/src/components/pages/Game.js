@@ -8,10 +8,11 @@ import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
 
 //==========LOCAL/HEROKU===========//
-// const url = "https://codeleg.herokuapp.com";
-// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const url = "https://codeleg.herokuapp.com";
 
-const url = "http://localhost:3000";
+// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+// const url = "http://localhost:3000";
 
 function Game(props) {
   const socket = useContext(SocketContext);
