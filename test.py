@@ -1,27 +1,24 @@
 import sys
-# Given an integer array arr, count how many elements x there are, such that x + 1 
-# is also in arr. If there are duplicates in arr, count them separately.
+# A Pangram is a sentence where every letter of the English alphabet 
+# appears at least once. Given a string s containing lowercase English letters
+# write a function that returns true if s is a pantagram, or false otherwise
 
-# Example Input: arr = [1,2,3] Output: 2
-# 1+1 = 2, 2+1=3 , so there are 2 elements that meet the x+1 condition
+# Example: s = "thequickbrownfoxjumpsoverthelazydog" Output: true
+# Example 2: s = "weblab" Output: false
 
-# Example Input 2: arr = [1,1,3,3,5,5] Output: 0 
-# No element meets x + 1 condition 
+# Constraints: 1 <= s.length <= 1000
 
-# Constraints: 1 <= arr.length <= 1000
 
-def countElems(arr):
-        sets = set(arr)
-        cnt =0
-        for i in arr:
-            if i+1 in sets:
-                cnt +=1
-                
-        return cnt
+def checkIfPangram(s):
+        letters = set()
+        for char in s:
+            if char not in letters:
+                letters.add(char)
+        return len(letters) >= 26
+
 
 #DO NOT EDIT CODE BELOW
 if __name__ == "__main__":
   s_input = sys.argv[1]
-  result = int(sys.argv[2])
-  s_input_list = [int(c) for c in s_input]
-  print(countElems(s_input_list)==result)
+  result =sys.argv[2]
+  print(str(checkIfPangram(s_input))==result)

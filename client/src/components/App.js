@@ -71,7 +71,7 @@ const App = () => {
 
   //==========CODE SUBMISSION===========//
 
-  const attemptToggleIDE = (towerCode) => {
+  const attemptToggleIDE = (towerCode, key) => {
     // axios
     //   .get(url + "/problem", {
     //     params: {},
@@ -82,7 +82,7 @@ const App = () => {
     //   });
 
     // setCode(res.data.problemText);
-    if (selfTowerStatus[currentTower] !== 1) {
+    if (selfTowerStatus[key] !== 1) {
       const IDE = document.getElementById("overlay");
       IDE.className = "active";
       setCode(towerCode);

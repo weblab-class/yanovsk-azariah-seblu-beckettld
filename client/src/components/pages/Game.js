@@ -26,6 +26,7 @@ function Game(props) {
   // }, [counter]);
 
   document.onkeydown = (e) => {
+    console.log("no");
     if (!props.IDEstatus) {
       if (e.key === "ArrowRight") playerRight = true;
       if (e.key === "ArrowLeft") playerLeft = true;
@@ -38,7 +39,8 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
-    if (!props.IDEstatus && e.key === "Enter") {
+    if (!props.IDEstatus && e.key === "l") {
+      console.log("yea");
       const whichTower = inTowers(props.selfPlayerPosition);
       if (whichTower !== -1) {
         props.setCurrentTower(whichTower);
@@ -70,7 +72,8 @@ function Game(props) {
   const inTowers = (position) => {
     for (const [key, value] of Object.entries(props.towerData)) {
       if (near(position, value.position)) {
-        props.attemptToggleIDE(value.questionCode);
+        console.log("we attemptin");
+        props.attemptToggleIDE(value.questionCode, key);
         return key;
       }
     }
