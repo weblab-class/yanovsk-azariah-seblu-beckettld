@@ -168,13 +168,13 @@ function connected(socket) {
   socket.on("updateFromClient", (data) => {
     room_id = socketToRoom[socket.id];
     if (data === "Up") {
-      allGameStates[room_id][socket.id].position.y -= 3;
+      allGameStates[room_id][socket.id].position.y -= 10;
     } else if (data === "Down") {
-      allGameStates[room_id][socket.id].position.y += 3;
+      allGameStates[room_id][socket.id].position.y += 10;
     } else if (data === "Right") {
-      allGameStates[room_id][socket.id].position.x += 3;
+      allGameStates[room_id][socket.id].position.x += 10;
     } else if (data === "Left") {
-      allGameStates[room_id][socket.id].position.x -= 3;
+      allGameStates[room_id][socket.id].position.x -= 10;
     } else {
       if (data in ["1", "2", "3", "4", "5"]) {
         const numData = parseInt(data);
@@ -193,7 +193,7 @@ function connected(socket) {
       allGameStates[room_id] = {};
       allGameStates[room_id][socket_id] = {
         position: { x: 100, y: 100 },
-        tower_status: [0, 0, 0, 0, 0],
+        tower_status: [0, 0, 0, 0],
         score: 0,
       };
       socket.emit("assignedRoomId", room_id);
@@ -201,7 +201,7 @@ function connected(socket) {
     if (socket_number === 2) {
       allGameStates[room_id][socket_id] = {
         position: { x: 110, y: 110 },
-        tower_status: [0, 0, 0, 0, 0],
+        tower_status: [0, 0, 0, 0],
         score: 0,
       };
     }

@@ -38,6 +38,9 @@ const App = () => {
   const [selfPlayerPosition, setSelfPlayerPosition] = useState("");
   const [selfPlayerScore, setSelfPlayerScore] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
+  const [opponentPlayerScore, setOpponentPlayerScore] = useState(0);
+
+  const [result, setResult] = useState("");
 
   const [currentTower, setCurrentTower] = useState(0);
   const navigate = useNavigate();
@@ -145,15 +148,29 @@ const App = () => {
           setSelfPlayerPosition(value.position);
           setSelfPlayerScore(value.score);
           setSelfTowerStatus(value.tower_status);
+          if (value.score === value.tower_status.length) {
+            endgame("You Win");
+          }
+        } else {
+          setOpponentPlayerScore(value.score);
+          if (value.score === value.tower_status.length) {
+            endgame("You Lose");
+          }
         }
       }
 
       setPlayerData(data);
     });
   }, []);
+  const endgame = (result) => {
+    setResult(result);
+    // socket.disconnect();
+  };
 
   const fromClientToServer = (childdata) => {
-    socket.emit("updateFromClient", childdata);
+    if (result === "") {
+      socket.emit("updateFromClient", childdata);
+    }
   };
 
   const createNewRoom = () => {
@@ -189,11 +206,13 @@ const App = () => {
             canvasWidth={canvasWidth}
             towerData={towerData}
             code={code}
+            result={result}
             onChange={onChange}
             attemptToggleIDE={attemptToggleIDE}
             handleLogout={handleLogout}
             selfPlayerPosition={selfPlayerPosition}
             selfPlayerScore={selfPlayerScore}
+            opponentPlayerScore={opponentPlayerScore}
             submitCode={submitCode}
             setCurrentTower={setCurrentTower}
             closeIDE={closeIDE}

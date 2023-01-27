@@ -39,7 +39,10 @@ function Game(props) {
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
     if (!props.IDEstatus && e.key === "Enter") {
-      props.toggleIDE();
+      const whichTower = inTowers(props.selfPlayerPosition);
+      if (whichTower !== -1) {
+        props.setCurrentTower(whichTower);
+      }
     }
   };
 
@@ -95,7 +98,7 @@ function Game(props) {
     let animationFrameId;
     const render = () => {
       drawPlayers(ctx, props.playerData);
-
+      drawTowers(ctx, props.towerData);
       if (playerUp) {
         props.fromClientToServer("Up");
       } else if (playerDown) {
@@ -140,7 +143,11 @@ function Game(props) {
       >
         Logout from Game
       </button>
-      <h1> Your score {props.selfPlayerScore}</h1>
+      <h1>
+        {" "}
+        You {props.selfPlayerScore} - {props.opponentPlayerScore} Opponent
+      </h1>
+      <h1> {props.result}</h1>
       <canvas id="canvas" width={props.canvasWidth} height={props.canvasHeight} ref={canvasRef} />
       <div className="inactive" id="overlay">
         <button onClick={props.closeIDE}>Close</button>
