@@ -1,33 +1,107 @@
 import "./App.css";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import data from "./data";
 import { trueFunc } from "boolbase";
 import CodeMirror from "@uiw/react-codemirror";
+import axios from "axios";
 import { python } from "@codemirror/lang-python";
+import { SocketContext } from "../context/socket.js";
+
+//==========LOCAL/HEROKU===========//
+// const url = "https://codeleg.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
+const url = "http://localhost:3000";
 
 function Game(props) {
+  const socket = useContext(SocketContext);
+  const [playerData, setPlayerData] = useState({});
+
   const canvasRef = useRef(null);
   let { towerObj } = data;
   let playerRight, playerLeft, playerUp, playerDown;
   [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
-  // const [playerRight, setPlayerRight] = useState(false);
-  // const [playerLeft, setPlayerLeft] = useState(false);
-  // const [playerDown, setPlayerDown] = useState(false);
-  // const [playerUp, setPlayerUp] = useState(false);
-  // const [counter, changeCounter] = useState(0);
-  // const [towersDrawn, setTowersDrawn] = useState(false);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     changeCounter(counter + 1);
-  //   }, 10);
+  const [selfPlayerPosition, setSelfPlayerPosition] = useState("");
+  const [selfPlayerScore, setSelfPlayerScore] = useState(0);
+  const [opponentPlayerScore, setOpponentPlayerScore] = useState(0);
+  const [towerData, setTowerData] = useState({});
+  const [result, setResult] = useState("");
+  const [code, setCode] = useState("");
+  const [questionID, setQuestionID] = useState(0);
+  const [IDEstatus, setIDEStatus] = useState(false);
+  const [currentTower, setCurrentTower] = useState(0);
+  const [selfTowerStatus, setSelfTowerStatus] = useState([]);
 
-  //   return () => clearInterval(interval);
-  // }, [counter]);
+  const endgame = (result) => {
+    setResult(result);
+  };
+
+  const closeIDE = () => {
+    towerData[currentTower].questionCode = code;
+    const IDE = document.getElementById("overlay");
+    setIDEStatus(false);
+  };
+
+  const onChange = (value, viewUpdate) => {
+    setCode(value);
+  };
+
+  const submitCode = () => {
+    axios
+      .post(url + "/submitCode", {
+        code: code,
+        questionID: towerData[currentTower].questionID,
+      })
+      .then((res) => {
+        if (res.data.error) {
+          console.log(res.data.error);
+        } else {
+          if (res.data.overallResult === true) {
+            console.log("You got them all right!");
+            //fromClientToServer(currentTower);
+            socket.emit("updateFromClient", currentTower);
+            closeIDE();
+          } else console.log("Too bad!");
+        }
+      });
+  };
+
+  const attemptToggleIDE = (towerCode) => {
+    if (selfTowerStatus[currentTower] !== 1) {
+      const IDE = document.getElementById("overlay");
+      setCode(towerCode);
+      setIDEStatus(true);
+    }
+  };
+
+  useEffect(() => {
+    socket.on("updateFromServer", (data) => {
+      for (const [key, value] of Object.entries(data)) {
+        if (key === socket.id) {
+          setSelfPlayerPosition(value.position);
+          setSelfPlayerScore(value.score);
+          setSelfTowerStatus(value.tower_status);
+          if (value.score === value.tower_status.length) {
+            endgame("You Win");
+          }
+        } else {
+          setOpponentPlayerScore(value.score);
+          if (value.score === value.tower_status.length) {
+            endgame("You Lose");
+          }
+        }
+      }
+      setPlayerData(data);
+    });
+
+    socket.on("initTowers", (data) => {
+      setTowerData(data);
+    });
+  }, []);
 
   document.onkeydown = (e) => {
-    console.log("no");
-    if (!props.IDEstatus) {
+    if (!IDEstatus) {
       if (e.key === "ArrowRight") playerRight = true;
       if (e.key === "ArrowLeft") playerLeft = true;
       if (e.key === "ArrowDown") playerDown = true;
@@ -39,11 +113,10 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
-    if (!props.IDEstatus && e.key === "l") {
-      console.log("yea");
-      const whichTower = inTowers(props.selfPlayerPosition);
+    if (!IDEstatus && e.key === "Enter") {
+      const whichTower = inTowers(selfPlayerPosition);
       if (whichTower !== -1) {
-        props.setCurrentTower(whichTower);
+        setCurrentTower(whichTower);
       }
     }
   };
@@ -70,10 +143,10 @@ function Game(props) {
     }
   };
   const inTowers = (position) => {
-    for (const [key, value] of Object.entries(props.towerData)) {
+    for (const [key, value] of Object.entries(towerData)) {
       if (near(position, value.position)) {
-        console.log("we attemptin");
-        props.attemptToggleIDE(value.questionCode, key);
+        console.log(position, value.position);
+        attemptToggleIDE(value.questionCode);
         return key;
       }
     }
@@ -100,16 +173,16 @@ function Game(props) {
     const ctx = canvas.getContext("2d");
     let animationFrameId;
     const render = () => {
-      drawPlayers(ctx, props.playerData);
-      drawTowers(ctx, props.towerData);
+      drawPlayers(ctx, playerData);
+      drawTowers(ctx, towerData);
       if (playerUp) {
-        props.fromClientToServer("Up");
+        socket.emit("updateFromClient", "Up");
       } else if (playerDown) {
-        props.fromClientToServer("Down");
+        socket.emit("updateFromClient", "Down");
       } else if (playerLeft) {
-        props.fromClientToServer("Left");
+        socket.emit("updateFromClient", "Left");
       } else if (playerRight) {
-        props.fromClientToServer("Right");
+        socket.emit("updateFromClient", "Right");
       }
       animationFrameId = window.requestAnimationFrame(render);
     };
@@ -118,52 +191,43 @@ function Game(props) {
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     };
-  }, [drawPlayers]);
-
-  // useEffect(() => {
-  //   const canvas = canvasRef.current;
-  //   const ctx = canvas.getContext("2d");
-  //   // let animationFrameId;
-  //   // const render = () => {
-  //   // };
-  //   drawPlayers(ctx, props.playerData);
-  //   drawTowers(ctx, props.towerData);
-
-  //   // window.requestAnimationFrame(render);
-
-  //   // return () => {
-  //   //   window.cancelAnimationFrame(animationFrameId);
-  //   // };
-  // }, []);
+  }, [playerData]);
 
   return (
     <div id="rootdiv">
       <button
         onClick={() => {
-          props.handleLogout();
+          socket.emit("playerLeft");
+          //axios.post(url + "/logout");
+          axios.post("http://localhost:3000/logout");
           navigate("/thankyou");
         }}
       >
-        Logout from Game
+        Logout from Game (Doesnt work)
       </button>
       <h1>
         {" "}
-        You {props.selfPlayerScore} - {props.opponentPlayerScore} Opponent
+        You {selfPlayerScore} - {opponentPlayerScore} Opponent
       </h1>
-      <h1> {props.result}</h1>
-      <canvas id="canvas" width={props.canvasWidth} height={props.canvasHeight} ref={canvasRef} />
-      <div className="inactive" id="overlay">
-        <button onClick={props.closeIDE}>Close</button>
-        <CodeMirror
-          value={props.code}
-          height="600px"
-          theme="dark"
-          options={{ theme: "sublime" }}
-          extensions={[python()]}
-          onChange={props.onChange}
-        />
-        <button onClick={props.submitCode}>Submit</button>
-      </div>
+      <h1> {result}</h1>
+      <canvas id="canvas" width={"800px"} height={"500px"} ref={canvasRef} />
+
+      {IDEstatus ? (
+        <>
+          <button onClick={closeIDE}>Close</button>
+          <CodeMirror
+            value={code}
+            height="600px"
+            theme="dark"
+            options={{ theme: "sublime" }}
+            extensions={[python()]}
+            onChange={onChange}
+          />
+          <button onClick={submitCode}>Submit</button>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
