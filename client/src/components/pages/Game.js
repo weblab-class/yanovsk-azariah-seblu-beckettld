@@ -8,11 +8,11 @@ import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
 
 //==========LOCAL/HEROKU===========//
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const url = "https://codeleg.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+// const url = "https://codeleg.herokuapp.com";
 
-// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
-// const url = "http://localhost:3000";
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+const url = "http://localhost:3000";
 
 function Game(props) {
   const socket = useContext(SocketContext);
@@ -33,6 +33,7 @@ function Game(props) {
   const [IDEstatus, setIDEStatus] = useState(false);
   const [currentTower, setCurrentTower] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
+  const [IDEFeedback, setIDEFeedback] = useState([]);
 
   const endgame = (result) => {
     setResult(result);
@@ -58,6 +59,27 @@ function Game(props) {
         if (res.data.error) {
           console.log(res.data.error);
         } else {
+          const finalArr = [];
+          for (const obj of res.data.testCaseResultsWithMessages) {
+            let IDEmessage = "";
+            IDEmessage +=
+              (Object.keys(obj)[0] === "True" ? "Correct: " : "Incorrect: ") +
+              Object.values(obj)[0] +
+              "\n";
+            finalArr.push(IDEmessage);
+          }
+          setIDEFeedback(finalArr);
+
+          // let IDEmessage="";
+          // for (const obj of res.data.testCaseResultsWithMessages) {
+          //   IDEmessage +=
+          //     (Object.keys(obj)[0] === "True" ? "Correct: " : "Incorrect: ") +
+          //     Object.values(obj)[0] +
+          //     "\n";
+
+          // }
+          // setIDEFeedback(IDEmessage);
+
           if (res.data.overallResult === true) {
             console.log("You got them all right!");
             //fromClientToServer(currentTower);
@@ -212,7 +234,11 @@ function Game(props) {
       </h1>
       <h1> {result}</h1>
       <canvas id="canvas" width={"800px"} height={"500px"} ref={canvasRef} />
-
+      <h1>
+        {IDEFeedback.map((message) => (
+          <li>{message}</li>
+        ))}
+      </h1>
       {IDEstatus ? (
         <>
           <button onClick={closeIDE}>Close</button>

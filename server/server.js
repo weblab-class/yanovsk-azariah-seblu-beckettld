@@ -75,7 +75,7 @@ app.post("/submitCode", async (req, res) => {
   const testCases = currentProblem[0].testCases;
   const promises = [];
   const testCaseResults = [];
-
+  const testCaseResultsWithMessages = [];
   Object.keys(testCases).map((key) => {
     promises.push(
       new Promise((resolve, reject) => {
@@ -91,7 +91,18 @@ app.post("/submitCode", async (req, res) => {
               reject(err.message);
             } else {
               if (results) {
-                testCaseResults.push(results[0]);
+                console.log(testCases[key]);
+                const newTestCase = ["1,2,3,4,5", "1,2,3,4,5", "1,2,3,4,5", 15];
+                console.log(results);
+                const messageString = `Input(s): (${testCases[key]
+                  .slice(0, testCases[key].length - 1)
+                  .join(")  (")}) | Expected Output: ${results[0]} | Got: ${results[1]}`;
+                testCaseResults.push(results[2] == "True");
+                const resultBool = results[2];
+                const testObj = {};
+                testObj[resultBool] = messageString;
+                console.log(testObj);
+                testCaseResultsWithMessages.push(testObj);
                 resolve(true);
               }
             }
@@ -104,12 +115,12 @@ app.post("/submitCode", async (req, res) => {
     .then(() => {
       let overallResult = true;
       for (result of testCaseResults) {
-        if (result === "False") {
+        if (result === false) {
           overallResult = false;
           break;
         }
       }
-      res.json({ testCaseResults, overallResult });
+      res.json({ overallResult, testCaseResultsWithMessages });
     })
     .catch((err) => {
       console.log(err);

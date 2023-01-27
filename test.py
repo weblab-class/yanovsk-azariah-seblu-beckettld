@@ -14,11 +14,13 @@ def checkIfPangram(s):
         for char in s:
             if char not in letters:
                 letters.add(char)
-        return len(letters) >= 26
+        return len(letters) >= 0
 
 
 #DO NOT EDIT CODE BELOW
 if __name__ == "__main__":
   s_input = sys.argv[1]
   result =sys.argv[2]
+  print(result)
+  print(str(checkIfPangram(s_input)))
   print(str(checkIfPangram(s_input))==result)
