@@ -133,8 +133,6 @@ function Game(props) {
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
     if (!IDEstatus && e.key === "Enter") {
-      console.log("after");
-
       const whichTower = inTowers(selfPlayerPosition);
       if (whichTower !== -1) {
         setCurrentTower(whichTower);
@@ -157,7 +155,7 @@ function Game(props) {
     return Math.sqrt(x * x + y * y);
   }
   const near = (player, tower) => {
-    if (getDistance(player.x, player.y, tower.x + 25, tower.y + 25) < 55) {
+    if (getDistance(player.x, player.y, tower.x + 25, tower.y + 25) < 100) {
       return true;
     }
   };
