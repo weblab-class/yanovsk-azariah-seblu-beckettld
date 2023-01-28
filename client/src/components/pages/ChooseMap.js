@@ -5,6 +5,7 @@ const ChooseMap = () => {
   const socket = useContext(SocketContext);
   const [mapSelection, setMapSelection] = useState(false);
   const [spriteSelection, setSpriteSelection] = useState(false);
+  const [submissionMade, setSubmissionMade] = useState(false);
 
   //something like create new game
   const handleMapSelection = (map_id) => {
@@ -16,6 +17,7 @@ const ChooseMap = () => {
   };
 
   const handleSubmitSelections = () => {
+    setSubmissionMade(true);
     socket.emit("initGameState", { mapSelection, spriteSelection });
   };
   return (
@@ -33,7 +35,13 @@ const ChooseMap = () => {
       <p></p>
       <>
         {mapSelection && spriteSelection ? (
-          <button onClick={handleSubmitSelections}>Submit Selections</button>
+          <>
+            {submissionMade ? (
+              "Submission made. Waiting for another player"
+            ) : (
+              <button onClick={handleSubmitSelections}>Submit Selections</button>
+            )}
+          </>
         ) : (
           ""
         )}

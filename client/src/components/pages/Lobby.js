@@ -20,7 +20,7 @@ function Lobby(props) {
 
   useEffect(() => {
     socket.on("startGame", (map_id) => {
-      navigate("/game");
+      navigate("/game", { state: { map_id: map_id } });
     });
 
     socket.on("newPlayerInRoom", (number) => {

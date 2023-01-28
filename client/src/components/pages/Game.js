@@ -1,14 +1,11 @@
-import "./App.css";
 import React, { useRef, useEffect, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
-import { trueFunc } from "boolbase";
 import CodeMirror from "@uiw/react-codemirror";
 import axios from "axios";
 import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
-import Sprite from "../assets/sprite1.png";
 import Tower from "../assets/tower.png";
-import Map from "../assets/map1.png";
+import { sprites } from "./data";
 
 //==========LOCAL/HEROKU===========//
 // const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -18,10 +15,8 @@ const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.goo
 const url = "http://localhost:3000";
 
 function Game(props) {
-  //const { state } = useLocation();
-  const map = require(`../assets/map${1}.png`);
-
-  const sprite = require(`../assets/sprite${1}.png`);
+  const { state } = useLocation();
+  const map = require(`../assets/map${state.map_id}.png`);
 
   const socket = useContext(SocketContext);
   const canvasRef = useRef(null);
@@ -39,7 +34,6 @@ function Game(props) {
   const [currentTower, setCurrentTower] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
   const [IDEFeedback, setIDEFeedback] = useState([]);
-  const [lastKeyPressed, setLastKeyPressed] = useState("");
 
   const endgame = (result) => {
     setResult(result);
@@ -148,7 +142,6 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
-    console.log("before");
     if (!IDEstatus && e.key === "Enter") {
       console.log("after");
 
@@ -163,7 +156,7 @@ function Game(props) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const [key, value] of Object.entries(playerData)) {
       const spriteImage = new Image();
-      spriteImage.src = sprite.default;
+      spriteImage.src = sprites[value.sprite_id];
       ctx.drawImage(spriteImage, value.position.x, value.position.y, 50, 50);
     }
   };
@@ -191,7 +184,6 @@ function Game(props) {
     const color = "blue";
     for (const [key, value] of Object.entries(towerData)) {
       ctx.beginPath();
-
       const towerImage = new Image();
       towerImage.src = Tower;
 
@@ -203,27 +195,23 @@ function Game(props) {
       }
     }
   };
-  useState(() => {
-    if (playerUp) {
-      socket.emit("updateFromClient", "Up");
-    } else if (playerDown) {
-      socket.emit("updateFromClient", "Down");
-    } else if (playerLeft) {
-      socket.emit("updateFromClient", "Left");
-    } else if (playerRight) {
-      socket.emit("updateFromClient", "Right");
-    }
-  }, [lastKeyPressed]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let animationFrameId;
-
     const render = () => {
       drawPlayers(ctx, playerData);
       drawTowers(ctx, towerData);
-
+      if (playerUp) {
+        socket.emit("updateFromClient", "Up");
+      } else if (playerDown) {
+        socket.emit("updateFromClient", "Down");
+      } else if (playerLeft) {
+        socket.emit("updateFromClient", "Left");
+      } else if (playerRight) {
+        socket.emit("updateFromClient", "Right");
+      }
       animationFrameId = window.requestAnimationFrame(render);
     };
     render();
@@ -235,7 +223,6 @@ function Game(props) {
 
   return (
     <div>
-      {console.log("rerender")}
       <>
         <button
           onClick={() => {

@@ -32,10 +32,8 @@ app.use(
     saveUninitialized: false,
   })
 );
-
 //==========MONGO DB===========//
 const mongoConnectionURL = process.env.MONGO_SRV;
-
 const databaseName = "Cluster0";
 
 mongoose
@@ -202,8 +200,6 @@ function connected(socket) {
         }
       }
     }
-    console.log("UPDATE FROM CLIENT RECEIVED AND SENT");
-
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   });
 
@@ -235,7 +231,6 @@ function connected(socket) {
       //emit random map from maps array to Game.js
       io.to(`${room_id}`).emit("startGame", maps[Math.floor(Math.random() * 2)]);
     }
-    console.log("HANDLE INIT GAME STATE");
 
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
@@ -278,7 +273,6 @@ function connected(socket) {
       socketToRoom[socket.id] = room_id;
       socket.number = 2;
       io.to(`${room_id}`).emit("newPlayerInRoom", 2);
-      //initGameState(room_id, socket.id, 2);
     }
 
     const towerQuestions = await Problem.find({ version: "mvp" });
@@ -308,8 +302,6 @@ function connected(socket) {
 
     io.to(`${room_id}`).emit("init", 2);
     io.to(`${room_id}`).emit("initTowers", allTowers[room_id]);
-    console.log("emitting in maps");
-
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
