@@ -32,10 +32,8 @@ app.use(
     saveUninitialized: false,
   })
 );
-
 //==========MONGO DB===========//
 const mongoConnectionURL = process.env.MONGO_SRV;
-
 const databaseName = "Cluster0";
 
 mongoose
@@ -148,7 +146,6 @@ app.use((err, req, res, next) => {
 });
 
 //==========SOCKETS===========//
-
 var http = require("http");
 var server = http.createServer(app);
 const io = socketIo(server);
@@ -156,84 +153,28 @@ const io = socketIo(server);
 io.on("connection", connected);
 
 function connected(socket) {
-  socket.on("disconnect", () => {
-    room_id = socketToRoom[socket.id];
-    if (room_id) {
-      delete allGameStates[room_id][socket.id];
-      io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
-    }
-  });
-
-  socket.on("playerLeft", () => {
-    room_id = socketToRoom[socket.id];
-    if (room_id) {
-      delete allGameStates[room_id][socket.id];
-      io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
-    }
-    socket.disconnect();
-  });
-
-  socket.on("updateFromClient", (data) => {
-    room_id = socketToRoom[socket.id];
-
-    if (data === "Up") {
-      allGameStates[room_id][socket.id].position.y -= 10;
-    } else if (data === "Down") {
-      allGameStates[room_id][socket.id].position.y += 10;
-    } else if (data === "Right") {
-      allGameStates[room_id][socket.id].position.x += 10;
-    } else if (data === "Left") {
-      allGameStates[room_id][socket.id].position.x -= 10;
-    } else {
-      if (data in ["1", "2", "3", "4", "5"]) {
-        const numData = parseInt(data);
-        if (allGameStates[room_id][socket.id].tower_status[numData] == 0) {
-          allGameStates[room_id][socket.id].tower_status[numData] = 1;
-          allGameStates[room_id][socket.id].score += 1;
-        }
-      }
-    }
-
-    io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
-  });
-
-  const initGameState = (room_id, socket_id, socket_number) => {
-    if (socket_number === 1) {
-      allGameStates[room_id] = {};
-      allGameStates[room_id][socket_id] = {
-        position: { x: 100, y: 100 },
-        tower_status: [0, 0, 0, 0],
-        score: 0,
-      };
-      socket.emit("assignedRoomId", room_id);
-    }
-    if (socket_number === 2) {
-      allGameStates[room_id][socket_id] = {
-        position: { x: 110, y: 110 },
-        tower_status: [0, 0, 0, 0],
-        score: 0,
-      };
-    }
-  };
-
   const handleNewRoom = () => {
-    let room_id = makeid(5);
-    socketToRoom[socket.id] = room_id;
-    socket.join(room_id);
-    socket.number = 1;
-    initGameState(room_id, socket.id, 1);
-
-    io.to(`${room_id}`).emit("init", 1);
-    io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    try {
+      let room_id = makeid(5);
+      socketToRoom[socket.id] = room_id;
+      socket.join(room_id);
+      socket.number = 1;
+      socket.emit("assignedRoomId", room_id);
+      io.to(`${room_id}`).emit("newPlayerInRoom", 1);
+    } catch (err) {
+      console.log(err);
+      socket.emit("assignedRoomId", `ERROR ${err}`);
+    }
   };
 
-  const handleJoinRoom = async (room_id) => {
+  const handleJoinRoom = (room_id) => {
+    const room = io.sockets.adapter.rooms.get(room_id);
     let numPlayers;
-    if (allGameStates[room_id]) {
-      numPlayers = Object.keys(allGameStates[room_id]).length;
-    }
 
-    if (numPlayers === 0 || numPlayers === undefined) {
+    if (room) {
+      numPlayers = io.sockets.adapter.rooms.get(room_id).size;
+    }
+    if (numPlayers === 0 || numPlayers === undefined || room === undefined) {
       socket.emit("badConnection", "Room Code Doesn't Exist");
       return;
     } else if (numPlayers > 1) {
@@ -243,9 +184,12 @@ function connected(socket) {
       socket.join(room_id);
       socketToRoom[socket.id] = room_id;
       socket.number = 2;
-      initGameState(room_id, socket.id, 2);
+      io.to(`${room_id}`).emit("newPlayerInRoom", 2);
     }
+  };
 
+  const initTowers = async (map_id) => {
+    //knowing map_id we can find question by level of hardness
     const towerQuestions = await Problem.find({ version: "mvp" });
 
     allTowers[room_id] = {
@@ -274,14 +218,95 @@ function connected(socket) {
         position: { x: 581, y: 300 },
       },
     };
-
-    io.to(`${room_id}`).emit("init", 2);
     io.to(`${room_id}`).emit("initTowers", allTowers[room_id]);
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
+  const handleInitGameState = ({ mapSelection, spriteSelection }) => {
+    room_id = socketToRoom[socket.id];
+    if (room_id && allGameStates[room_id] === undefined) {
+      allGameStates[room_id] = {};
+      allGameStates[room_id][socket.id] = {
+        position: { x: 100, y: 100 },
+        tower_status: [0, 0, 0, 0],
+        score: 0,
+        sprite_id: spriteSelection,
+        map_id: mapSelection,
+      };
+    } else if (room_id && allGameStates[room_id]) {
+      allGameStates[room_id][socket.id] = {
+        position: { x: 110, y: 110 },
+        tower_status: [0, 0, 0, 0],
+        score: 0,
+        sprite_id: spriteSelection,
+        map_id: mapSelection,
+      };
+      let maps = [];
+      for (const [key, value] of Object.entries(allGameStates[room_id])) {
+        maps.push(value.map_id);
+      }
+      let random_map_id = maps[Math.floor(Math.random() * 2)];
+      io.to(`${room_id}`).emit("startGame", random_map_id); //emit random map from maps array to Game.js
+      io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+      initTowers(random_map_id);
+    }
+  };
+
+  const handleUpdateFromClient = (data) => {
+    room_id = socketToRoom[socket.id];
+    if (room_id) {
+      if (data === "Up") {
+        allGameStates[room_id][socket.id].position.y -= 10;
+      } else if (data === "Down") {
+        allGameStates[room_id][socket.id].position.y += 10;
+      } else if (data === "Right") {
+        allGameStates[room_id][socket.id].position.x += 10;
+      } else if (data === "Left") {
+        allGameStates[room_id][socket.id].position.x -= 10;
+      } else {
+        if (data in ["1", "2", "3", "4", "5"]) {
+          const numData = parseInt(data);
+          if (allGameStates[room_id][socket.id].tower_status[numData] == 0) {
+            allGameStates[room_id][socket.id].tower_status[numData] = 1;
+            allGameStates[room_id][socket.id].score += 1;
+          }
+        }
+      }
+    }
+    io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+  };
+
+  const handlePlayerLeft = () => {
+    if (socket.id !== undefined) {
+      room_id = socketToRoom[socket.id];
+      if (room_id !== undefined) {
+        delete allGameStates[room_id][socket.id];
+        delete socketToRoom[socket.id];
+        io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+      }
+    }
+    socket.disconnect();
+  };
+
+  const handleDisconnect = () => {
+    room_id = socketToRoom[socket.id];
+    if (allGameStates[room_id]) {
+      try {
+        delete allGameStates[room_id][socket.id];
+        delete socketToRoom[socket.id];
+        io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
   socket.on("newRoom", handleNewRoom);
   socket.on("joinRoom", handleJoinRoom);
+  socket.on("initGameState", handleInitGameState);
+  socket.on("updateFromClient", handleUpdateFromClient);
+  socket.on("playerLeft", handlePlayerLeft);
+  socket.on("disconnect", handleDisconnect);
 }
 
 //==========GOOGLE AUTH===========//

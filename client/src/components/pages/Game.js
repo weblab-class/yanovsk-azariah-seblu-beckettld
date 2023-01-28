@@ -1,15 +1,11 @@
-import "./App.css";
 import React, { useRef, useEffect, useState, useContext } from "react";
-import data from "./data";
-import { trueFunc } from "boolbase";
+import { useLocation, useNavigate } from "react-router-dom";
 import CodeMirror from "@uiw/react-codemirror";
 import axios from "axios";
 import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
-import Map from "../assets/map_1.png";
-import Sprite from "../assets/sprite.png";
-
 import Tower from "../assets/tower.png";
+import { sprites } from "./data";
 
 //==========LOCAL/HEROKU===========//
 // const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -19,9 +15,11 @@ const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.goo
 const url = "http://localhost:3000";
 
 function Game(props) {
+  const { state } = useLocation();
+  const map = require(`../assets/map${state.map_id}.png`);
+  const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const canvasRef = useRef(null);
-  let { towerObj } = data;
   let playerRight, playerLeft, playerUp, playerDown;
   [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
 
@@ -32,7 +30,6 @@ function Game(props) {
   const [towerData, setTowerData] = useState({});
   const [result, setResult] = useState("");
   const [code, setCode] = useState("");
-  const [questionID, setQuestionID] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
   const [currentTower, setCurrentTower] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
@@ -73,16 +70,6 @@ function Game(props) {
           }
           setIDEFeedback(finalArr);
 
-          // let IDEmessage="";
-          // for (const obj of res.data.testCaseResultsWithMessages) {
-          //   IDEmessage +=
-          //     (Object.keys(obj)[0] === "True" ? "Correct: " : "Incorrect: ") +
-          //     Object.values(obj)[0] +
-          //     "\n";
-
-          // }
-          // setIDEFeedback(IDEmessage);
-
           if (res.data.overallResult === true) {
             console.log("You got them all right!");
             // fromClientToServer(currentTower);
@@ -122,10 +109,17 @@ function Game(props) {
     socket.on("initTowers", (data) => {
       setTowerData(data);
     });
+
+    return () => {
+      socket.off("updateFromServer");
+      socket.off("newRoom");
+      socket.off("startGame");
+      socket.off("assignedRoomId");
+      socket.off("badConnection");
+    };
   }, []);
 
   document.onkeydown = (e) => {
-    console.log("tiger");
     if (!IDEstatus) {
       if (e.key === "ArrowRight") playerRight = true;
       if (e.key === "ArrowLeft") playerLeft = true;
@@ -138,7 +132,6 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
-    console.log("before");
     if (!IDEstatus && e.key === "Enter") {
       console.log("after");
 
@@ -153,7 +146,7 @@ function Game(props) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const [key, value] of Object.entries(playerData)) {
       const spriteImage = new Image();
-      spriteImage.src = Sprite;
+      spriteImage.src = sprites[value.sprite_id]; //because of 0 indexing
       ctx.drawImage(spriteImage, value.position.x, value.position.y, 50, 50);
     }
   };
@@ -171,18 +164,17 @@ function Game(props) {
   const inTowers = (position) => {
     for (const [key, value] of Object.entries(towerData)) {
       if (near(position, value.position)) {
-        console.log(position, value.position);
         attemptToggleIDE(value.questionCode, key);
         return key;
       }
     }
     return -1;
   };
+
   const drawTowers = (ctx, towerData) => {
     const color = "blue";
     for (const [key, value] of Object.entries(towerData)) {
       ctx.beginPath();
-
       const towerImage = new Image();
       towerImage.src = Tower;
 
@@ -195,13 +187,6 @@ function Game(props) {
     }
   };
 
-  const fromClientToServer = (childdata) => {
-    // socket.emit("updateFromClient", childdata);
-    if (result === "") {
-      socket.emit("updateFromClient", childdata);
-    }
-  };
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -210,13 +195,13 @@ function Game(props) {
       drawPlayers(ctx, playerData);
       drawTowers(ctx, towerData);
       if (playerUp) {
-        fromClientToServer("Up");
+        socket.emit("updateFromClient", "Up");
       } else if (playerDown) {
-        fromClientToServer("Down");
+        socket.emit("updateFromClient", "Down");
       } else if (playerLeft) {
-        fromClientToServer("Left");
+        socket.emit("updateFromClient", "Left");
       } else if (playerRight) {
-        fromClientToServer("Right");
+        socket.emit("updateFromClient", "Right");
       }
       animationFrameId = window.requestAnimationFrame(render);
     };
@@ -233,12 +218,11 @@ function Game(props) {
         <button
           onClick={() => {
             socket.emit("playerLeft");
-            //axios.post(url + "/logout");
-            axios.post("http://localhost:3000/logout");
+            axios.post(url + "/logout");
             navigate("/thankyou");
           }}
         >
-          Logout from Game (Doesnt work)
+          Logout from Game
         </button>
         <h1>
           You {selfPlayerScore} - {opponentPlayerScore} Opponent
@@ -250,7 +234,7 @@ function Game(props) {
           width={"800px"}
           height={"500px"}
           ref={canvasRef}
-          style={{ backgroundImage: `url(${Map})` }}
+          style={{ backgroundImage: `url('${map.default}')` }}
         />
       </>
 
