@@ -38,35 +38,43 @@
     transform: rotate(360deg);
   }
 }
-
-#canvas {
-  /* padding: 0;
-  margin: 0; */
-  align-items: flex-end;
-  /* width: 100%; */
+#container {
+  position: relative;
+}
+#container canvas,
+#overlayer {
   position: absolute;
+  left: 4%;
+}
+#overlayer {
+  margin-top: 6%;
+}
+canvas {
+  border: 1px solid black;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 0;
-  margin: auto;
+  margin: right;
 }
 
 #overlay {
-  position: fixed;
+  position: relative;
   top: 10%;
   bottom: 90%;
   left: 0;
   right: 0;
   z-index: 10;
 }
-#overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
 
-#overlay.inactive {
-  opacity: 0;
-  pointer-events: none;
+#flexor {
+  display: flex;
+  flex-direction: row;
+  height: 500px;
+  width: 1300px;
+}
+#test-results-container {
+  background-color: #282c34;
+  overflow-y: auto;
 }

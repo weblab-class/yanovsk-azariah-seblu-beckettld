@@ -6,6 +6,7 @@ import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
 import Tower from "../assets/tower.png";
 import { sprites } from "./data";
+import "./App.css";
 
 //==========LOCAL/HEROKU===========//
 // const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -33,7 +34,9 @@ function Game(props) {
   const [IDEstatus, setIDEStatus] = useState(false);
   const [currentTower, setCurrentTower] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
-  const [IDEFeedback, setIDEFeedback] = useState([]);
+  const [IDEFeedback, setIDEFeedback] = useState([
+    "                                                                            ",
+  ]);
 
   const endgame = (result) => {
     setResult(result);
@@ -227,36 +230,66 @@ function Game(props) {
         </h1>
 
         <h1> {result}</h1>
-        <canvas
-          id="canvas"
-          width={"1300px"}
-          height={"700px"}
-          ref={canvasRef}
-          style={{ backgroundImage: `url('${map.default}')` }}
-        />
-      </>
-
-      {IDEstatus ? (
-        <>
-          <button onClick={closeIDE}>Close</button>
-          <CodeMirror
-            value={code}
-            height="600px"
-            theme="dark"
-            options={{ theme: "sublime" }}
-            extensions={[python()]}
-            onChange={onChange}
+        <div id="container">
+          <canvas
+            id="canvas"
+            width={"1300px"}
+            height={"700px"}
+            ref={canvasRef}
+            style={{ backgroundImage: `url('${map.default}')` }}
           />
-          <button onClick={submitCode}>Submit</button>
-          <h1>
-            {IDEFeedback.map((message) => (
-              <li>{message}</li>
-            ))}
-          </h1>
-        </>
-      ) : (
-        ""
-      )}
+          <div id="overlayer">
+            {" "}
+            {IDEstatus ? (
+              <div id="flexor">
+                <div id="editor-container">
+                  <CodeMirror
+                    value={code}
+                    width={"800px"}
+                    height={"500px"}
+                    borderRadius={".25em"}
+                    theme="dark"
+                    options={{ theme: "sublime" }}
+                    extensions={[python()]}
+                    onChange={onChange}
+                  />
+                  <span>
+                    <button onClick={submitCode}>Submit</button>
+                    <button onClick={closeIDE}>Close</button>
+                  </span>
+                </div>
+                <div id="test-results-container">
+                  <h1>
+                    {IDEFeedback.map((message) => (
+                      <li>{message}</li>
+                    ))}{" "}
+                    {IDEFeedback.map((message) => (
+                      <li>{message}</li>
+                    ))}{" "}
+                    {IDEFeedback.map((message) => (
+                      <li>{message}</li>
+                    ))}{" "}
+                    {IDEFeedback.map((message) => (
+                      <li>{message}</li>
+                    ))}{" "}
+                    {IDEFeedback.map((message) => (
+                      <li>{message}</li>
+                    ))}{" "}
+                    {IDEFeedback.map((message) => (
+                      <li>{message}</li>
+                    ))}{" "}
+                    {IDEFeedback.map((message) => (
+                      <li>{message}</li>
+                    ))}
+                  </h1>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+      </>
     </div>
   );
 }
