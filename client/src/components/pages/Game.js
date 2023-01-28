@@ -70,16 +70,6 @@ function Game(props) {
           }
           setIDEFeedback(finalArr);
 
-          // let IDEmessage="";
-          // for (const obj of res.data.testCaseResultsWithMessages) {
-          //   IDEmessage +=
-          //     (Object.keys(obj)[0] === "True" ? "Correct: " : "Incorrect: ") +
-          //     Object.values(obj)[0] +
-          //     "\n";
-
-          // }
-          // setIDEFeedback(IDEmessage);
-
           if (res.data.overallResult === true) {
             console.log("You got them all right!");
             // fromClientToServer(currentTower);
@@ -156,7 +146,7 @@ function Game(props) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const [key, value] of Object.entries(playerData)) {
       const spriteImage = new Image();
-      spriteImage.src = sprites[value.sprite_id];
+      spriteImage.src = sprites[value.sprite_id]; //because of 0 indexing
       ctx.drawImage(spriteImage, value.position.x, value.position.y, 50, 50);
     }
   };
@@ -180,6 +170,7 @@ function Game(props) {
     }
     return -1;
   };
+
   const drawTowers = (ctx, towerData) => {
     const color = "blue";
     for (const [key, value] of Object.entries(towerData)) {
