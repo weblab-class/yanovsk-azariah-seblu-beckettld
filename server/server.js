@@ -37,7 +37,11 @@ app.use(
 const mongoConnectionURL = process.env.MONGO_SRV;
 
 const databaseName = "Cluster0";
-
+let canvasWidth = 800;
+let canvasHeight = 500;
+let playerRadius = 30;
+let towerHeight = 50;
+let towerWidth = 50;
 mongoose
   .connect(mongoConnectionURL, {
     useNewUrlParser: true,
@@ -172,29 +176,143 @@ function connected(socket) {
     }
     socket.disconnect();
   });
+  const adjustLeft = (player, room_id) => {
+    const towerData = allTowers[room_id];
 
-  socket.on("updateFromClient", (data) => {
-    room_id = socketToRoom[socket.id];
-
-    if (data === "Up") {
-      allGameStates[room_id][socket.id].position.y -= 10;
-    } else if (data === "Down") {
-      allGameStates[room_id][socket.id].position.y += 10;
-    } else if (data === "Right") {
-      allGameStates[room_id][socket.id].position.x += 10;
-    } else if (data === "Left") {
-      allGameStates[room_id][socket.id].position.x -= 10;
-    } else {
-      if (data in ["1", "2", "3", "4", "5"]) {
-        const numData = parseInt(data);
-        if (allGameStates[room_id][socket.id].tower_status[numData] == 0) {
-          allGameStates[room_id][socket.id].tower_status[numData] = 1;
-          allGameStates[room_id][socket.id].score += 1;
-        }
+    if (player.position.x + playerRadius >= 800) {
+      player.position.x = 800 - playerRadius - 1;
+    }
+    for (const [key, value] of Object.entries(towerData)) {
+      if (
+        player.position.x + playerRadius === value.position.x && //TOUCHING LEFT
+        !(player.position.y + playerRadius <= value.position.y) && // NOT TO THE TOP
+        !(player.position.y - playerRadius >= value.position.y + towerHeight) //NOT TO THE BOTTOM
+      ) {
+        player.position.x -= 1;
       }
     }
+  };
+  const adjustRight = (player, room_id) => {
+    const towerData = allTowers[room_id];
 
-    io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    if (player.position.x - playerRadius <= 0) {
+      player.position.x = 1 + playerRadius;
+    }
+    for (const [key, value] of Object.entries(towerData)) {
+      if (
+        player.position.x - playerRadius === value.position.x + towerWidth && //TOUCHING RIGHT
+        !(player.position.y + playerRadius <= value.position.y) && // NOT TO THE TOP
+        !(player.position.y - playerRadius >= value.position.y + towerHeight) //NOT TO THE BOTTOM
+      ) {
+        player.position.x += 1;
+      }
+    }
+  };
+  const adjustUp = (player, room_id) => {
+    const towerData = allTowers[room_id];
+
+    if (player.position.y + playerRadius >= 500) {
+      player.position.y = 500 - playerRadius - 1;
+    }
+    for (const [key, value] of Object.entries(towerData)) {
+      if (
+        player.position.y + playerRadius === value.position.y && //TOUCHING TOP
+        !(player.position.x - playerRadius >= value.position.x + towerWidth) && // NOT TO THE RIGHT
+        !(player.position.x + playerRadius <= value.position.x) //NOT TO THE LEFT
+      ) {
+        player.position.y -= 1;
+      }
+    }
+  };
+  const adjustDown = (player, room_id) => {
+    const towerData = allTowers[room_id];
+    if (player.position.y - playerRadius <= 0) {
+      player.position.y = 1 + playerRadius;
+    }
+    for (const [key, value] of Object.entries(towerData)) {
+      if (
+        player.position.y - playerRadius === value.position.y + towerHeight && //TOUCHING BOTTOM
+        !(player.position.x - playerRadius >= value.position.x + towerWidth) && // NOT TO THE RIGHT
+        !(player.position.x + playerRadius <= value.position.x) //NOT TO THE LEFT
+      ) {
+        player.position.y += 1;
+      }
+    }
+  };
+
+  // const adjustCollisions = (player, room_id) => {
+  //   //map bounds
+  //   if (player.position.y + playerRadius >= 500) {
+  //     player.position.y = 500 - playerRadius - 1;
+  //   }
+  //   if (player.position.y - playerRadius <= 0) {
+  //     player.position.y = 1 + playerRadius;
+  //   }
+  //   if (player.position.x + playerRadius >= 800) {
+  //     player.position.x = 800 - playerRadius - 1;
+  //   }
+  //   if (player.position.x - playerRadius <= 0) {
+  //     player.position.x = 1 + playerRadius;
+  //   }
+  //   console.log(allTowers);
+  //   const towerData = allTowers[room_id];
+  //   // console.log(towerData);
+  //   for (const [key, value] of Object.entries(towerData)) {
+  //     if (
+  //       player.position.y + playerRadius === value.position.y && //TOUCHING TOP
+  //       !(player.position.x - playerRadius >= value.position.x + towerWidth) && // NOT TO THE RIGHT
+  //       !(player.position.x + playerRadius <= value.position.x) //NOT TO THE LEFT
+  //     ) {
+  //       player.position.y -= 1;
+  //     } else if (
+  //       player.position.y - playerRadius === value.position.y + towerHeight && //TOUCHING BOTTOM
+  //       !(player.position.x - playerRadius >= value.position.x + towerWidth) && // NOT TO THE RIGHT
+  //       !(player.position.x + playerRadius <= value.position.x) //NOT TO THE LEFT
+  //     ) {
+  //       player.position.y += 1;
+  //     } else if (
+  //       player.position.x + playerRadius === value.position.x && //TOUCHING LEFT
+  //       !(player.position.y + playerRadius <= value.position.y) && // NOT TO THE TOP
+  //       !(player.position.y - playerRadius >= value.position.y + towerHeight) //NOT TO THE BOTTOM
+  //     ) {
+  //       player.position.x -= 1;
+  //     } else if (
+  //       player.position.x - playerRadius === value.position.x + towerWidth && //TOUCHING RIGHT
+  //       !(player.position.y + playerRadius <= value.position.y) && // NOT TO THE TOP
+  //       !(player.position.y - playerRadius >= value.position.y + towerHeight) //NOT TO THE BOTTOM
+  //     ) {
+  //       player.position.x += 1;
+  //     }
+  //   }
+  // };
+  socket.on("updateFromClient", (data) => {
+    room_id = socketToRoom[socket.id];
+    const player = allGameStates[room_id][socket.id];
+    for (let i = 0; i < 5; i++) {
+      if (data === "Up") {
+        allGameStates[room_id][socket.id].position.y -= 1;
+        adjustDown(player, room_id);
+      } else if (data === "Down") {
+        allGameStates[room_id][socket.id].position.y += 1;
+        adjustUp(player, room_id);
+      } else if (data === "Right") {
+        allGameStates[room_id][socket.id].position.x += 1;
+        adjustLeft(player, room_id);
+      } else if (data === "Left") {
+        allGameStates[room_id][socket.id].position.x -= 1;
+        adjustRight(player, room_id);
+      } else {
+        if (data in ["1", "2", "3", "4", "5"]) {
+          const numData = parseInt(data);
+          if (allGameStates[room_id][socket.id].tower_status[numData] == 0) {
+            allGameStates[room_id][socket.id].tower_status[numData] = 1;
+            allGameStates[room_id][socket.id].score += 1;
+          }
+        }
+      }
+
+      io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    }
   });
 
   const initGameState = (room_id, socket_id, socket_number) => {
