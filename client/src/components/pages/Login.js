@@ -4,6 +4,8 @@ import { SocketContext } from "../context/socket";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import "./App.css";
+import GoogleButton from "react-google-button";
+import AnimatedText from "react-animated-text-content";
 
 import { useNavigate } from "react-router-dom";
 
@@ -59,17 +61,31 @@ function Login(props) {
         <div className="form_login">
           <div class="nes-container is-rounded is-dark">
             <p>Sing up or Login</p>
-            <GoogleLogin
-              className="google_button"
-              onSuccess={handleLogin}
-              onError={(err) => console.log(err)}
-            />
+            <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
           </div>
         </div>
 
         <div className="game_info">
           <div class="nes-container is-rounded is-dark">
-            <p>Good morning. Thou hast had a good night's sleep, I hope.</p>
+            <AnimatedText
+              type="words" // animate words or chars
+              animation={{
+                x: "200px",
+                y: "-20px",
+                scale: 1.1,
+                ease: "ease-in-out",
+              }}
+              animationType="float"
+              interval={0.06}
+              duration={0.8}
+              tag="p"
+              className="animated-paragraph"
+              includeWhiteSpaces
+              threshold={0.1}
+              rootMargin="20%"
+            >
+              Welcome to Code Legends
+            </AnimatedText>
           </div>
         </div>
       </div>
