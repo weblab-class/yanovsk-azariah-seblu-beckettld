@@ -40,8 +40,8 @@ const databaseName = "Cluster0";
 let canvasWidth = 800;
 let canvasHeight = 500;
 let playerRadius = 30;
-let towerHeight = 50;
-let towerWidth = 50;
+let towerHeight = 25;
+let towerWidth = 25;
 mongoose
   .connect(mongoConnectionURL, {
     useNewUrlParser: true,
