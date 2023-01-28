@@ -3,6 +3,7 @@ import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/goo
 import { SocketContext } from "../context/socket";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import "./App.css";
 
 import { useNavigate } from "react-router-dom";
 
@@ -46,18 +47,32 @@ function Login(props) {
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <>
-        <button
-          onClick={() => {
-            googleLogout();
-            handleLogout();
-          }}
-        >
-          Logout from Game
-        </button>
-        <p>Welcome to CodeLegend MVP. Please log in with your Google Account to play </p>
-        <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
-      </>
+      {/* <button
+        onClick={() => {
+          googleLogout();
+          handleLogout();
+        }}
+      >
+        Logout from Game
+      </button> */}
+      <div className="start_page">
+        <div className="form_login">
+          <div class="nes-container is-rounded is-dark">
+            <p>Sing up or Login</p>
+            <GoogleLogin
+              className="google_button"
+              onSuccess={handleLogin}
+              onError={(err) => console.log(err)}
+            />
+          </div>
+        </div>
+
+        <div className="game_info">
+          <div class="nes-container is-rounded is-dark">
+            <p>Good morning. Thou hast had a good night's sleep, I hope.</p>
+          </div>
+        </div>
+      </div>
     </GoogleOAuthProvider>
   );
 }
