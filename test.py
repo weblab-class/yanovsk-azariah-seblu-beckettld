@@ -15,9 +15,6 @@ def checkIfPangram(s):
             if char not in letters:
                 letters.add(char)
         return len(letters) >= 26
-
-
-#DO NOT EDIT CODE BELOW
 if __name__ == "__main__":
   s_input = sys.argv[1]
   result =sys.argv[2]

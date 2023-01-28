@@ -67,11 +67,12 @@ app.post("/problem", (req, res) => {
 });
 
 app.post("/submitCode", async (req, res) => {
-  fs.writeFileSync("test.py", req.body.code);
-  console.log(req.body.code);
   const currentProblem = await Problem.find({
     _id: req.body.questionID,
   });
+
+  fs.writeFileSync("test.py", req.body.code + currentProblem[0].problemScript);
+  console.log(req.body.code + currentProblem[0].problemScript);
   const testCases = currentProblem[0].testCases;
   const promises = [];
   const testCaseResults = [];
@@ -91,9 +92,6 @@ app.post("/submitCode", async (req, res) => {
               reject(err.message);
             } else {
               if (results) {
-                console.log(testCases[key]);
-                const newTestCase = ["1,2,3,4,5", "1,2,3,4,5", "1,2,3,4,5", 15];
-                console.log(results);
                 const messageString = `Input(s): (${testCases[key]
                   .slice(0, testCases[key].length - 1)
                   .join(")  (")}) | Expected Output: ${results[0]} | Got: ${results[1]}`;
@@ -101,7 +99,6 @@ app.post("/submitCode", async (req, res) => {
                 const resultBool = results[2];
                 const testObj = {};
                 testObj[resultBool] = messageString;
-                console.log(testObj);
                 testCaseResultsWithMessages.push(testObj);
                 resolve(true);
               }
@@ -255,21 +252,25 @@ function connected(socket) {
       0: {
         questionID: towerQuestions[0]._id,
         questionCode: towerQuestions[0].problemText,
+        questionScript: towerQuestions[0].problemScript,
         position: { x: 320, y: 300 },
       },
       1: {
         questionID: towerQuestions[1]._id,
         questionCode: towerQuestions[1].problemText,
+        questionScript: towerQuestions[1].problemScript,
         position: { x: 500, y: 100 },
       },
       2: {
         questionID: towerQuestions[2]._id,
         questionCode: towerQuestions[2].problemText,
+        questionScript: towerQuestions[2].problemScript,
         position: { x: 282, y: 119 },
       },
       3: {
         questionID: towerQuestions[3]._id,
         questionCode: towerQuestions[3].problemText,
+        questionScript: towerQuestions[3].problemScript,
         position: { x: 581, y: 300 },
       },
     };
