@@ -21,7 +21,7 @@ const ChooseMap = () => {
     socket.emit("initGameState", { mapSelection, spriteSelection });
   };
   return (
-    <div>
+    <div class="nes-container is-rounded is-dark">
       <p>Please Choose Map</p>
       <button onClick={() => handleMapSelection(1)}>Map 1</button>
       <button onClick={() => handleMapSelection(2)}>Map 2</button>

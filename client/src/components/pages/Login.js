@@ -6,7 +6,6 @@ import jwt_decode from "jwt-decode";
 import "./App.css";
 import GoogleButton from "react-google-button";
 import AnimatedText from "react-animated-text-content";
-
 import { useNavigate } from "react-router-dom";
 
 //==========LOCAL/HEROKU===========//
