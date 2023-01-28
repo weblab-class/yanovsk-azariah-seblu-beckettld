@@ -253,20 +253,22 @@ function connected(socket) {
 
   const handleUpdateFromClient = (data) => {
     room_id = socketToRoom[socket.id];
-    if (data === "Up") {
-      allGameStates[room_id][socket.id].position.y -= 10;
-    } else if (data === "Down") {
-      allGameStates[room_id][socket.id].position.y += 10;
-    } else if (data === "Right") {
-      allGameStates[room_id][socket.id].position.x += 10;
-    } else if (data === "Left") {
-      allGameStates[room_id][socket.id].position.x -= 10;
-    } else {
-      if (data in ["1", "2", "3", "4", "5"]) {
-        const numData = parseInt(data);
-        if (allGameStates[room_id][socket.id].tower_status[numData] == 0) {
-          allGameStates[room_id][socket.id].tower_status[numData] = 1;
-          allGameStates[room_id][socket.id].score += 1;
+    if (room_id) {
+      if (data === "Up") {
+        allGameStates[room_id][socket.id].position.y -= 10;
+      } else if (data === "Down") {
+        allGameStates[room_id][socket.id].position.y += 10;
+      } else if (data === "Right") {
+        allGameStates[room_id][socket.id].position.x += 10;
+      } else if (data === "Left") {
+        allGameStates[room_id][socket.id].position.x -= 10;
+      } else {
+        if (data in ["1", "2", "3", "4", "5"]) {
+          const numData = parseInt(data);
+          if (allGameStates[room_id][socket.id].tower_status[numData] == 0) {
+            allGameStates[room_id][socket.id].tower_status[numData] = 1;
+            allGameStates[room_id][socket.id].score += 1;
+          }
         }
       }
     }
@@ -277,7 +279,7 @@ function connected(socket) {
     if (socket.id !== undefined) {
       room_id = socketToRoom[socket.id];
       if (room_id !== undefined) {
-        delete allGameStates[room_id][socket.id].position;
+        delete allGameStates[room_id][socket.id];
         delete socketToRoom[socket.id];
         io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
       }

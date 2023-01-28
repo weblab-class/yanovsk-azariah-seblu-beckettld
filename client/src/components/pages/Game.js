@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CodeMirror from "@uiw/react-codemirror";
 import axios from "axios";
 import { python } from "@codemirror/lang-python";
@@ -17,7 +17,7 @@ const url = "http://localhost:3000";
 function Game(props) {
   const { state } = useLocation();
   const map = require(`../assets/map${state.map_id}.png`);
-
+  const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const canvasRef = useRef(null);
   let playerRight, playerLeft, playerUp, playerDown;
@@ -218,12 +218,11 @@ function Game(props) {
         <button
           onClick={() => {
             socket.emit("playerLeft");
-            //axios.post(url + "/logout");
-            axios.post("http://localhost:3000/logout");
+            axios.post(url + "/logout");
             navigate("/thankyou");
           }}
         >
-          Logout from Game (Doesnt work)
+          Logout from Game
         </button>
         <h1>
           You {selfPlayerScore} - {opponentPlayerScore} Opponent
