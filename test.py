@@ -18,3 +18,15 @@ def countElems(arr):
                 cnt +=1
                 
         return cnt
+def checkIfPangram(s):
+        letters = set()
+        for char in s:
+            if char not in letters:
+                letters.add(char)
+        return len(letters) >= 26
+if __name__ == "__main__":
+  s_input = sys.argv[1]
+  result =sys.argv[2]
+  print(result)
+  print(str(checkIfPangram(s_input)))
+  print(str(checkIfPangram(s_input))==result)
