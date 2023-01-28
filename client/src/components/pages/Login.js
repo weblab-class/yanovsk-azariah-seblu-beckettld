@@ -6,15 +6,14 @@ import jwt_decode from "jwt-decode";
 import "./App.css";
 import GoogleButton from "react-google-button";
 import AnimatedText from "react-animated-text-content";
-
 import { useNavigate } from "react-router-dom";
 
 //==========LOCAL/HEROKU===========//
-// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-// const url = "https://codeleg.herokuapp.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const url = "https://codeleg.herokuapp.com";
 
-const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
-const url = "http://localhost:3000";
+// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+// const url = "http://localhost:3000";
 
 function Login(props) {
   const [userId, setUserId] = useState("");
@@ -68,6 +67,7 @@ function Login(props) {
         <div className="game_info">
           <div class="nes-container is-rounded is-dark">
             <AnimatedText
+              className="game_info_welcome"
               type="words" // animate words or chars
               animation={{
                 x: "200px",
@@ -77,15 +77,20 @@ function Login(props) {
               }}
               animationType="float"
               interval={0.06}
-              duration={0.8}
+              duration={0.5}
               tag="p"
-              className="animated-paragraph"
               includeWhiteSpaces
               threshold={0.1}
               rootMargin="20%"
             >
-              Welcome to Code Legends
+              Welcome to CodeLegends!
             </AnimatedText>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+              dolor in reprehenderit in voluptate velit esse cillum dolore{" "}
+            </p>
           </div>
         </div>
       </div>

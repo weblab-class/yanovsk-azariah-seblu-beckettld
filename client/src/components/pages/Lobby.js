@@ -1,13 +1,14 @@
+import "./App.css";
 import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
 import { useNavigate, Outlet } from "react-router-dom";
-import ChooseMap from "./ChooseMap.js";
 
 function Lobby(props) {
   const socket = useContext(SocketContext);
   const [roomConnection, setRoomConnection] = useState("");
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
+  const [secondPlayerJoined, setSecondPlayerJoined] = useState(false);
 
   const joinRoom = (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ function Lobby(props) {
 
     socket.on("newPlayerInRoom", (number) => {
       if (number == 2) {
+        setSecondPlayerJoined(true);
         navigate("/lobby/choosemap");
       }
     });
@@ -47,30 +49,52 @@ function Lobby(props) {
   }, []);
 
   return (
-    <div>
-      <h1>Welcome to CodeLegend</h1>
-      <p>You can either create new room or joining existing one</p>
-      <button onClick={createNewRoom}>Create Room</button>
+    <div className="lobby_wrapper">
+      <div className="join_room">
+        <div class="nes-container is-rounded is-dark">
+          <h1>Welcome to CodeLegend</h1>
+          <p>You can either create new room or joining existing one</p>
+          <button onClick={createNewRoom}>Create Room</button>
 
-      <p>{roomId !== "" ? "Room ID: " + roomId : ""}</p>
-      <p>
-        {roomId !== ""
-          ? "Share this ID with your friend. Game will start when 2nd player joins."
-          : ""}
-      </p>
-      {roomId !== "" ? (
-        ""
-      ) : (
-        <>
-          <form onSubmit={joinRoom}>
-            <input type="text" id="room_id" name="room_id" placeholder="Room Id" />
-            <button type="submit">Submit</button>
-          </form>
-          <p>{roomConnection}</p>
-        </>
-      )}
+          <p>{roomId !== "" ? "Room ID: " + roomId : ""}</p>
+          <p>
+            {roomId !== ""
+              ? "Share this ID with your friend. Game will start when 2nd player joins."
+              : ""}
+          </p>
+          {roomId !== "" ? (
+            ""
+          ) : (
+            <>
+              <form onSubmit={joinRoom}>
+                <input type="text" id="room_id" name="room_id" placeholder="Room Id" />
+                <button type="submit">Submit</button>
+              </form>
+              <p>{roomConnection}</p>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="choose_map">
+        {secondPlayerJoined ? (
+          ""
+        ) : (
+          <section class="nes-container is-dark">
+            <section class="message-list">
+              <section class="message -left"></section>
 
-      <Outlet />
+              <section class="message -right">
+                <div class="nes-balloon from-right is-dark">
+                  <p>Good morning. Thou hast had a good night's sleep, I hope.</p>
+                </div>
+                <i class="nes-bcrikko"></i>
+              </section>
+            </section>
+          </section>
+        )}
+
+        <Outlet />
+      </div>
     </div>
   );
 }

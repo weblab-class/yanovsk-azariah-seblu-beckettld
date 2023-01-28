@@ -46,6 +46,7 @@ canvas {
   margin-top: 20%;
   background-color: #212529;
   display: flex; /* or inline-flex */
+  flex-direction: row;
   justify-content: center;
   gap: 20px;
 }
@@ -54,10 +55,27 @@ canvas {
   width: 25%;
   font-size: 12px;
 }
+
+.game_info_welcome {
+  font-size: 13px;
+}
+
 .game_info {
+  font-size: 11px;
   width: 45%;
 }
 
 .google_button {
   background-color: blue;
+}
+
+.lobby_wrapper {
+  display: flex;
+  flex-direction: row;
+  background-color: #212529;
+}
+
+.join_room {
+  font-size: 12px;
+  width: 25%;
 }
