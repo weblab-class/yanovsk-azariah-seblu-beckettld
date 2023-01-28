@@ -160,18 +160,24 @@ io.on("connection", connected);
 
 function connected(socket) {
   socket.on("disconnect", () => {
-    room_id = socketToRoom[socket.id];
-    if (room_id) {
-      delete allGameStates[room_id][socket.id];
-      io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
-    }
+    // room_id = socketToRoom[socket.id];
+    // if (allGameStates[room_id][socket.id]) {
+    //   delete allGameStates[room_id][socket.id];
+    //   delete socketToRoom[socket.id];
+    //   io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    // }
   });
 
   socket.on("playerLeft", () => {
-    room_id = socketToRoom[socket.id];
-    if (room_id) {
-      delete allGameStates[room_id][socket.id];
-      io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+    console.log("emitting playerLeft");
+    if (socket.id !== undefined) {
+      room_id = socketToRoom[socket.id];
+      if (room_id !== undefined) {
+        delete allGameStates[room_id][socket.id];
+        delete socketToRoom[socket.id];
+
+        io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+      }
     }
     socket.disconnect();
   });
@@ -196,47 +202,72 @@ function connected(socket) {
         }
       }
     }
+    console.log("UPDATE FROM CLIENT RECEIVED AND SENT");
 
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   });
 
-  const initGameState = (room_id, socket_id, socket_number) => {
-    if (socket_number === 1) {
+  const handleInitGameState = ({ mapSelection, spriteSelection }) => {
+    room_id = socketToRoom[socket.id];
+    //if first player
+    if (room_id && allGameStates[room_id] === undefined) {
       allGameStates[room_id] = {};
-      allGameStates[room_id][socket_id] = {
+      allGameStates[room_id][socket.id] = {
         position: { x: 100, y: 100 },
         tower_status: [0, 0, 0, 0],
         score: 0,
+        sprite_id: spriteSelection,
+        map_id: mapSelection,
       };
-      socket.emit("assignedRoomId", room_id);
-    }
-    if (socket_number === 2) {
-      allGameStates[room_id][socket_id] = {
+    } else if (room_id && allGameStates[room_id]) {
+      allGameStates[room_id][socket.id] = {
         position: { x: 110, y: 110 },
         tower_status: [0, 0, 0, 0],
         score: 0,
+        sprite_id: spriteSelection,
+        map_id: mapSelection,
       };
+      //when 2nd player joined emit map from 2 selections
+      let maps = [];
+      for (const [key, value] of Object.entries(allGameStates[room_id])) {
+        maps.push(value.map_id);
+      }
+      //emit random map from maps array to Game.js
+      io.to(`${room_id}`).emit("startGame", maps[Math.floor(Math.random() * 2)]);
     }
-  };
+    console.log("HANDLE INIT GAME STATE");
 
-  const handleNewRoom = () => {
-    let room_id = makeid(5);
-    socketToRoom[socket.id] = room_id;
-    socket.join(room_id);
-    socket.number = 1;
-    initGameState(room_id, socket.id, 1);
-
-    io.to(`${room_id}`).emit("init", 1);
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
-  const handleJoinRoom = async (room_id) => {
-    let numPlayers;
-    if (allGameStates[room_id]) {
-      numPlayers = Object.keys(allGameStates[room_id]).length;
+  const handleNewRoom = () => {
+    try {
+      let room_id = makeid(5);
+      socketToRoom[socket.id] = room_id;
+      socket.join(room_id);
+      socket.number = 1;
+      socket.emit("assignedRoomId", room_id);
+      io.to(`${room_id}`).emit("newPlayerInRoom", 1);
+    } catch (err) {
+      console.log(err);
+      socket.emit("assignedRoomId", `ERROR ${err}`);
     }
 
-    if (numPlayers === 0 || numPlayers === undefined) {
+    //initGameState(room_id, socket.id, 1);
+
+    //io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
+  };
+  //handle and join new room are now purely for socket to room mapping
+  //they are not for assigning game state
+
+  const handleJoinRoom = async (room_id) => {
+    const room = io.sockets.adapter.rooms.get(room_id);
+    let numPlayers;
+
+    if (room) {
+      numPlayers = io.sockets.adapter.rooms.get(room_id).size;
+    }
+    if (numPlayers === 0 || numPlayers === undefined || room === undefined) {
       socket.emit("badConnection", "Room Code Doesn't Exist");
       return;
     } else if (numPlayers > 1) {
@@ -246,7 +277,8 @@ function connected(socket) {
       socket.join(room_id);
       socketToRoom[socket.id] = room_id;
       socket.number = 2;
-      initGameState(room_id, socket.id, 2);
+      io.to(`${room_id}`).emit("newPlayerInRoom", 2);
+      //initGameState(room_id, socket.id, 2);
     }
 
     const towerQuestions = await Problem.find({ version: "mvp" });
@@ -276,11 +308,14 @@ function connected(socket) {
 
     io.to(`${room_id}`).emit("init", 2);
     io.to(`${room_id}`).emit("initTowers", allTowers[room_id]);
+    console.log("emitting in maps");
+
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
 
   socket.on("newRoom", handleNewRoom);
   socket.on("joinRoom", handleJoinRoom);
+  socket.on("initGameState", handleInitGameState);
 }
 
 //==========GOOGLE AUTH===========//

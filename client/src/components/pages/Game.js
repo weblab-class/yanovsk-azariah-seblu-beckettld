@@ -1,15 +1,14 @@
 import "./App.css";
 import React, { useRef, useEffect, useState, useContext } from "react";
-import data from "./data";
+import { useLocation } from "react-router-dom";
 import { trueFunc } from "boolbase";
 import CodeMirror from "@uiw/react-codemirror";
 import axios from "axios";
 import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
-import Map from "../assets/map_1.png";
-import Sprite from "../assets/sprite.png";
-
+import Sprite from "../assets/sprite1.png";
 import Tower from "../assets/tower.png";
+import Map from "../assets/map1.png";
 
 //==========LOCAL/HEROKU===========//
 // const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -19,9 +18,13 @@ const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.goo
 const url = "http://localhost:3000";
 
 function Game(props) {
+  //const { state } = useLocation();
+  const map = require(`../assets/map${1}.png`);
+
+  const sprite = require(`../assets/sprite${1}.png`);
+
   const socket = useContext(SocketContext);
   const canvasRef = useRef(null);
-  let { towerObj } = data;
   let playerRight, playerLeft, playerUp, playerDown;
   [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
 
@@ -32,7 +35,6 @@ function Game(props) {
   const [towerData, setTowerData] = useState({});
   const [result, setResult] = useState("");
   const [code, setCode] = useState("");
-  const [questionID, setQuestionID] = useState(0);
   const [IDEstatus, setIDEStatus] = useState(false);
   const [currentTower, setCurrentTower] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
@@ -125,7 +127,6 @@ function Game(props) {
   }, []);
 
   document.onkeydown = (e) => {
-    console.log("tiger");
     if (!IDEstatus) {
       if (e.key === "ArrowRight") playerRight = true;
       if (e.key === "ArrowLeft") playerLeft = true;
@@ -150,10 +151,11 @@ function Game(props) {
   };
 
   const drawPlayers = (ctx, playerData) => {
+    console.log("draw players called");
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const [key, value] of Object.entries(playerData)) {
       const spriteImage = new Image();
-      spriteImage.src = Sprite;
+      spriteImage.src = sprite.default;
       ctx.drawImage(spriteImage, value.position.x, value.position.y, 50, 50);
     }
   };
@@ -171,7 +173,6 @@ function Game(props) {
   const inTowers = (position) => {
     for (const [key, value] of Object.entries(towerData)) {
       if (near(position, value.position)) {
-        console.log(position, value.position);
         attemptToggleIDE(value.questionCode, key);
         return key;
       }
@@ -206,9 +207,13 @@ function Game(props) {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let animationFrameId;
+
     const render = () => {
+      console.log("render called");
+
       drawPlayers(ctx, playerData);
       drawTowers(ctx, towerData);
+
       if (playerUp) {
         fromClientToServer("Up");
       } else if (playerDown) {
@@ -250,7 +255,7 @@ function Game(props) {
           width={"800px"}
           height={"500px"}
           ref={canvasRef}
-          style={{ backgroundImage: `url(${Map})` }}
+          style={{ backgroundImage: `url('${map.default}')` }}
         />
       </>
 

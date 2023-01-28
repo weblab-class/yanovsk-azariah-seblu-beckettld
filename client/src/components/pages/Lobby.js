@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
 import { useNavigate, Outlet } from "react-router-dom";
-import ThankYou from "./ThankYou.js";
+import ChooseMap from "./ChooseMap.js";
 
 function Lobby(props) {
   const socket = useContext(SocketContext);
@@ -9,9 +9,8 @@ function Lobby(props) {
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const joinRoom = (e) => {
     e.preventDefault();
-    console.log(e.target.room_id.value);
     socket.emit("joinRoom", e.target.room_id.value);
   };
 
@@ -20,10 +19,13 @@ function Lobby(props) {
   };
 
   useEffect(() => {
-    socket.on("init", (number) => {
+    socket.on("startGame", (map_id) => {
+      navigate("/game");
+    });
+
+    socket.on("newPlayerInRoom", (number) => {
       if (number == 2) {
-        navigate("/game");
-        //navigate("/lobby/choosemap");
+        navigate("/lobby/choosemap");
       }
     });
 
@@ -52,7 +54,7 @@ function Lobby(props) {
         ""
       ) : (
         <>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={joinRoom}>
             <input type="text" id="room_id" name="room_id" placeholder="Room Id" />
             <button type="submit">Submit</button>
           </form>
