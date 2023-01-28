@@ -96,7 +96,7 @@ app.post("/submitCode", async (req, res) => {
               if (results) {
                 const messageString = `Input(s): (${testCases[key]
                   .slice(0, testCases[key].length - 1)
-                  .join(")  (")}) | Expected Output: ${results[0]} | Got: ${results[1]}`;
+                  .join(")  (")}) , Expected Output: ${results[0]} , Got: ${results[1]}`;
                 testCaseResults.push(results[2] == "True");
                 const resultBool = results[2];
                 const testObj = {};

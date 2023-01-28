@@ -35,7 +35,7 @@ canvas {
   display: flex;
   flex-direction: row;
   height: 500px;
-  width: 1300px;
+  width: 1301px;
 }
 #test-results-container {
   background-color: #282c34;
@@ -57,7 +57,21 @@ canvas {
 .game_info {
   width: 45%;
 }
-
+.CodeMirror {
+  font-size: 20px;
+}
 .google_button {
   background-color: blue;
+}
+
+#test-results-container {
+  color: white;
+}
+
+.correct {
+  color: green;
+}
+
+.incorrect {
+  color: red;
 }

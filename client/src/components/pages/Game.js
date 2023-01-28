@@ -23,7 +23,7 @@ function Game(props) {
   const canvasRef = useRef(null);
   let playerRight, playerLeft, playerUp, playerDown;
   [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
-
+  const resultHeader = "____Results_____";
   const [playerData, setPlayerData] = useState({});
   const [selfPlayerPosition, setSelfPlayerPosition] = useState("");
   const [selfPlayerScore, setSelfPlayerScore] = useState(0);
@@ -34,9 +34,7 @@ function Game(props) {
   const [IDEstatus, setIDEStatus] = useState(false);
   const [currentTower, setCurrentTower] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
-  const [IDEFeedback, setIDEFeedback] = useState([
-    "                                                                            ",
-  ]);
+  const [IDEFeedback, setIDEFeedback] = useState([]);
 
   const endgame = (result) => {
     setResult(result);
@@ -254,33 +252,36 @@ function Game(props) {
                     onChange={onChange}
                   />
                   <span>
-                    <button onClick={submitCode}>Submit</button>
-                    <button onClick={closeIDE}>Close</button>
+                    <button type="button" class="nes-btn is-success" onClick={submitCode}>
+                      Submit
+                    </button>
+                    <button type="button" class="nes-btn is-error" onClick={closeIDE}>
+                      Close
+                    </button>
                   </span>
                 </div>
                 <div id="test-results-container">
                   <h1>
-                    {IDEFeedback.map((message) => (
-                      <li>{message}</li>
-                    ))}{" "}
-                    {IDEFeedback.map((message) => (
-                      <li>{message}</li>
-                    ))}{" "}
-                    {IDEFeedback.map((message) => (
-                      <li>{message}</li>
-                    ))}{" "}
-                    {IDEFeedback.map((message) => (
-                      <li>{message}</li>
-                    ))}{" "}
-                    {IDEFeedback.map((message) => (
-                      <li>{message}</li>
-                    ))}{" "}
-                    {IDEFeedback.map((message) => (
-                      <li>{message}</li>
-                    ))}{" "}
-                    {IDEFeedback.map((message) => (
-                      <li>{message}</li>
-                    ))}
+                    {resultHeader} <br />
+                    {IDEFeedback.map((message) =>
+                      message.slice(0, 7) == "Correct" ? (
+                        <div>
+                          <p className="correct">
+                            {message}
+                            <br />
+                            <br />
+                          </p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="incorrect">
+                            {message}
+                            <br />
+                            <br />
+                          </p>
+                        </div>
+                      )
+                    )}
                   </h1>
                 </div>
               </div>
