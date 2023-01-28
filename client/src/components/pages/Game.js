@@ -229,8 +229,8 @@ function Game(props) {
         <h1> {result}</h1>
         <canvas
           id="canvas"
-          width={"800px"}
-          height={"500px"}
+          width={"1300px"}
+          height={"700px"}
           ref={canvasRef}
           style={{ backgroundImage: `url('${map.default}')` }}
         />

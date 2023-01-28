@@ -35,8 +35,8 @@ app.use(
 //==========MONGO DB===========//
 const mongoConnectionURL = process.env.MONGO_SRV;
 const databaseName = "Cluster0";
-let canvasWidth = 800;
-let canvasHeight = 500;
+let canvasWidth = 1300;
+let canvasHeight = 700;
 let playerRadius = 30;
 let towerHeight = 25;
 let towerWidth = 25;
@@ -153,8 +153,8 @@ app.use((err, req, res, next) => {
 const adjustLeft = (player, room_id) => {
   const towerData = allTowers[room_id];
 
-  if (player.position.x + playerRadius >= 800) {
-    player.position.x = 800 - playerRadius - 1;
+  if (player.position.x + playerRadius >= canvasWidth) {
+    player.position.x = canvasWidth - playerRadius - 1;
   }
   for (const [key, value] of Object.entries(towerData)) {
     if (
@@ -185,8 +185,8 @@ const adjustRight = (player, room_id) => {
 const adjustUp = (player, room_id) => {
   const towerData = allTowers[room_id];
 
-  if (player.position.y + playerRadius >= 500) {
-    player.position.y = 500 - playerRadius - 1;
+  if (player.position.y + playerRadius >= canvasHeight) {
+    player.position.y = canvasHeight - playerRadius - 1;
   }
   for (const [key, value] of Object.entries(towerData)) {
     if (
