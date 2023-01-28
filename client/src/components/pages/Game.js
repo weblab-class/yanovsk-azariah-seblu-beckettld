@@ -39,6 +39,7 @@ function Game(props) {
   const [currentTower, setCurrentTower] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
   const [IDEFeedback, setIDEFeedback] = useState([]);
+  const [lastKeyPressed, setLastKeyPressed] = useState("");
 
   const endgame = (result) => {
     setResult(result);
@@ -124,6 +125,14 @@ function Game(props) {
     socket.on("initTowers", (data) => {
       setTowerData(data);
     });
+
+    return () => {
+      socket.off("updateFromServer");
+      socket.off("newRoom");
+      socket.off("startGame");
+      socket.off("assignedRoomId");
+      socket.off("badConnection");
+    };
   }, []);
 
   document.onkeydown = (e) => {
@@ -151,7 +160,6 @@ function Game(props) {
   };
 
   const drawPlayers = (ctx, playerData) => {
-    console.log("draw players called");
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const [key, value] of Object.entries(playerData)) {
       const spriteImage = new Image();
@@ -195,13 +203,17 @@ function Game(props) {
       }
     }
   };
-
-  const fromClientToServer = (childdata) => {
-    // socket.emit("updateFromClient", childdata);
-    if (result === "") {
-      socket.emit("updateFromClient", childdata);
+  useState(() => {
+    if (playerUp) {
+      socket.emit("updateFromClient", "Up");
+    } else if (playerDown) {
+      socket.emit("updateFromClient", "Down");
+    } else if (playerLeft) {
+      socket.emit("updateFromClient", "Left");
+    } else if (playerRight) {
+      socket.emit("updateFromClient", "Right");
     }
-  };
+  }, [lastKeyPressed]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -209,20 +221,9 @@ function Game(props) {
     let animationFrameId;
 
     const render = () => {
-      console.log("render called");
-
       drawPlayers(ctx, playerData);
       drawTowers(ctx, towerData);
 
-      if (playerUp) {
-        fromClientToServer("Up");
-      } else if (playerDown) {
-        fromClientToServer("Down");
-      } else if (playerLeft) {
-        fromClientToServer("Left");
-      } else if (playerRight) {
-        fromClientToServer("Right");
-      }
       animationFrameId = window.requestAnimationFrame(render);
     };
     render();
@@ -234,6 +235,7 @@ function Game(props) {
 
   return (
     <div>
+      {console.log("rerender")}
       <>
         <button
           onClick={() => {

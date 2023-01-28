@@ -36,6 +36,14 @@ function Lobby(props) {
     socket.on("badConnection", (reason) => {
       setRoomConnection(reason);
     });
+
+    return () => {
+      socket.off("joinRoom");
+      socket.off("newRoom");
+      socket.off("startGame");
+      socket.off("assignedRoomId");
+      socket.off("badConnection");
+    };
   }, []);
 
   return (
