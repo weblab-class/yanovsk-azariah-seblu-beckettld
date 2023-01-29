@@ -127,7 +127,8 @@ canvas {
 .sprite_img {
   width: 85px;
   height: 100px;
-=======
+}
+
 .wrappy {
   display: flex;
   flex-direction: row-reverse;
