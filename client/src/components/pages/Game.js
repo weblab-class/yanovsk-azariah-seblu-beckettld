@@ -7,14 +7,27 @@ import { SocketContext } from "../context/socket.js";
 import Tower from "../assets/tower.png";
 import { sprites } from "./data";
 import "./App.css";
+import AnimatedText from "react-animated-text-content";
 
 //==========LOCAL/HEROKU===========//
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const url = "https://codeleg.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+// const url = "https://codeleg.herokuapp.com";
 
-// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
-// const url = "http://localhost:3000";
-
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+const url = "http://localhost:3000";
+const exampleArrayMilkman = [
+  "Look at all this milk Ive milked from my cows today! So many buckets!",
+  "In fact, this might even beat the world record, which is 43.8 lbs of milk!",
+  "Hey you, you think you can add up the weights of all those buckets and let me know whether or not I’ve beaten the world record?",
+];
+const exampleArrayFarmer = [""];
+const exampleArrayGunslinger = [
+  "That there farmer is lookin’ mighty comfortable with all them horses in his stable.",
+  "I ought to take a few for myself! Ima head down there and pay him a visit.",
+  "But first, I need to make sure to only bring my well oiled guns. ",
+  "Hey you, go through all my guns and tell me which ones dirty.",
+  "I ain’t askin’, I’m tellin!",
+];
 function Game(props) {
   const { state } = useLocation();
   const map = require(`../assets/map${state.map_id}.png`);
@@ -35,6 +48,8 @@ function Game(props) {
   const [currentTower, setCurrentTower] = useState(0);
   const [selfTowerStatus, setSelfTowerStatus] = useState([]);
   const [IDEFeedback, setIDEFeedback] = useState([]);
+  const [dialogueStatus, setDialogueStatus] = useState(false);
+  const [dialogueCounter, setDialogueCounter] = useState(0);
 
   const endgame = (result) => {
     setResult(result);
@@ -80,6 +95,21 @@ function Game(props) {
       });
   };
 
+  const attemptDialogue = (key) => {
+    console.log("here");
+    console.log(dialogueStatus);
+    if (selfTowerStatus[key] !== 1 && !IDEstatus) {
+      setDialogueStatus(true);
+      setDialogueCounter(dialogueCounter + 1);
+    }
+    if (dialogueCounter >= exampleArrayGunslinger.length) {
+      console.log(dialogueCounter);
+      console.log("made it");
+      setDialogueCounter(0);
+      setDialogueStatus(false);
+      attemptToggleIDE(towerData[currentTower].questionCode, key);
+    }
+  };
   const attemptToggleIDE = (towerCode, key) => {
     if (selfTowerStatus[key] !== 1) {
       setCode(towerCode);
@@ -122,11 +152,14 @@ function Game(props) {
   }, []);
 
   document.onkeydown = (e) => {
-    if (!IDEstatus) {
+    console.log(dialogueStatus);
+    console.log(IDEstatus);
+    if (!dialogueStatus && !IDEstatus) {
       if (e.key === "ArrowRight") playerRight = true;
       if (e.key === "ArrowLeft") playerLeft = true;
       if (e.key === "ArrowDown") playerDown = true;
       if (e.key === "ArrowUp") playerUp = true;
+      console.log("yes");
     }
   };
   document.onkeyup = (e) => {
@@ -134,11 +167,15 @@ function Game(props) {
     if (e.key === "ArrowLeft") playerLeft = false;
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
-    if (!IDEstatus && e.key === "Enter") {
+    if (!IDEstatus && !dialogueStatus && e.key === "Enter") {
+      console.log("bog");
       const whichTower = inTowers(selfPlayerPosition);
       if (whichTower !== -1) {
         setCurrentTower(whichTower);
+        attemptDialogue(whichTower);
       }
+    } else if (dialogueStatus && !IDEstatus && e.key === "Enter") {
+      attemptDialogue(currentTower);
     }
   };
 
@@ -163,9 +200,10 @@ function Game(props) {
   };
   const inTowers = (position) => {
     for (const [key, value] of Object.entries(towerData)) {
-      if (near(position, value.position)) {
-        attemptToggleIDE(value.questionCode, key);
-        return key;
+      if (selfTowerStatus[key] === 0) {
+        if (near(position, value.position)) {
+          return key;
+        }
       }
     }
     return -1;
@@ -340,6 +378,16 @@ function Game(props) {
               ""
             )}
           </div>
+          {dialogueStatus ? (
+            <div id="dialogue">
+              <div class="nes-container is-rounded is-dark">
+                <u>Gunslinger</u>
+                <p> {exampleArrayGunslinger[dialogueCounter - 1]}</p>
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </>
     </div>
