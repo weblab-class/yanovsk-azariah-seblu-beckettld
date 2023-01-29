@@ -59,7 +59,8 @@ function Login(props) {
       <div className="start_page">
         <div className="form_login">
           <div class="nes-container is-rounded is-dark">
-            <p>Sing up or Login</p>
+            <p>Sign in to Play</p>
+            <p>Please sign in </p>
             <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
           </div>
         </div>
@@ -76,20 +77,20 @@ function Login(props) {
                 ease: "ease-in-out",
               }}
               animationType="float"
-              interval={0.06}
-              duration={9.5}
+              interval={0.1}
+              duration={0.5}
               tag="p"
               includeWhiteSpaces
               threshold={0.1}
               rootMargin="20%"
             >
-              Welcome to CodeLegend!
+              Welcome to CodeLegend, Hacker!
             </AnimatedText>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
               incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
               exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-              dolor in reprehenderit in voluptate velit esse cillum dolore{" "}
+              dolor in reprehenderit in voluptate velit esse cillum dolore
             </p>
           </div>
         </div>
