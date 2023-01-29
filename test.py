@@ -6,7 +6,7 @@ def arr_sum(arr):
     total=0
     for term in arr:
         total+=term
-    return 15
+    return total
 if __name__ == "__main__":
     arr = sys.argv[1].split(',')
     arr = [int(x) for x in arr]

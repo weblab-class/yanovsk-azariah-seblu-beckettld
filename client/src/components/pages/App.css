@@ -5,15 +5,34 @@
   position: relative;
 }
 #container canvas,
-#overlayer {
+#ide,
+#progress,
+#progress1 {
   position: absolute;
   left: 4%;
 }
-#overlayer {
+#ide {
   margin-top: 6%;
 }
+#progress1 {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0%;
+  width: 1300px;
+  align-items: center;
+}
+#progress {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4%;
+  width: 1300px;
+  align-items: center;
+}
 canvas {
-  border: 1px solid black;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 3px solid black;
   top: 0;
   bottom: 0;
   left: 0;
@@ -108,4 +127,9 @@ canvas {
 .sprite_img {
   width: 85px;
   height: 100px;
+=======
+.wrappy {
+  display: flex;
+  flex-direction: row-reverse;
+  background-color: #212529;
 }
