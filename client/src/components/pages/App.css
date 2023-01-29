@@ -7,7 +7,8 @@
 #container canvas,
 #ide,
 #progress,
-#progress1 {
+#progress1,
+#dialogue {
   position: absolute;
   left: 4%;
 }
@@ -18,6 +19,12 @@
   display: flex;
   justify-content: space-between;
   margin-top: 0%;
+  width: 1300px;
+  align-items: center;
+}
+#dialogue {
+  display: flex;
+  margin-top: 40%;
   width: 1300px;
   align-items: center;
 }
