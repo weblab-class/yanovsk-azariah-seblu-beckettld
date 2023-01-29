@@ -9,11 +9,11 @@ import AnimatedText from "react-animated-text-content";
 import { useNavigate } from "react-router-dom";
 
 //==========LOCAL/HEROKU===========//
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const url = "https://codeleg.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+// const url = "https://codeleg.herokuapp.com";
 
-// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
-// const url = "http://localhost:3000";
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+const url = "http://localhost:3000";
 
 function Login(props) {
   const [userId, setUserId] = useState("");
@@ -77,13 +77,13 @@ function Login(props) {
               }}
               animationType="float"
               interval={0.06}
-              duration={0.5}
+              duration={9.5}
               tag="p"
               includeWhiteSpaces
               threshold={0.1}
               rootMargin="20%"
             >
-              Welcome to CodeLegends!
+              Welcome to CodeLegend!
             </AnimatedText>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor

@@ -9,11 +9,11 @@ import { sprites } from "./data";
 import "./App.css";
 
 //==========LOCAL/HEROKU===========//
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const url = "https://codeleg.herokuapp.com";
+// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+// const url = "https://codeleg.herokuapp.com";
 
-// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
-// const url = "http://localhost:3000";
+const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+const url = "http://localhost:3000";
 
 function Game(props) {
   const { state } = useLocation();
@@ -94,6 +94,7 @@ function Game(props) {
           setSelfPlayerPosition(value.position);
           setSelfPlayerScore(value.score);
           setSelfTowerStatus(value.tower_status);
+          // let x = document.getElementById("my-progress");
           if (value.score === value.tower_status.length) {
             endgame("You Win");
           }
@@ -214,19 +215,17 @@ function Game(props) {
   return (
     <div>
       <>
-        <button
-          onClick={() => {
-            socket.emit("playerLeft");
-            axios.post(url + "/logout");
-            navigate("/thankyou");
-          }}
-        >
-          Logout from Game
-        </button>
-        <h1>
-          You {selfPlayerScore} - {opponentPlayerScore} Opponent
-        </h1>
-
+        <div className="wrappy">
+          <button
+            onClick={() => {
+              socket.emit("playerLeft");
+              axios.post(url + "/logout");
+              navigate("/thankyou");
+            }}
+          >
+            Logout
+          </button>
+        </div>
         <h1> {result}</h1>
         <div id="container">
           <canvas
@@ -236,8 +235,60 @@ function Game(props) {
             ref={canvasRef}
             style={{ backgroundImage: `url('${map.default}')` }}
           />
-          <div id="overlayer">
-            {" "}
+          <div id="progress1" className="scoring">
+            {/* <div>You</div> */}
+            <div>
+              <h1>You</h1>
+            </div>
+            <div>
+              <h1>Opponent</h1>
+            </div>
+            {/* <div>Opponent</div> */}
+          </div>{" "}
+          <div id="progress" className="scoring">
+            {/* <div>You</div> */}
+            <progress
+              class={
+                selfTowerStatus.length > 0
+                  ? selfPlayerScore / selfTowerStatus.length >= 0.333 &&
+                    selfPlayerScore / selfTowerStatus.length <= 0.666
+                    ? "nes-progress is-warning"
+                    : selfPlayerScore / selfTowerStatus.length >= 0.666
+                    ? "nes-progress is-success"
+                    : "nes-progress is-error"
+                  : "nes-progress is-error"
+              }
+              id="my-progress"
+              value={selfPlayerScore}
+              max={selfTowerStatus.length}
+            ></progress>
+            <div>
+              <h1>{selfPlayerScore}</h1>
+            </div>
+            <div>
+              <h1>-</h1>
+            </div>
+            <div>
+              <h1>{opponentPlayerScore}</h1>
+            </div>
+            <progress
+              class={
+                selfTowerStatus.length > 0
+                  ? opponentPlayerScore / selfTowerStatus.length >= 0.333 &&
+                    opponentPlayerScore / selfTowerStatus.length <= 0.666
+                    ? "nes-progress is-warning"
+                    : opponentPlayerScore / selfTowerStatus.length >= 0.666
+                    ? "nes-progress is-success"
+                    : "nes-progress is-error"
+                  : "nes-progress is-error"
+              }
+              id="opponent-progress"
+              value={opponentPlayerScore}
+              max={selfTowerStatus.length}
+            ></progress>
+            {/* <div>Opponent</div> */}
+          </div>{" "}
+          <div id="ide">
             {IDEstatus ? (
               <div id="flexor">
                 <div id="editor-container">
