@@ -101,22 +101,43 @@ canvas {
 .incorrect {
   color: red;
 }
+/* LEFT SIDE OF LOBBY*/
 .lobby_wrapper {
   display: flex;
   flex-direction: row;
   background-color: #212529;
 }
 
+.left_wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 45%;
+}
+
 .join_room {
   font-size: 12px;
-  width: 25%;
+}
+
+.game_rules {
+  width: 100%;
+}
+
+.room_join_form {
+  display: inline-block;
+}
+.nes-input {
+  width: 60%;
 }
 
 /* CHOSE MAP */
 .map_tiles_wrapper {
   display: flex; /* or inline-flex */
   flex-direction: row;
-  gap: 15px;
+  gap: 20px;
+}
+
+.choose_map {
+  width: 85%;
 }
 
 .map_tile {
