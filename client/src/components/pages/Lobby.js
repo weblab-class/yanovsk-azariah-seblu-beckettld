@@ -76,7 +76,7 @@ function Lobby(props) {
         </div>
       </div>
       <div className="choose_map">
-        {secondPlayerJoined ? (
+        {/* {secondPlayerJoined ? (
           ""
         ) : (
           <section class="nes-container is-dark">
@@ -91,7 +91,7 @@ function Lobby(props) {
               </section>
             </section>
           </section>
-        )}
+        )} */}
 
         <Outlet />
       </div>

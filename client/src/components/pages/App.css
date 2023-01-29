@@ -92,3 +92,15 @@ canvas {
   font-size: 12px;
   width: 25%;
 }
+
+/* CHOSE MAP */
+.map_tiles_wrapper {
+  display: flex; /* or inline-flex */
+  flex-direction: row;
+  gap: 15px;
+}
+
+.map_tile {
+  width: 1fr;
+  height: 1fr;
+}

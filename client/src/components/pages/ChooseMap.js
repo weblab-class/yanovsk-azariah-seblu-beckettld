@@ -1,5 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import Map from "../assets/tile4.gif";
 
 const ChooseMap = () => {
   const socket = useContext(SocketContext);
@@ -23,9 +26,21 @@ const ChooseMap = () => {
   return (
     <div class="nes-container is-rounded is-dark">
       <p>Please Choose Map</p>
-      <button onClick={() => handleMapSelection(1)}>Map 1</button>
-      <button onClick={() => handleMapSelection(2)}>Map 2</button>
-      <button onClick={() => handleMapSelection(3)}>Map 3</button>
+
+      <div className="map_tiles_wrapper">
+        <Card className="map_tile">
+          <Card.Img src={Map} onClick={() => handleMapSelection(1)} />
+          <Card.Title class="nes-text is-success">Winter</Card.Title>
+        </Card>
+        <Card className="map_tile">
+          <Card.Img variant="top" src={Map} onClick={() => handleMapSelection(2)} />
+          <Card.Title class="nes-text is-success">Sahara</Card.Title>
+        </Card>
+        <Card className="map_tile">
+          <Card.Img variant="top" src={Map} onClick={() => handleMapSelection(2)} />
+        </Card>
+      </div>
+
       {mapSelection ? "Map " + mapSelection + " chosen" : ""}
       <p>Please Choose Sprite</p>
       <button onClick={() => handleSpriteSelection(1)}>Sprite 1</button>
