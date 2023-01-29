@@ -1,23 +1,16 @@
 import sys
-# A Pangram is a sentence where every letter of the English alphabet 
-# appears at least once. Given a string s containing lowercase English letters
-# write a function that returns true if s is a pantagram, or false otherwise
 
-# Example: s = "thequickbrownfoxjumpsoverthelazydog" Output: true
-# Example 2: s = "weblab" Output: false
+#Given an array of integers, write a function that finds the sum of all the integers in the array
 
-# Constraints: 1 <= s.length <= 1000
-
-
-def checkIfPangram(s):
-        letters = set()
-        for char in s:
-            if char not in letters:
-                letters.add(char)
-        return len(letters) >= 26
+def arr_sum(arr):
+    total=0
+    for term in arr:
+        total+=term
+    return total
 if __name__ == "__main__":
-  s_input = sys.argv[1]
-  result =sys.argv[2]
-  print(result)
-  print(str(checkIfPangram(s_input)))
-  print(str(checkIfPangram(s_input))==result)
+    arr = sys.argv[1].split(',')
+    arr = [int(x) for x in arr]
+    result = int(sys.argv[2])
+    print(result)
+    print(arr_sum(arr))
+    print(arr_sum(arr)==result)
