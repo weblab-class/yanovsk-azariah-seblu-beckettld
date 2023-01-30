@@ -7,9 +7,7 @@ import { SocketContext } from "../context/socket.js";
 import Tower from "../assets/tower.png";
 import { sprites } from "./data";
 import { towers } from "./data";
-
 import "./App.css";
-import AnimatedText from "react-animated-text-content";
 
 //==========LOCAL/HEROKU===========//
 // const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -17,24 +15,7 @@ import AnimatedText from "react-animated-text-content";
 
 const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 const url = "http://localhost:3000";
-const exampleArrayMilkman = [
-  "Look at all this milk Ive milked from my cows today! So many buckets!",
-  "In fact, this might even beat the world record, which is 43.8 lbs of milk!",
-  "Hey you, you think you can add up the weights of all those buckets and let me know whether or not I’ve beaten the world record?",
-];
-const exampleArrayFarmer = [
-  "Oh what a beautiful baby horse! She looks just like Ragus did when she was a baby.",
-  "Hm? Whats that? Why did I name her Ragus? Its ‘Sugar’ backwards. I have a habit of naming my horses with backwards names. Makes em’ more unique!",
-  "Maybe I should name this one “Dusty,” but backwards. Ystud, Yduts … oh dag nabbit! I always have trouble thinking of the name backwards.",
-  "Would you mind helping me name my horse? Oh and you’d better capitalize the first letter.",
-];
-const exampleArrayGunslinger = [
-  "That there farmer is lookin’ mighty comfortable with all them horses in his stable.",
-  "I ought to take a few for myself! Ima head down there and pay him a visit.",
-  "But first, I need to make sure to only bring my well oiled guns. ",
-  "Hey you, go through all my guns and tell me which ones dirty.",
-  "I ain’t askin’, I’m tellin!",
-];
+
 function Game(props) {
   const { state } = useLocation();
   const map = require(`../assets/maps/map${state.map_id}.png`);
@@ -189,7 +170,7 @@ function Game(props) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const [key, value] of Object.entries(playerData)) {
       const spriteImage = new Image();
-      spriteImage.src = sprites[0][0]; //because of 0 indexing
+      spriteImage.src = sprites[value.sprite_id];
       ctx.drawImage(spriteImage, value.position.x, value.position.y, 55, 55);
     }
   };
@@ -221,7 +202,6 @@ function Game(props) {
       ctx.beginPath();
       const towerImage = new Image();
       towerImage.src = towers[value.mapId][value.towerId];
-      console.log("drawing towers");
       if (selfTowerStatus[key] === 0) {
         ctx.drawImage(towerImage, value.position.x, value.position.y, 75, 75);
       } else {
