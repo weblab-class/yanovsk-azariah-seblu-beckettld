@@ -268,6 +268,8 @@ function connected(socket) {
         questionScript: towerQuestions[i].problemScript,
         dialogue: towerQuestions[i].dialogue,
         name: towerQuestions[i].name,
+        towerId: towerQuestions[i].towerId,
+        mapId: towerQuestions[i].mapId,
         position: { x: towerQuestions[i].x, y: towerQuestions[i].y },
       };
     }

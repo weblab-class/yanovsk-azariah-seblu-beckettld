@@ -6,6 +6,8 @@ import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
 import Tower from "../assets/tower.png";
 import { sprites } from "./data";
+import { towers } from "./data";
+
 import "./App.css";
 import AnimatedText from "react-animated-text-content";
 
@@ -35,7 +37,7 @@ const exampleArrayGunslinger = [
 ];
 function Game(props) {
   const { state } = useLocation();
-  const map = require(`../assets/map${state.map_id}.png`);
+  const map = require(`../assets/maps/map${state.map_id}.png`);
   const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const canvasRef = useRef(null);
@@ -188,7 +190,7 @@ function Game(props) {
     for (const [key, value] of Object.entries(playerData)) {
       const spriteImage = new Image();
       spriteImage.src = sprites[0][0]; //because of 0 indexing
-      ctx.drawImage(spriteImage, value.position.x, value.position.y, 50, 50);
+      ctx.drawImage(spriteImage, value.position.x, value.position.y, 55, 55);
     }
   };
   function getDistance(x1, y1, x2, y2) {
@@ -218,10 +220,10 @@ function Game(props) {
     for (const [key, value] of Object.entries(towerData)) {
       ctx.beginPath();
       const towerImage = new Image();
-      towerImage.src = sprites[0][0];
+      towerImage.src = towers[value.mapId][value.towerId];
       console.log("drawing towers");
       if (selfTowerStatus[key] === 0) {
-        ctx.drawImage(towerImage, value.position.x, value.position.y, 50, 50);
+        ctx.drawImage(towerImage, value.position.x, value.position.y, 75, 75);
       } else {
         ctx.fillStyle = color;
         ctx.strokeRect(value.position.x, value.position.y, 50, 50);

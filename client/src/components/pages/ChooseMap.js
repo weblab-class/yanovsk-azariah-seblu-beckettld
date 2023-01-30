@@ -74,7 +74,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[1][1]}
+            src={sprites[0][0]}
             onClick={() => handleSpriteSelection(1)}
           />
           <Card.Title>Batman</Card.Title>
@@ -82,7 +82,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[1][2]}
+            src={sprites[0][1]}
             onClick={() => handleSpriteSelection(2)}
           />
           <Card.Title>Turtle</Card.Title>
@@ -90,7 +90,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[2][0]}
+            src={sprites[0][2]}
             onClick={() => handleSpriteSelection(3)}
           />
           <Card.Title>Dude</Card.Title>
@@ -98,7 +98,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[2][1]}
+            src={sprites[0][3]}
             onClick={() => handleSpriteSelection(4)}
           />
           <Card.Title>Flesh</Card.Title>
@@ -106,7 +106,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[2][2]}
+            src={sprites[0][4]}
             onClick={() => handleSpriteSelection(5)}
           />
           <Card.Title>Spider</Card.Title>

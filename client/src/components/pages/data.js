@@ -8,9 +8,15 @@ import Sprite6 from "../assets/sprites/sprite6.png";
 import Sprite7 from "../assets/sprites/sprite7.png";
 import Sprite8 from "../assets/sprites/sprite8.png";
 
-import 
-
+import Tower1_0 from "../assets/towers/tower0.png";
+import Tower1_1 from "../assets/towers/tower1.png";
+import Tower1_2 from "../assets/towers/tower2.png";
 
 export const sprites = [
-  [Sprite0, Sprite1, Sprite2,Sprite3, Sprite4, Sprite5,Sprite6, Sprite7, Sprite8],
+  [Sprite0, Sprite1, Sprite2, Sprite3, Sprite4, Sprite5, Sprite6, Sprite7, Sprite8],
+];
+export const towers = [
+  [Tower1_0, Tower1_1, Tower1_2],
+  [Tower1_0, Tower1_1, Tower1_2],
+  [Tower1_0, Tower1_1, Tower1_2],
 ];
