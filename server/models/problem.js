@@ -4,8 +4,12 @@ const ProblemSchema = new mongoose.Schema({
   problemText: String,
   problemScript: String,
   testCases: Array,
-  difficulty: String,
-  version: String,
+  mapId: Number,
+  towerId: Number,
+  dialogue: Array,
+  name: String,
+  x: Number,
+  y: Number,
 });
 
 // compile model from schema

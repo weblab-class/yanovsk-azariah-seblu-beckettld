@@ -8,29 +8,9 @@ import Sprite6 from "../assets/sprites/sprite6.png";
 import Sprite7 from "../assets/sprites/sprite7.png";
 import Sprite8 from "../assets/sprites/sprite8.png";
 
-export default {
-  playerObj: {
-    x: 100,
-    y: 100,
-    rad: 5,
-  },
-  towerObj: {
-    x: 200,
-    y: 50,
-    width: 10,
-    height: 10,
-    color: "green",
-  },
-};
+import 
+
 
 export const sprites = [
-  Sprite0,
-  Sprite1,
-  Sprite2,
-  Sprite3,
-  Sprite4,
-  Sprite5,
-  Sprite6,
-  Sprite7,
-  Sprite8,
+  [Sprite0, Sprite1, Sprite2,Sprite3, Sprite4, Sprite5,Sprite6, Sprite7, Sprite8],
 ];

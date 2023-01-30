@@ -259,34 +259,19 @@ function connected(socket) {
 
   const initTowers = async (map_id) => {
     //knowing map_id we can find question by level of hardness
-    const towerQuestions = await Problem.find({ version: "mvp" });
-
-    allTowers[room_id] = {
-      0: {
-        questionID: towerQuestions[0]._id,
-        questionCode: towerQuestions[0].problemText,
-        questionScript: towerQuestions[0].problemScript,
-        position: { x: 320, y: 300 },
-      },
-      1: {
-        questionID: towerQuestions[1]._id,
-        questionCode: towerQuestions[1].problemText,
-        questionScript: towerQuestions[1].problemScript,
-        position: { x: 500, y: 100 },
-      },
-      2: {
-        questionID: towerQuestions[2]._id,
-        questionCode: towerQuestions[2].problemText,
-        questionScript: towerQuestions[2].problemScript,
-        position: { x: 282, y: 119 },
-      },
-      3: {
-        questionID: towerQuestions[3]._id,
-        questionCode: towerQuestions[3].problemText,
-        questionScript: towerQuestions[3].problemScript,
-        position: { x: 581, y: 300 },
-      },
-    };
+    const towerQuestions = await Problem.find({ mapId: map_id });
+    let towerCollection = {};
+    for (let i = 0; i < towerQuestions.length; i++) {
+      towerCollection[i] = {
+        questionID: towerQuestions[i]._id,
+        questionCode: towerQuestions[i].problemText,
+        questionScript: towerQuestions[i].problemScript,
+        dialogue: towerQuestions[i].dialogue,
+        name: towerQuestions[i].name,
+        position: { x: towerQuestions[i].x, y: towerQuestions[i].y },
+      };
+    }
+    allTowers[room_id] = towerCollection;
     io.to(`${room_id}`).emit("initTowers", allTowers[room_id]);
     io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
   };
@@ -297,7 +282,12 @@ function connected(socket) {
       allGameStates[room_id] = {};
       allGameStates[room_id][socket.id] = {
         position: { x: 100, y: 100 },
-        tower_status: [0, 0, 0, 0],
+        tower_status:
+          mapSelection == 1 || mapSelection == 2
+            ? [0, 0, 0]
+            : mapSelection == 3 || mapSelection == 4
+            ? [0, 0, 0, 0]
+            : [0, 0, 0, 0, 0],
         score: 0,
         sprite_id: spriteSelection,
         map_id: mapSelection,
@@ -305,7 +295,12 @@ function connected(socket) {
     } else if (room_id && allGameStates[room_id]) {
       allGameStates[room_id][socket.id] = {
         position: { x: 110, y: 110 },
-        tower_status: [0, 0, 0, 0],
+        tower_status:
+          mapSelection == 1 || mapSelection == 2
+            ? [0, 0, 0]
+            : mapSelection == 3 || mapSelection == 4
+            ? [0, 0, 0, 0]
+            : [0, 0, 0, 0, 0],
         score: 0,
         sprite_id: spriteSelection,
         map_id: mapSelection,

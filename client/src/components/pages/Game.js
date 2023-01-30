@@ -20,7 +20,12 @@ const exampleArrayMilkman = [
   "In fact, this might even beat the world record, which is 43.8 lbs of milk!",
   "Hey you, you think you can add up the weights of all those buckets and let me know whether or not I’ve beaten the world record?",
 ];
-const exampleArrayFarmer = [""];
+const exampleArrayFarmer = [
+  "Oh what a beautiful baby horse! She looks just like Ragus did when she was a baby.",
+  "Hm? Whats that? Why did I name her Ragus? Its ‘Sugar’ backwards. I have a habit of naming my horses with backwards names. Makes em’ more unique!",
+  "Maybe I should name this one “Dusty,” but backwards. Ystud, Yduts … oh dag nabbit! I always have trouble thinking of the name backwards.",
+  "Would you mind helping me name my horse? Oh and you’d better capitalize the first letter.",
+];
 const exampleArrayGunslinger = [
   "That there farmer is lookin’ mighty comfortable with all them horses in his stable.",
   "I ought to take a few for myself! Ima head down there and pay him a visit.",
@@ -96,13 +101,12 @@ function Game(props) {
   };
 
   const attemptDialogue = (key) => {
-    console.log("here");
-    console.log(dialogueStatus);
+    console.log(towerData);
     if (selfTowerStatus[key] !== 1 && !IDEstatus) {
       setDialogueStatus(true);
       setDialogueCounter(dialogueCounter + 1);
     }
-    if (dialogueCounter >= exampleArrayGunslinger.length) {
+    if (dialogueCounter >= towerData[currentTower].dialogue.length) {
       console.log(dialogueCounter);
       console.log("made it");
       setDialogueCounter(0);
@@ -183,7 +187,7 @@ function Game(props) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (const [key, value] of Object.entries(playerData)) {
       const spriteImage = new Image();
-      spriteImage.src = sprites[value.sprite_id]; //because of 0 indexing
+      spriteImage.src = sprites[0][0]; //because of 0 indexing
       ctx.drawImage(spriteImage, value.position.x, value.position.y, 50, 50);
     }
   };
@@ -214,8 +218,8 @@ function Game(props) {
     for (const [key, value] of Object.entries(towerData)) {
       ctx.beginPath();
       const towerImage = new Image();
-      towerImage.src = Tower;
-
+      towerImage.src = sprites[0][0];
+      console.log("drawing towers");
       if (selfTowerStatus[key] === 0) {
         ctx.drawImage(towerImage, value.position.x, value.position.y, 50, 50);
       } else {
@@ -381,8 +385,8 @@ function Game(props) {
           {dialogueStatus ? (
             <div id="dialogue">
               <div class="nes-container is-rounded is-dark">
-                <u>Gunslinger</u>
-                <p> {exampleArrayGunslinger[dialogueCounter - 1]}</p>
+                <u>{towerData[currentTower].name}</u>
+                <p> {towerData[currentTower].dialogue[dialogueCounter - 1]}</p>
               </div>
             </div>
           ) : (

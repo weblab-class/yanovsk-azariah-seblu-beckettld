@@ -21,6 +21,7 @@
   margin-top: 0%;
   width: 1300px;
   align-items: center;
+  z-index: 30;
 }
 #dialogue {
   display: flex;
@@ -31,7 +32,7 @@
 #progress {
   display: flex;
   justify-content: space-between;
-  margin-top: 4%;
+  margin-top: 0%;
   width: 1300px;
   align-items: center;
 }
@@ -161,4 +162,7 @@ canvas {
   display: flex;
   flex-direction: row-reverse;
   background-color: #212529;
+}
+#opponent-progress {
+  transform: scaleX(-1);
 }
