@@ -12,8 +12,6 @@ import ChooseMap from "./pages/ChooseMap";
 import { SocketContext, socket } from "./context/socket.js";
 
 const App = () => {
-  const navigate = useNavigate();
-
   return (
     <SocketContext.Provider value={socket}>
       <Routes>
