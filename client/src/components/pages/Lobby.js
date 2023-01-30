@@ -1,14 +1,13 @@
 import "./App.css";
 import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 
 function Lobby(props) {
   const socket = useContext(SocketContext);
   const [roomConnection, setRoomConnection] = useState("");
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
-  const [secondPlayerJoined, setSecondPlayerJoined] = useState(false);
 
   const joinRoom = (e) => {
     e.preventDefault();
@@ -26,7 +25,6 @@ function Lobby(props) {
 
     socket.on("newPlayerInRoom", (number) => {
       if (number == 2) {
-        setSecondPlayerJoined(true);
         navigate("/lobby/choosemap");
       }
     });
@@ -52,13 +50,13 @@ function Lobby(props) {
     <div className="lobby_wrapper">
       <div className="left_wrapper">
         <div className="join_room">
-          <div class="nes-container is-rounded is-dark">
+          <div className="nes-container is-rounded is-dark">
             <h1>Welcome to CodeLegend</h1>
             <p>You can either create new game room and share room id with your friend</p>
-            <button type="button" class="nes-btn is-primary" onClick={createNewRoom}>
+            <button type="button" className="nes-btn is-primary" onClick={createNewRoom}>
               Create Room
             </button>{" "}
-            {roomId !== "" ? <span class="nes-text is-success">Room ID: {roomId}</span> : ""}
+            {roomId !== "" ? <span className="nes-text is-success">Room ID: {roomId}</span> : ""}
             <br /> <br />
             <p>
               {roomId !== ""
@@ -69,7 +67,7 @@ function Lobby(props) {
               ""
             ) : (
               <>
-                <form onSubmit={joinRoom} class="form-inline">
+                <form onSubmit={joinRoom} className="form-inline">
                   <input
                     type="text"
                     id="room_id"
@@ -89,7 +87,7 @@ function Lobby(props) {
         </div>
 
         <div className="game_rules">
-          <div class="nes-container is-rounded is-dark">
+          <div className="nes-container is-rounded is-dark">
             <p>Rules</p>
             <small>
               Please play good. JavaScript (JS) is a lightweight, interpreted, or just-in-time
@@ -98,16 +96,16 @@ function Lobby(props) {
             </small>
             <br />
             <br />
-            <span class="nes-text is-success">Easy Maps Are Green</span> <br />
-            <span class="nes-text is-warning">Medium Maps Are Yellow</span> <br />
-            <span class="nes-text is-error">Medium Maps Are Red</span>
+            <span className="nes-text is-success">Easy Maps Are Green</span> <br />
+            <span className="nes-text is-warning">Medium Maps Are Yellow</span> <br />
+            <span className="nes-text is-error">Medium Maps Are Red</span>
             <br />
             <br />
-            <section class="icon-list">
-              <i class="nes-icon trophy is-med"></i>
+            <section className="icon-list">
+              <i className="nes-icon trophy is-med"></i>
               You can win this
               <br />
-              <i class="nes-icon coin is-med"></i>
+              <i className="nes-icon coin is-med"></i>
               And also you can win this
               <br />
             </section>

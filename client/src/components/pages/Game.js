@@ -4,9 +4,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import axios from "axios";
 import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
-import Tower from "../assets/tower.png";
-import { sprites } from "./data";
-import { towers } from "./data";
+import { sprites, towers } from "./data";
 import "./App.css";
 
 //==========LOCAL/HEROKU===========//
@@ -252,9 +250,8 @@ function Game(props) {
             style={{ backgroundImage: `url('${map.default}')` }}
           />
           <div id="progress1" className="scoring">
-            {/* <div>You</div> */}
             <div>
-              <h1>You</h1>
+              <h1>{state.user_name}</h1>
             </div>
             <div>
               <h1>Opponent</h1>

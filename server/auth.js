@@ -38,7 +38,6 @@ function login(req, res) {
     .then((user) => {
       // persist user in the session
       req.session.user = user;
-      console.log("send back?", user);
       res.send(user);
     })
     .catch((err) => {

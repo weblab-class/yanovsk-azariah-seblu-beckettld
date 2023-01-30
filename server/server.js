@@ -383,6 +383,8 @@ function connected(socket) {
   socket.on("updateFromClient", handleUpdateFromClient);
   socket.on("playerLeft", handlePlayerLeft);
   socket.on("disconnect", handleDisconnect);
+
+  socket.on("login", auth.login);
 }
 
 //==========GOOGLE AUTH===========//
