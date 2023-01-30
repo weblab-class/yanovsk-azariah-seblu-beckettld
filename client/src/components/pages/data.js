@@ -20,6 +20,17 @@ import Tower3_1 from "../assets/towers/tower3_1.png";
 import Tower3_2 from "../assets/towers/tower3_2.png";
 import Tower3_3 from "../assets/towers/tower3_3.png";
 
+import Tower4_0 from "../assets/towers/tower4_0.png";
+import Tower4_1 from "../assets/towers/tower4_1.png";
+import Tower4_2 from "../assets/towers/tower4_2.png";
+import Tower4_3 from "../assets/towers/tower4_3.png";
+
+import Tower5_0 from "../assets/towers/tower5_0.png";
+import Tower5_1 from "../assets/towers/tower5_1.png";
+import Tower5_2 from "../assets/towers/tower5_2.png";
+import Tower5_3 from "../assets/towers/tower5_3.png";
+import Tower5_4 from "../assets/towers/tower5_4.png";
+
 import Tower6_0 from "../assets/towers/tower6_0.png";
 import Tower6_1 from "../assets/towers/tower6_1.png";
 import Tower6_2 from "../assets/towers/tower6_2.png";
@@ -40,8 +51,8 @@ export const towers = [
   [Tower1_0, Tower1_1, Tower1_2],
   [Tower2_0, Tower2_1, Tower2_2],
   [Tower3_0, Tower3_1, Tower3_2, Tower3_3],
-  [Tower2_0, Tower2_1, Tower2_2],
-  [Tower2_0, Tower2_1, Tower2_2],
+  [Tower4_0, Tower4_1, Tower4_2, Tower4_3],
+  [Tower5_0, Tower5_1, Tower5_2, Tower5_3, Tower5_4],
   [Tower6_0, Tower6_1, Tower6_2, Tower6_3, Tower6_4],
 ];
 
