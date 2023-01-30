@@ -63,7 +63,7 @@ function Lobby(props) {
             <p>
               {roomId !== ""
                 ? "Share this ID with your friend. Game will start when 2nd player joins."
-                : "Or join existing room by typing id below"}
+                : "Or join room by typing id below"}
             </p>
             {roomId !== "" ? (
               ""
