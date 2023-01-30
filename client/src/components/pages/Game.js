@@ -75,7 +75,6 @@ function Game(props) {
           setIDEFeedback(finalArr);
 
           if (res.data.overallResult === true) {
-            console.log("You got them all right!");
             // fromClientToServer(currentTower);
             socket.emit("updateFromClient", currentTower);
           } else console.log("Too bad!");
@@ -84,14 +83,11 @@ function Game(props) {
   };
 
   const attemptDialogue = (key) => {
-    console.log(towerData);
     if (selfTowerStatus[key] !== 1 && !IDEstatus) {
       setDialogueStatus(true);
       setDialogueCounter(dialogueCounter + 1);
     }
     if (dialogueCounter >= towerData[currentTower].dialogue.length) {
-      console.log(dialogueCounter);
-      console.log("made it");
       setDialogueCounter(0);
       setDialogueStatus(false);
       attemptToggleIDE(towerData[currentTower].questionCode, key);
@@ -139,14 +135,11 @@ function Game(props) {
   }, []);
 
   document.onkeydown = (e) => {
-    console.log(dialogueStatus);
-    console.log(IDEstatus);
     if (!dialogueStatus && !IDEstatus) {
       if (e.key === "ArrowRight") playerRight = true;
       if (e.key === "ArrowLeft") playerLeft = true;
       if (e.key === "ArrowDown") playerDown = true;
       if (e.key === "ArrowUp") playerUp = true;
-      console.log("yes");
     }
   };
   document.onkeyup = (e) => {
@@ -155,7 +148,6 @@ function Game(props) {
     if (e.key === "ArrowDown") playerDown = false;
     if (e.key === "ArrowUp") playerUp = false;
     if (!IDEstatus && !dialogueStatus && e.key === "Enter") {
-      console.log("bog");
       const whichTower = inTowers(selfPlayerPosition);
       if (whichTower !== -1) {
         setCurrentTower(whichTower);

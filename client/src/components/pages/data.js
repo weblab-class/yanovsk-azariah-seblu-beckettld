@@ -14,9 +14,24 @@ import Tower1_2 from "../assets/towers/tower1_2.png";
 import Tower2_0 from "../assets/towers/tower2_0.png";
 import Tower2_1 from "../assets/towers/tower2_1.png";
 import Tower2_2 from "../assets/towers/tower2_2.png";
+
+import Tower3_0 from "../assets/towers/tower3_0.png";
+import Tower3_1 from "../assets/towers/tower3_1.png";
+import Tower3_2 from "../assets/towers/tower3_2.png";
+import Tower3_3 from "../assets/towers/tower3_3.png";
+
+import Tower6_0 from "../assets/towers/tower6_0.png";
+import Tower6_1 from "../assets/towers/tower6_1.png";
+import Tower6_2 from "../assets/towers/tower6_2.png";
+import Tower6_3 from "../assets/towers/tower6_3.png";
+import Tower6_4 from "../assets/towers/tower6_4.png";
+
 import Map1 from "../assets/maps/map1.png";
 import Map2 from "../assets/maps/map2.png";
 import Map3 from "../assets/maps/map3.png";
+import Map4 from "../assets/maps/map4.png";
+import Map5 from "../assets/maps/map5.png";
+import Map6 from "../assets/maps/map6.png";
 
 export const sprites = [Sprite1, Sprite2, Sprite3, Sprite4, Sprite5, Sprite6, Sprite7, Sprite8];
 
@@ -24,6 +39,11 @@ export const towers = [
   [Tower1_0, Tower1_1, Tower1_2],
   [Tower1_0, Tower1_1, Tower1_2],
   [Tower2_0, Tower2_1, Tower2_2],
+  [Tower3_0, Tower3_1, Tower3_2, Tower3_3],
+  [Tower2_0, Tower2_1, Tower2_2],
+  [Tower2_0, Tower2_1, Tower2_2],
+  [Tower6_0, Tower6_1, Tower6_2, Tower6_3, Tower6_4],
 ];
 
-export const maps = [Map1, Map2, Map3];
+//Map1 two times because of zero indexing
+export const maps = [Map1, Map1, Map2, Map3, Map4, Map5, Map6];
