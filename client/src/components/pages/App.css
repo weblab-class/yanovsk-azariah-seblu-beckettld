@@ -153,6 +153,11 @@ canvas {
   height: 1fr;
 }
 
+.map_image {
+  width: 200px;
+  height: 150px;
+}
+
 .sprite_img {
   width: 85px;
   height: 100px;
