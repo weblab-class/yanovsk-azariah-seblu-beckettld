@@ -51,8 +51,13 @@ export const towers = [
   [Tower1_0, Tower1_1, Tower1_2],
   [Tower2_0, Tower2_1, Tower2_2],
   [Tower3_0, Tower3_1, Tower3_2, Tower3_3],
+<<<<<<< HEAD
   [Tower4_0, Tower4_1, Tower4_2, Tower4_3],
   [Tower5_0, Tower5_1, Tower5_2, Tower5_3, Tower5_4],
+=======
+  [Tower2_0, Tower2_1, Tower2_2, Tower3_3],
+  [Tower2_0, Tower2_1, Tower2_2, Tower3_3, Tower3_3],
+>>>>>>> eb61aff (add usernames to game)
   [Tower6_0, Tower6_1, Tower6_2, Tower6_3, Tower6_4],
 ];
 

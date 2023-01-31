@@ -19,8 +19,16 @@ function Lobby(props) {
   };
 
   useEffect(() => {
-    socket.on("startGame", (map_id) => {
-      navigate("/game", { state: { map_id: map_id } });
+    socket.on("startGame", (map_id, data) => {
+      let opp_name;
+      for (const [key, value] of Object.entries(data)) {
+        if (key !== socket.id) {
+          opp_name = value.user_name;
+        }
+      }
+      navigate("/game", {
+        state: { map_id: map_id, my_name: data[socket.id].user_name, opp_name: opp_name },
+      });
     });
 
     socket.on("newPlayerInRoom", (number) => {

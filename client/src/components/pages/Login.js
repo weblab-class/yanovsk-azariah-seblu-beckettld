@@ -18,12 +18,10 @@ function Login(props) {
   const [userId, setUserId] = useState("");
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     axios.get(url + "/whoami").then((user) => {
       if (user._id) {
-        setUserName(user.data.name);
         setUserId(user._id);
       }
     });
@@ -35,7 +33,7 @@ function Login(props) {
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken);
 
-    axios.post(url + "/login", { token: userToken }).then((user) => {
+    axios.post(url + "/login", { token: userToken, socket_id: socket.id }).then((user) => {
       setUserId(user.data._id);
       const user_name = user.data.name;
       navigate("/lobby", { state: { user_name: user_name } });

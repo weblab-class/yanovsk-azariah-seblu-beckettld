@@ -35,30 +35,8 @@ const ChooseMap = () => {
   };
   return (
     <div className="nes-container is-rounded is-dark">
-      {mapSelection ? (
-        <AnimatedText
-          style={{ display: "inline-block" }}
-          type="words" // animate words or chars
-          animation={{
-            x: "200px",
-            ease: "ease-in-out",
-          }}
-          animationType="float"
-          interval={0.06}
-          duration={0.5}
-          tag="p"
-          includeWhiteSpaces
-          threshold={0.1}
-          rootMargin="20%"
-        >
-          {"Selected: " + mapName + " map"}
-        </AnimatedText>
-      ) : (
-        <>
-          <text>Make a Map Selection</text>
-          <br /> <br />
-        </>
-      )}
+      {mapSelection ? "Selected: " + mapName + " map" : "Make a Map Selection"}
+      <br /> <br />
       <div className="map_tiles_wrapper">
         <Card className="map_tile">
           <Card.Img
@@ -96,31 +74,9 @@ const ChooseMap = () => {
         </Card>
       </div>
       <br />
-      {spriteSelection ? (
-        <AnimatedText
-          style={{ display: "inline-block" }}
-          type="words" // animate words or chars
-          animation={{
-            scale: 1.1,
-            ease: "ease-in-out",
-          }}
-          animationType="float"
-          interval={0.06}
-          duration={0.4}
-          tag="p2"
-          includeWhiteSpaces
-          threshold={0.1}
-          rootMargin="20%"
-        >
-          {"Selected: " + spriteName}
-        </AnimatedText>
-      ) : (
-        <>
-          <text> Make a Sprite Selection</text>
-          <br />
-          <br />
-        </>
-      )}
+      {spriteSelection ? "Selected: " + spriteName : "Make a Sprite Selection"}
+      <br />
+      <br />
       <div className="map_tiles_wrapper">
         <Card className="sprite_tile">
           <Card.Img

@@ -6,6 +6,8 @@ const User = require("./models/user");
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const client = new OAuth2Client(CLIENT_ID);
 
+const googleNameToSocket = {};
+
 // accepts a login token from the frontend, and verifies that it's legit
 function verify(token) {
   return client
@@ -18,7 +20,6 @@ function verify(token) {
 
 // gets user from DB, or makes a new account if it doesn't exist yet
 function getOrCreateUser(user) {
-  console.log("get or create");
   // the "sub" field means "subject", which is a unique identifier for each user
   return User.findOne({ googleid: user.sub }).then((existingUser) => {
     if (existingUser) return existingUser;
@@ -39,6 +40,7 @@ function login(req, res) {
       // persist user in the session
       req.session.user = user;
       res.send(user);
+      googleNameToSocket[req.body.socket_id] = user.name;
     })
     .catch((err) => {
       console.log(`Failed to log in: ${err}`);
@@ -48,6 +50,7 @@ function login(req, res) {
 
 function logout(req, res) {
   req.session.user = null;
+  delete googleNameToSocket[req.body.socket_id];
   res.send({});
 }
 
@@ -70,4 +73,5 @@ module.exports = {
   logout,
   populateCurrentUser,
   ensureLoggedIn,
+  googleNameToSocket,
 };

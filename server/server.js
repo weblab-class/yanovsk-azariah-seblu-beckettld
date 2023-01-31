@@ -16,6 +16,7 @@ const cors = require("cors");
 const { makeid } = require("./utils");
 const Problem = require("./models/problem.js");
 const auth = require("./auth");
+
 //==========STORAGE===========//
 let socketToRoom = {};
 let allGameStates = {};
@@ -229,6 +230,7 @@ function connected(socket) {
       socket.join(room_id);
       socket.number = 1;
       socket.emit("assignedRoomId", room_id);
+      console.log(auth.googleNameToSocket);
       io.to(`${room_id}`).emit("newPlayerInRoom", 1);
     } catch (err) {
       console.log(err);
@@ -293,6 +295,7 @@ function connected(socket) {
         score: 0,
         sprite_id: spriteSelection,
         map_id: mapSelection,
+        user_name: auth.googleNameToSocket[socket.id],
       };
     } else if (room_id && allGameStates[room_id]) {
       allGameStates[room_id][socket.id] = {
@@ -306,13 +309,14 @@ function connected(socket) {
         score: 0,
         sprite_id: spriteSelection,
         map_id: mapSelection,
+        user_name: auth.googleNameToSocket[socket.id],
       };
       let maps = [];
       for (const [key, value] of Object.entries(allGameStates[room_id])) {
         maps.push(value.map_id);
       }
       let random_map_id = maps[Math.floor(Math.random() * 2)];
-      io.to(`${room_id}`).emit("startGame", random_map_id); //emit random map from maps array to Game.js
+      io.to(`${room_id}`).emit("startGame", random_map_id, allGameStates[room_id]); //emit random map from maps array to Game.js
       io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
       initTowers(random_map_id);
     }
@@ -353,6 +357,12 @@ function connected(socket) {
   };
 
   const handlePlayerLeft = () => {
+    try {
+      delete auth.googleNameToSocket[socket.id];
+    } catch (err) {
+      console.log(err);
+    }
+
     if (socket.id !== undefined) {
       room_id = socketToRoom[socket.id];
       if (room_id !== undefined) {
@@ -365,6 +375,12 @@ function connected(socket) {
   };
 
   const handleDisconnect = () => {
+    try {
+      delete auth.googleNameToSocket[socket.id];
+    } catch (err) {
+      console.log(err);
+    }
+
     room_id = socketToRoom[socket.id];
     if (allGameStates[room_id]) {
       try {
@@ -383,8 +399,6 @@ function connected(socket) {
   socket.on("updateFromClient", handleUpdateFromClient);
   socket.on("playerLeft", handlePlayerLeft);
   socket.on("disconnect", handleDisconnect);
-
-  socket.on("login", auth.login);
 }
 
 //==========GOOGLE AUTH===========//
