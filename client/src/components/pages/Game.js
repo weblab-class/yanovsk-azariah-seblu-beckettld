@@ -8,6 +8,7 @@ import { sprites, towers } from "./data";
 import "./App.css";
 import clickSound from "../assets/sounds/click.mp3";
 import successSound from "../assets/sounds/success.mp3";
+import dialogueSound from "../assets/sounds/dialogue.mp3";
 
 //==========LOCAL/HEROKU===========//
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -17,6 +18,8 @@ const url = "https://codeleg.herokuapp.com";
 // const url = "http://localhost:3000";
 const click = new Audio(clickSound);
 const success = new Audio(successSound);
+const dialogue = new Audio(dialogueSound);
+
 function Game(props) {
   const { state } = useLocation();
   const map = require(`../assets/maps/map${state.map_id}.png`);
@@ -90,6 +93,7 @@ function Game(props) {
 
   const attemptDialogue = (key) => {
     if (selfTowerStatus[key] !== 1 && !IDEstatus) {
+      if (dialogueCounter === 0) dialogue.play();
       setDialogueStatus(true);
       setDialogueCounter(dialogueCounter + 1);
     }
