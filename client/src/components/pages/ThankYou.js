@@ -1,7 +1,10 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 const ThankYou = () => {
-  return <h1>Thanks for playing CodeLegend!</h1>;
+  const { state } = useLocation();
+
+  return <div>{state.result}</div>;
 };
 
 export default ThankYou;
