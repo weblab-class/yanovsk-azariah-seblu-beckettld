@@ -117,15 +117,15 @@ function Lobby(props) {
               </p>
               <div style={{ lineHeight: "5px" }}>
                 <p className="nes-text is-success" style={{ fontSize: "13px" }}>
-                  Green maps are easy (3 challenges)
+                  Green maps are easy (3 problems)
                 </p>
                 <p className="nes-text is-warning" style={{ fontSize: "13px" }}>
                   {" "}
-                  Yellow maps are medium (4 challenges)
+                  Yellow maps are medium (4)
                 </p>
                 <p className="nes-text is-error" style={{ fontSize: "13px" }}>
                   {" "}
-                  Red maps are hard (5 challenges)
+                  Red maps are hard (5)
                 </p>
               </div>
               <p style={{ fontSize: "13px" }}>
