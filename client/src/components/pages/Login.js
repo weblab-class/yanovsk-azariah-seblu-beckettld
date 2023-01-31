@@ -105,7 +105,7 @@ function Login(props) {
               threshold={0.1}
               rootMargin="20%"
             >
-              Welcome to Code Legend, Hacker!
+              Welcome to Code Legend!
             </AnimatedText>
           </div>
         </div>
@@ -130,7 +130,7 @@ function Login(props) {
                 onClick={toggleRules}
                 type="button"
                 class="nes-btn"
-                style={{ fontSize: "14px", width: "69%" }}
+                style={{ fontSize: "14px", width: "95%" }}
               >
                 Game Rules
               </button>
