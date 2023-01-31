@@ -18,6 +18,7 @@ function Login(props) {
   const [userId, setUserId] = useState("");
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
+  const [rulesStatus, setRulesStatus] = useState(false);
 
   useEffect(() => {
     axios.get(url + "/whoami").then((user) => {
@@ -28,6 +29,11 @@ function Login(props) {
 
     return () => {};
   }, []);
+
+  const toggleRules = () => {
+    console.log("gotit");
+    setRulesStatus(!rulesStatus);
+  };
 
   const handleLogin = (credentialResponse) => {
     const userToken = credentialResponse.credential;
@@ -51,40 +57,54 @@ function Login(props) {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <div className="start_page">
-        <div className="form_login">
-          <div className="nes-container is-rounded is-dark">
-            <p>Sign in to Play</p>
-            <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
+        {rulesStatus ? (
+          <div className="Rules">
+            <div className="nes-container is-rounded is-dark">
+              <p>
+                Do you have what it takes to become The Code Legend? Then go forth and prove
+                yourself! Take on coding challenges far across the land, hone your programming
+                skills, and fulfill your destiny!
+              </p>{" "}
+              <p>
+                Every stage brings a new set of challenges. To become a legend, you must have an
+                open ear to all requests. One cannot be a legend without demonstrating benevolence
+                to all people in the land. Travel towards each character, man or beast, and aid them
+                all in their personal necessities.
+              </p>
+              <p>
+                But there cannot be more than one Code Legend! You must triumph over those who aim
+                to surpass you in your endeavors! Other aspiring code legends will try to best you
+                in your quest for legendary status, so complete your duties in a timely fashion!
+              </p>
+              <div className="closeRulesButton">
+                <button onClick={toggleRules} type="button" class="nes-btn is-error">
+                  <div className="rulesText">Close</div>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          ""
+        )}
 
         <div className="game_info">
+          <div className="game_name">
+            <h1>Code Legend</h1>
+          </div>
+        </div>
+        <div className="form_login">
           <div className="nes-container is-rounded is-dark">
-            <AnimatedText
-              className="game_info_welcome"
-              type="words" // animate words or chars
-              animation={{
-                x: "200px",
-                y: "-20px",
-                scale: 1.1,
-                ease: "ease-in-out",
-              }}
-              animationType="float"
-              interval={0.06}
-              duration={0.5}
-              tag="p"
-              includeWhiteSpaces
-              threshold={0.1}
-              rootMargin="20%"
-            >
-              Welcome to CodeLegend, Hacker!
-            </AnimatedText>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-              dolor in reprehenderit in voluptate velit esse cillum dolore
-            </p>
+            <div className="inside_login">
+              <div className="signInText">
+                <p>Sign in to Play</p>
+              </div>
+              <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
+              <div className="howtoplay_button">
+                <button onClick={toggleRules} type="button" class="nes-btn is-warning">
+                  <div className="rulesText">Rules</div>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

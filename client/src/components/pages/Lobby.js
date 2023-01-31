@@ -96,27 +96,22 @@ function Lobby(props) {
 
         <div className="game_rules">
           <div className="nes-container is-rounded is-dark">
-            <p>Rules</p>
-            <small>
-              Please play good. JavaScript (JS) is a lightweight, interpreted, or just-in-time
-              compiled programming language with first-class functions. While it is most well-known
-              as the scripting
-            </small>
-            <br />
-            <br />
-            <span className="nes-text is-success">Easy Maps Are Green</span> <br />
-            <span className="nes-text is-warning">Medium Maps Are Yellow</span> <br />
-            <span className="nes-text is-error">Medium Maps Are Red</span>
-            <br />
-            <br />
-            <section className="icon-list">
+            <div className="rule_text">
+              <p>Controls</p>
+              <small>
+                Movement - Arrow keys <br /> Interact - Enter
+              </small>
+              <br />
+              <br />
+              <p>Map Difficulties</p>
+              <span className="nes-text is-success">Green - Easy</span> <br />
+              <span className="nes-text is-warning">Yellow - Medium</span> <br />
+              <span className="nes-text is-error">Red - Hard</span>
+              <br />
               <i className="nes-icon trophy is-med"></i>
-              You can win this
-              <br />
-              <i className="nes-icon coin is-med"></i>
-              And also you can win this
-              <br />
-            </section>
+              Become a Legend
+              <i className="nes-icon trophy is-med"></i>
+            </div>
           </div>
         </div>
       </div>

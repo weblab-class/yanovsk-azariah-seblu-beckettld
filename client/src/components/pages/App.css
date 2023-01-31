@@ -70,26 +70,63 @@ canvas {
 }
 
 .start_page {
-  margin-top: 20%;
+  margin-top: 7%;
+  margin-left: 22%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
   background-color: #212529;
-  display: flex; /* or inline-flex */
-  flex-direction: row;
-  justify-content: center;
-  gap: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.inside_login {
+  font-size: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.closeRulesButton {
+  text-align: center;
+}
+.howtoplay_button {
+  margin-top: 15%;
+  margin-bottom: 5%;
+}
+.rulesText {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+.signInText {
+  font-size: 12px;
+}
+.form_login {
+  margin-left: 22%;
+  margin-top: 10%;
+  width: 25%;
+  font-size: 9px;
 }
 
-.form_login {
-  width: 25%;
-  font-size: 12px;
+.Rules {
+  position: absolute;
+  margin-top: -5%;
+  margin-right: 30%;
+  z-index: 10;
+  text-align: justify;
+  line-height: 2rem;
 }
 
 .game_info_welcome {
-  font-size: 13px;
+  font-size: 30px;
+  text-align: center;
 }
 
 .game_info {
-  font-size: 11px;
-  width: 45%;
+  font-size: 30px;
+  width: 75%;
 }
 .CodeMirror {
   font-size: 20px;
@@ -125,13 +162,16 @@ canvas {
 }
 
 .join_room {
+  text-align: center;
   font-size: 12px;
 }
 
 .game_rules {
   width: 100%;
 }
-
+.rule_text {
+  text-align: center;
+}
 .room_join_form {
   display: inline-block;
 }
