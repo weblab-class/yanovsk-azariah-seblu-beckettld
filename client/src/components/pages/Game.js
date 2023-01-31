@@ -7,6 +7,7 @@ import { SocketContext } from "../context/socket.js";
 import { sprites, towers } from "./data";
 import "./App.css";
 import clickSound from "../assets/sounds/click.mp3";
+import successSound from "../assets/sounds/success.mp3";
 
 //==========LOCAL/HEROKU===========//
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -14,7 +15,8 @@ const url = "https://codeleg.herokuapp.com";
 
 // const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 // const url = "http://localhost:3000";
-
+const click = new Audio(clickSound);
+const success = new Audio(successSound);
 function Game(props) {
   const { state } = useLocation();
   const map = require(`../assets/maps/map${state.map_id}.png`);
@@ -37,7 +39,6 @@ function Game(props) {
   const [IDEFeedback, setIDEFeedback] = useState([]);
   const [dialogueStatus, setDialogueStatus] = useState(false);
   const [dialogueCounter, setDialogueCounter] = useState(0);
-  const click = new Audio(clickSound);
 
   const endgame = (result) => {
     setResult(result);
@@ -80,6 +81,7 @@ function Game(props) {
 
           if (res.data.overallResult === true) {
             // fromClientToServer(currentTower);
+            success.play();
             socket.emit("updateFromClient", currentTower);
           } else console.log("Too bad!");
         }
