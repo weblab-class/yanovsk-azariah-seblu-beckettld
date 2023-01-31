@@ -2,8 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
 import Card from "react-bootstrap/Card";
 import Map from "../assets/tile4.gif";
-import { sprites, maps } from "./data.js";
-import AnimatedText from "react-animated-text-content";
+import { sprites, maps, mapIcons } from "./data.js";
 
 const ChooseMap = () => {
   const socket = useContext(SocketContext);
@@ -41,35 +40,64 @@ const ChooseMap = () => {
         <Card className="map_tile">
           <Card.Img
             className="map_image"
-            src={maps[0]}
+            src={mapIcons[0]}
             onClick={() => handleMapSelection(1, "Farm")}
           />
           <Card.Title class="nes-text is-success">Farm</Card.Title>
         </Card>
         <Card className="map_tile">
-          <Card.Img variant="top" src={Map} onClick={() => handleMapSelection(2, "Tropics")} />
+          <Card.Img
+            className="map_image"
+            variant="top"
+            src={mapIcons[1]}
+            onClick={() => handleMapSelection(2, "Tropics")}
+          />
           <Card.Title class="nes-text is-success">Tropics</Card.Title>
         </Card>
         <Card className="map_tile">
-          <Card.Img variant="top" src={Map} onClick={() => handleMapSelection(3, "Desert")} />
+          <Card.Img
+            className="map_image"
+            variant="top"
+            src={mapIcons[2]}
+            onClick={() => handleMapSelection(3, "Desert")}
+          />
           <Card.Title class="nes-text is-warning">Desert</Card.Title>
         </Card>
         <Card className="map_tile">
-          <Card.Img variant="top" src={Map} onClick={() => handleMapSelection(4, "Winter")} />
+          <Card.Img
+            className="map_image"
+            variant="top"
+            src={mapIcons[3]}
+            onClick={() => handleMapSelection(4, "Winter")}
+          />
           <Card.Title class="nes-text is-warning">Winter</Card.Title>
         </Card>
       </div>
       <div className="map_tiles_wrapper">
         <Card className="map_tile">
-          <Card.Img src={Map} onClick={() => handleMapSelection(5, "Poison")} />
+          <Card.Img
+            className="map_image"
+            src={mapIcons[4]}
+            onClick={() => handleMapSelection(5, "Poison")}
+          />
           <Card.Title class="nes-text is-error">Poison</Card.Title>
         </Card>
         <Card className="map_tile">
-          <Card.Img variant="top" src={Map} onClick={() => handleMapSelection(6, "Lava")} />
+          <Card.Img
+            variant="top"
+            className="map_image"
+            src={mapIcons[5]}
+            onClick={() => handleMapSelection(6, "Lava")}
+          />
           <Card.Title class="nes-text is-error">Lava</Card.Title>
         </Card>
         <Card className="map_tile">
-          <Card.Img variant="top" src={Map} onClick={() => handleMapSelection(7, "Random")} />
+          <Card.Img
+            className="map_image"
+            variant="top"
+            src={mapIcons[6]}
+            onClick={() => handleMapSelection(7, "Random")}
+          />
           <Card.Title class="nes-text is-disabled">Random</Card.Title>
         </Card>
       </div>
