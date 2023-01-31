@@ -3,6 +3,7 @@ import { SocketContext } from "../context/socket.js";
 import Card from "react-bootstrap/Card";
 import Map from "../assets/tile4.gif";
 import { sprites, maps, mapIcons } from "./data.js";
+import clickSound from "../assets/sounds/click.mp3";
 
 const ChooseMap = () => {
   const socket = useContext(SocketContext);
@@ -11,9 +12,11 @@ const ChooseMap = () => {
   const [spriteName, setSpriteName] = useState("");
   const [mapName, setMapName] = useState("");
   const [submissionMade, setSubmissionMade] = useState(false);
+  const click = new Audio(clickSound);
 
   //something like create new game
   const handleMapSelection = (map_id, map_name) => {
+    click.play();
     if (map_id == 7) {
       let random_num = Math.floor(Math.random() * 6);
       setMapSelection(random_num);
@@ -25,11 +28,13 @@ const ChooseMap = () => {
   };
 
   const handleSpriteSelection = (sprite_id, spriteName) => {
+    click.play();
     setSpriteSelection(sprite_id);
     setSpriteName(spriteName);
   };
 
   const handleSubmitSelections = (map_id, map_name) => {
+    click.play();
     setSubmissionMade(true);
     socket.emit("initGameState", { mapSelection, spriteSelection });
   };

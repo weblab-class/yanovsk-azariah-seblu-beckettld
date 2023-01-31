@@ -2,19 +2,23 @@ import "./App.css";
 import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import clickSound from "../assets/sounds/click.mp3";
 
 function Lobby(props) {
   const socket = useContext(SocketContext);
   const [roomConnection, setRoomConnection] = useState("");
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
+  const click = new Audio(clickSound);
 
   const joinRoom = (e) => {
+    click.play();
     e.preventDefault();
     socket.emit("joinRoom", e.target.room_id.value);
   };
 
   const createNewRoom = () => {
+    click.play();
     socket.emit("newRoom");
   };
 

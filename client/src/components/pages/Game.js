@@ -4,8 +4,9 @@ import CodeMirror from "@uiw/react-codemirror";
 import axios from "axios";
 import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
-import { sprites, towers, clickSound } from "./data";
+import { sprites, towers } from "./data";
 import "./App.css";
+import clickSound from "../assets/sounds/click.mp3";
 
 //==========LOCAL/HEROKU===========//
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -36,6 +37,7 @@ function Game(props) {
   const [IDEFeedback, setIDEFeedback] = useState([]);
   const [dialogueStatus, setDialogueStatus] = useState(false);
   const [dialogueCounter, setDialogueCounter] = useState(0);
+  const click = new Audio(clickSound);
 
   const endgame = (result) => {
     setResult(result);
@@ -43,6 +45,8 @@ function Game(props) {
   };
 
   const closeIDE = () => {
+    click.play();
+
     towerData[currentTower].questionCode = code;
     setIDEStatus(false);
     setIDEFeedback([]);
@@ -53,6 +57,7 @@ function Game(props) {
   };
 
   const submitCode = () => {
+    click.play();
     axios
       .post(url + "/submitCode", {
         code: code,
@@ -257,10 +262,14 @@ function Game(props) {
           />
           <div id="progress1" className="scoring">
             <div>
-              <h2 className="youProgressText">{state.my_name.split(" ")[0]}</h2>
+              <h2 className="youProgressText">
+                {state.my_name ? state.my_name.split(" ")[0] : "You"}
+              </h2>
             </div>
             <div>
-              <h2 className="opponentProgressText">{state.opp_name.split(" ")[0]}</h2>
+              <h2 className="opponentProgressText">
+                {state.opp_name ? state.opp_name.split(" ")[0] : "Opponent"}
+              </h2>
             </div>
             {/* <div>Opponent</div> */}
           </div>{" "}
