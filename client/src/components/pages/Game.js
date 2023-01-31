@@ -36,10 +36,10 @@ function Game(props) {
   const [IDEFeedback, setIDEFeedback] = useState([]);
   const [dialogueStatus, setDialogueStatus] = useState(false);
   const [dialogueCounter, setDialogueCounter] = useState(0);
-  const [userName, setUserName] = useState("You");
 
   const endgame = (result) => {
     setResult(result);
+    navigate("/thankyou", { state: { result: result } });
   };
 
   const closeIDE = () => {
@@ -235,7 +235,7 @@ function Game(props) {
             onClick={() => {
               socket.emit("playerLeft");
               axios.post(url + "/logout", { socket_id: socket.id });
-              navigate("/thankyou");
+              navigate("/thankyou", { state: { result: result } });
             }}
           >
             Logout
