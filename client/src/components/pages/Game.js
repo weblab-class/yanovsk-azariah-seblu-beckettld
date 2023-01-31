@@ -4,7 +4,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import axios from "axios";
 import { python } from "@codemirror/lang-python";
 import { SocketContext } from "../context/socket.js";
-import { sprites, towers } from "./data";
+import { sprites, towers, clickSound } from "./data";
 import "./App.css";
 
 //==========LOCAL/HEROKU===========//
@@ -257,10 +257,10 @@ function Game(props) {
           />
           <div id="progress1" className="scoring">
             <div>
-              <h2>{state.my_name}</h2>
+              <h2 className="youProgressText">{state.my_name.split(" ")[0]}</h2>
             </div>
             <div>
-              <h2>{state.opp_name}</h2>
+              <h2 className="opponentProgressText">{state.opp_name.split(" ")[0]}</h2>
             </div>
             {/* <div>Opponent</div> */}
           </div>{" "}
