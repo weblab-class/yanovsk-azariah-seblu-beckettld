@@ -16,13 +16,15 @@ const ChooseMap = () => {
   //something like create new game
   const handleMapSelection = (map_id, map_name) => {
     click.play();
-    if (map_id == 7) {
-      let random_num = Math.floor(Math.random() * 6);
-      setMapSelection(random_num);
-      setMapName(map_name);
-    } else {
-      setMapSelection(map_id);
-      setMapName(map_name);
+    if (submissionMade === false) {
+      if (map_id == 7) {
+        let random_num = Math.floor(Math.random() * 6);
+        setMapSelection(random_num);
+        setMapName(map_name);
+      } else {
+        setMapSelection(map_id);
+        setMapName(map_name);
+      }
     }
   };
 
