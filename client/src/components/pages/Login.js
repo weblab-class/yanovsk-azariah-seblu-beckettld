@@ -89,21 +89,51 @@ function Login(props) {
 
         <div className="game_info">
           <div className="game_name">
-            <h1>Code Legend</h1>
+            <AnimatedText
+              type="chars" // animate words or chars
+              animation={{
+                x: "200px",
+                y: "-20px",
+                scale: 1.1,
+                ease: "ease-in-out",
+              }}
+              animationType="float"
+              interval={0.06}
+              duration={0.4}
+              tag="p"
+              includeWhiteSpaces
+              threshold={0.1}
+              rootMargin="20%"
+            >
+              Welcome to Code Legend, Hacker!
+            </AnimatedText>
           </div>
         </div>
-        <div className="form_login">
-          <div className="nes-container is-rounded is-dark">
-            <div className="inside_login">
-              <div className="signInText">
-                <p>Sign in to Play</p>
-              </div>
+
+        <div
+          className="nes-container is-rounded is-dark"
+          style={{ marginLeft: "22%", marginTop: "10%", width: "25%" }}
+        >
+          <div
+            className="nes-text is-success"
+            style={{
+              fontSize: "16px",
+              display: "flex",
+              flexFlow: "column wrap",
+            }}
+          >
+            <p>Sign in & Play</p>
+            <div className="sign-and-rules">
               <GoogleLogin onSuccess={handleLogin} onError={(err) => console.log(err)} />
-              <div className="howtoplay_button">
-                <button onClick={toggleRules} type="button" class="nes-btn is-warning">
-                  <div className="rulesText">Rules</div>
-                </button>
-              </div>
+              <br />
+              <button
+                onClick={toggleRules}
+                type="button"
+                class="nes-btn"
+                style={{ fontSize: "14px", width: "69%" }}
+              >
+                Game Rules
+              </button>
             </div>
           </div>
         </div>

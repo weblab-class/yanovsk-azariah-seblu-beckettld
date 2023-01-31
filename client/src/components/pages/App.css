@@ -96,19 +96,11 @@ canvas {
   margin-top: 15%;
   margin-bottom: 5%;
 }
+/* }
 .rulesText {
   margin-left: 2rem;
   margin-right: 2rem;
-}
-.signInText {
-  font-size: 12px;
-}
-.form_login {
-  margin-left: 22%;
-  margin-top: 10%;
-  width: 25%;
-  font-size: 9px;
-}
+} */
 
 .Rules {
   position: absolute;
@@ -245,4 +237,10 @@ canvas {
 .CodeMirror * {
   font-family: "Press Start 2P", cursive;
   font-size: 12px;
+}
+
+.sign-and-rules {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
 }
