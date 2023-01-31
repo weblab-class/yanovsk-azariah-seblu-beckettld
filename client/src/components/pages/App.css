@@ -169,9 +169,7 @@ canvas {
 .game_rules {
   width: 100%;
 }
-.rule_text {
-  text-align: center;
-}
+
 .room_join_form {
   display: inline-block;
 }
@@ -238,4 +236,13 @@ canvas {
   display: flex; /* or inline-flex */
   flex-direction: column;
   align-items: center;
+}
+
+/*Code MIRROR */
+
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+.CodeMirror * {
+  font-family: "Press Start 2P", cursive;
+  font-size: 12px;
 }

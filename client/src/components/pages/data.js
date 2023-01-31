@@ -50,6 +50,7 @@ import MapIcon3 from "../assets/maps/map3_icon.png";
 import MapIcon4 from "../assets/maps/map4_icon.png";
 import MapIcon5 from "../assets/maps/map5_icon.png";
 import MapIcon6 from "../assets/maps/map6_icon.png";
+import MapIcon7 from "../assets/maps/map7_icon.png";
 
 export const sprites = [Sprite1, Sprite2, Sprite3, Sprite4, Sprite5, Sprite6, Sprite7, Sprite8];
 
@@ -66,4 +67,4 @@ export const towers = [
 //Map1 two times because of zero indexing
 export const maps = [Map1, Map1, Map2, Map3, Map4, Map5, Map6];
 
-export const mapIcons = [MapIcon1, MapIcon2, MapIcon3, MapIcon4, MapIcon5, MapIcon6];
+export const mapIcons = [MapIcon1, MapIcon2, MapIcon3, MapIcon4, MapIcon5, MapIcon6, MapIcon7];
