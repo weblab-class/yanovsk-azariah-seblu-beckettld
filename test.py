@@ -4,7 +4,7 @@ import sys
 #has broken the world record (boolean) 
 
 def milk_record(arr):
-    return 4
+    return total
 if __name__ == "__main__":
     arr = sys.argv[1].split(',')
     arr = [int(x) for x in arr]

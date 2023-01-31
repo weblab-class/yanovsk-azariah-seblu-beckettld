@@ -7,6 +7,7 @@ import jwt_decode from "jwt-decode";
 import AnimatedText from "react-animated-text-content";
 import { useNavigate } from "react-router-dom";
 import clickSound from "../assets/sounds/click.mp3";
+const click = new Audio(clickSound);
 
 //==========LOCAL/HEROKU===========//
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -20,7 +21,6 @@ function Login(props) {
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
   const [rulesStatus, setRulesStatus] = useState(false);
-  const click = new Audio(clickSound);
 
   useEffect(() => {
     axios.get(url + "/whoami").then((user) => {

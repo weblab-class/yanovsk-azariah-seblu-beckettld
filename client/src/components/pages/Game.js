@@ -14,6 +14,7 @@ const url = "https://codeleg.herokuapp.com";
 
 // const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
 // const url = "http://localhost:3000";
+const click = new Audio(clickSound);
 
 function Game(props) {
   const { state } = useLocation();
@@ -37,7 +38,6 @@ function Game(props) {
   const [IDEFeedback, setIDEFeedback] = useState([]);
   const [dialogueStatus, setDialogueStatus] = useState(false);
   const [dialogueCounter, setDialogueCounter] = useState(0);
-  const click = new Audio(clickSound);
 
   const endgame = (result) => {
     setResult(result);
