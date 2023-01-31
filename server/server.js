@@ -154,8 +154,8 @@ app.use((err, req, res, next) => {
 const adjustLeft = (player, room_id) => {
   const towerData = allTowers[room_id];
 
-  if (player.position.x + playerRadius >= canvasWidth) {
-    player.position.x = canvasWidth - playerRadius - 1;
+  if (player.position.x + playerRadius >= canvasWidth - 300) {
+    player.position.x = canvasWidth - playerRadius - 301;
   }
   for (const [key, value] of Object.entries(towerData)) {
     if (
@@ -170,8 +170,8 @@ const adjustLeft = (player, room_id) => {
 const adjustRight = (player, room_id) => {
   const towerData = allTowers[room_id];
 
-  if (player.position.x - playerRadius <= 0) {
-    player.position.x = 1 + playerRadius;
+  if (player.position.x - playerRadius <= 250) {
+    player.position.x = 1 + playerRadius + 250;
   }
   for (const [key, value] of Object.entries(towerData)) {
     if (
@@ -285,7 +285,7 @@ function connected(socket) {
     if (room_id && allGameStates[room_id] === undefined) {
       allGameStates[room_id] = {};
       allGameStates[room_id][socket.id] = {
-        position: { x: 100, y: 100 },
+        position: { x: 400, y: 400 },
         tower_status:
           mapSelection == 1 || mapSelection == 2
             ? [0, 0, 0]
@@ -299,7 +299,7 @@ function connected(socket) {
       };
     } else if (room_id && allGameStates[room_id]) {
       allGameStates[room_id][socket.id] = {
-        position: { x: 110, y: 110 },
+        position: { x: 400, y: 400 },
         tower_status:
           mapSelection == 1 || mapSelection == 2
             ? [0, 0, 0]
