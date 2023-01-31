@@ -67,9 +67,17 @@ function Lobby(props) {
             {roomId !== "" ? <span className="nes-text is-success">Room ID: {roomId}</span> : ""}
             <br /> <br />
             <p>
-              {roomId !== ""
-                ? "Share this ID with your friend. Game will start when 2nd player joins."
-                : "Or join room by typing id below"}
+              {roomId !== "" ? (
+                <>
+                  <br />
+                  <p>
+                    Share this ID with your friend. When the second player joins the room you will
+                    be able to pick a map and sprite.
+                  </p>
+                </>
+              ) : (
+                "Or join room by typing id below"
+              )}
             </p>
             {roomId !== "" ? (
               ""
@@ -96,21 +104,34 @@ function Lobby(props) {
 
         <div className="game_rules">
           <div className="nes-container is-rounded is-dark">
-            <div className="rule_text">
-              <p>Controls</p>
-              <small>
-                Movement - Arrow keys <br /> Interact - Enter
-              </small>
-              <br />
-              <br />
-              <p>Map Difficulties</p>
-              <span className="nes-text is-success">Green - Easy</span> <br />
-              <span className="nes-text is-warning">Yellow - Medium</span> <br />
-              <span className="nes-text is-error">Red - Hard</span>
-              <br />
-              <i className="nes-icon trophy is-med"></i>
-              Become a Legend
-              <i className="nes-icon trophy is-med"></i>
+            <div>
+              <p>
+                <u>Controls</u>
+              </p>
+              <p style={{ fontSize: "13px" }}>
+                Use Arrow keys for movement
+                <br /> Use Enter key for interaction
+              </p>
+              <p>
+                <u>Maps</u>
+              </p>
+              <div style={{ lineHeight: "5px" }}>
+                <p className="nes-text is-success" style={{ fontSize: "13px" }}>
+                  Green maps are easy (3 problems)
+                </p>
+                <p className="nes-text is-warning" style={{ fontSize: "13px" }}>
+                  {" "}
+                  Yellow maps are medium (4)
+                </p>
+                <p className="nes-text is-error" style={{ fontSize: "13px" }}>
+                  {" "}
+                  Red maps are hard (5)
+                </p>
+              </div>
+              <p style={{ fontSize: "13px" }}>
+                If you and 2nd player choose different maps, then game map is randomly selected from
+                your picks.
+              </p>
             </div>
           </div>
         </div>

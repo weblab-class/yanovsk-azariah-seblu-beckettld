@@ -14,8 +14,14 @@ const ChooseMap = () => {
 
   //something like create new game
   const handleMapSelection = (map_id, map_name) => {
-    setMapSelection(map_id);
-    setMapName(map_name);
+    if (map_id == 7) {
+      let random_num = Math.floor(Math.random() * 6);
+      setMapSelection(random_num);
+      setMapName(map_name);
+    } else {
+      setMapSelection(map_id);
+      setMapName(map_name);
+    }
   };
 
   const handleSpriteSelection = (sprite_id, spriteName) => {
@@ -25,12 +31,7 @@ const ChooseMap = () => {
 
   const handleSubmitSelections = (map_id, map_name) => {
     setSubmissionMade(true);
-    if (map_id === 99) {
-      random_num = Math.floor(Math.random() * 6);
-      socket.emit("initGameState", { random_num, spriteSelection });
-    } else {
-      socket.emit("initGameState", { mapSelection, spriteSelection });
-    }
+    socket.emit("initGameState", { mapSelection, spriteSelection });
   };
   return (
     <div className="nes-container is-rounded is-dark">
