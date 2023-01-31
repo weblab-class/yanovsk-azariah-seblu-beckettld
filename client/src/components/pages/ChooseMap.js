@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import Map from "../assets/tile4.gif";
 import { sprites, maps, mapIcons } from "./data.js";
 import clickSound from "../assets/sounds/click.mp3";
+const click = new Audio(clickSound);
 
 const ChooseMap = () => {
   const socket = useContext(SocketContext);
@@ -12,7 +13,6 @@ const ChooseMap = () => {
   const [spriteName, setSpriteName] = useState("");
   const [mapName, setMapName] = useState("");
   const [submissionMade, setSubmissionMade] = useState(false);
-  const click = new Audio(clickSound);
 
   //something like create new game
   const handleMapSelection = (map_id, map_name) => {
