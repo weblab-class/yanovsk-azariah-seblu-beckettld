@@ -198,7 +198,6 @@ function Game(props) {
   };
 
   const drawTowers = (ctx, towerData) => {
-    const color = "blue";
     for (const [key, value] of Object.entries(towerData)) {
       ctx.beginPath();
       const towerImage = new Image();
@@ -206,8 +205,8 @@ function Game(props) {
       if (selfTowerStatus[key] === 0) {
         ctx.drawImage(towerImage, value.position.x, value.position.y, 75, 75);
       } else {
-        ctx.fillStyle = color;
-        ctx.strokeRect(value.position.x, value.position.y, 50, 50);
+        ctx.fillStyle = "black";
+        ctx.ellipse(value.position.x, value.position.x, 50, 75, Math.PI / 4, 0, 2 * Math.PI);
       }
     }
   };

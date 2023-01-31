@@ -285,7 +285,7 @@ function connected(socket) {
     if (room_id && allGameStates[room_id] === undefined) {
       allGameStates[room_id] = {};
       allGameStates[room_id][socket.id] = {
-        position: { x: 190, y: 550 },
+        position: { x: 635, y: 596 },
         tower_status:
           mapSelection == 1 || mapSelection == 2
             ? [0, 0, 0]
@@ -299,7 +299,7 @@ function connected(socket) {
       };
     } else if (room_id && allGameStates[room_id]) {
       allGameStates[room_id][socket.id] = {
-        position: { x: 130, y: 510 },
+        position: { x: 445, y: 570 },
         tower_status:
           mapSelection == 1 || mapSelection == 2
             ? [0, 0, 0]
