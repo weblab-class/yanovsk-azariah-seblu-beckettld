@@ -173,3 +173,29 @@ canvas {
 #opponent-progress {
   transform: scaleX(-1);
 }
+
+/*THANK YOU, NEXT*/
+.thank_you_wrapper {
+  margin-top: 10%;
+  background-color: #212529;
+  color: white;
+  display: flex; /* or inline-flex */
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-outcome {
+  align-self: center;
+  text-align: center;
+}
+
+.thank-you-buttons {
+  align-self: center;
+  text-align: center;
+}
+
+.you-lose {
+  display: flex; /* or inline-flex */
+  flex-direction: column;
+  align-items: center;
+}
