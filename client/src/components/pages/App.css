@@ -101,7 +101,9 @@ canvas {
 #test-results-container {
   color: white;
 }
-
+#result-list {
+  font-size: 13px;
+}
 .correct {
   color: green;
 }

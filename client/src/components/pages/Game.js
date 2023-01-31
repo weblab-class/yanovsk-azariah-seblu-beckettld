@@ -133,26 +133,31 @@ function Game(props) {
   }, []);
 
   document.onkeydown = (e) => {
-    if (!dialogueStatus && !IDEstatus) {
-      if (e.key === "ArrowRight") playerRight = true;
-      if (e.key === "ArrowLeft") playerLeft = true;
-      if (e.key === "ArrowDown") playerDown = true;
-      if (e.key === "ArrowUp") playerUp = true;
+    if (result == "") {
+      if (!dialogueStatus && !IDEstatus) {
+        if (e.key === "ArrowRight") playerRight = true;
+        if (e.key === "ArrowLeft") playerLeft = true;
+        if (e.key === "ArrowDown") playerDown = true;
+        if (e.key === "ArrowUp") playerUp = true;
+      }
     }
   };
+
   document.onkeyup = (e) => {
-    if (e.key === "ArrowRight") playerRight = false;
-    if (e.key === "ArrowLeft") playerLeft = false;
-    if (e.key === "ArrowDown") playerDown = false;
-    if (e.key === "ArrowUp") playerUp = false;
-    if (!IDEstatus && !dialogueStatus && e.key === "Enter") {
-      const whichTower = inTowers(selfPlayerPosition);
-      if (whichTower !== -1) {
-        setCurrentTower(whichTower);
-        attemptDialogue(whichTower);
+    if (result == "") {
+      if (e.key === "ArrowRight") playerRight = false;
+      if (e.key === "ArrowLeft") playerLeft = false;
+      if (e.key === "ArrowDown") playerDown = false;
+      if (e.key === "ArrowUp") playerUp = false;
+      if (!IDEstatus && !dialogueStatus && e.key === "Enter") {
+        const whichTower = inTowers(selfPlayerPosition);
+        if (whichTower !== -1) {
+          setCurrentTower(whichTower);
+          attemptDialogue(whichTower);
+        }
+      } else if (dialogueStatus && !IDEstatus && e.key === "Enter") {
+        attemptDialogue(currentTower);
       }
-    } else if (dialogueStatus && !IDEstatus && e.key === "Enter") {
-      attemptDialogue(currentTower);
     }
   };
 
@@ -327,25 +332,29 @@ function Game(props) {
                 <div id="test-results-container">
                   <h1>
                     {resultHeader} <br />
-                    {IDEFeedback.map((message) =>
-                      message.slice(0, 7) == "Correct" ? (
-                        <div>
-                          <p className="correct">
-                            {message}
-                            <br />
-                            <br />
-                          </p>
-                        </div>
-                      ) : (
-                        <div>
-                          <p className="incorrect">
-                            {message}
-                            <br />
-                            <br />
-                          </p>
-                        </div>
-                      )
-                    )}
+                    <div id="result-list">
+                      <ul class="nes-list is-circle">
+                        {IDEFeedback.map((message) =>
+                          message.slice(0, 7) == "Correct" ? (
+                            <div>
+                              <li className="correct">
+                                {message}
+                                <br />
+                                <br />
+                              </li>
+                            </div>
+                          ) : (
+                            <div>
+                              <li className="incorrect">
+                                {message}
+                                <br />
+                                <br />
+                              </li>
+                            </div>
+                          )
+                        )}
+                      </ul>
+                    </div>
                   </h1>
                 </div>
               </div>
