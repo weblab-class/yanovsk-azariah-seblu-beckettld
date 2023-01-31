@@ -8,22 +8,20 @@ import AnimatedText from "react-animated-text-content";
 import { useNavigate } from "react-router-dom";
 
 //==========LOCAL/HEROKU===========//
-// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-// const url = "https://codeleg.herokuapp.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const url = "https://codeleg.herokuapp.com";
 
-const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
-const url = "http://localhost:3000";
+// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+// const url = "http://localhost:3000";
 
 function Login(props) {
   const [userId, setUserId] = useState("");
   const socket = useContext(SocketContext);
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     axios.get(url + "/whoami").then((user) => {
       if (user._id) {
-        setUserName(user.data.name);
         setUserId(user._id);
       }
     });
@@ -35,7 +33,7 @@ function Login(props) {
     const userToken = credentialResponse.credential;
     const decodedCredential = jwt_decode(userToken);
 
-    axios.post(url + "/login", { token: userToken }).then((user) => {
+    axios.post(url + "/login", { token: userToken, socket_id: socket.id }).then((user) => {
       setUserId(user.data._id);
       const user_name = user.data.name;
       navigate("/lobby", { state: { user_name: user_name } });

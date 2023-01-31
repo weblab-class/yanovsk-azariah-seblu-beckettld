@@ -8,11 +8,11 @@ import { sprites, towers } from "./data";
 import "./App.css";
 
 //==========LOCAL/HEROKU===========//
-// const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-// const url = "https://codeleg.herokuapp.com";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const url = "https://codeleg.herokuapp.com";
 
-const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
-const url = "http://localhost:3000";
+// const GOOGLE_CLIENT_ID = "306684833672-t1s937mqipgfc70n6r022gl7rm0sh6rh.apps.googleusercontent.com";
+// const url = "http://localhost:3000";
 
 function Game(props) {
   const { state } = useLocation();
@@ -36,6 +36,7 @@ function Game(props) {
   const [IDEFeedback, setIDEFeedback] = useState([]);
   const [dialogueStatus, setDialogueStatus] = useState(false);
   const [dialogueCounter, setDialogueCounter] = useState(0);
+  const [userName, setUserName] = useState("You");
 
   const endgame = (result) => {
     setResult(result);
@@ -238,7 +239,7 @@ function Game(props) {
           <button
             onClick={() => {
               socket.emit("playerLeft");
-              axios.post(url + "/logout");
+              axios.post(url + "/logout", { socket_id: socket.id });
               navigate("/thankyou");
             }}
           >
@@ -256,10 +257,10 @@ function Game(props) {
           />
           <div id="progress1" className="scoring">
             <div>
-              <h1>{state.user_name}</h1>
+              <h2>{state.my_name}</h2>
             </div>
             <div>
-              <h1>Opponent</h1>
+              <h2>{state.opp_name}</h2>
             </div>
             {/* <div>Opponent</div> */}
           </div>{" "}
@@ -290,7 +291,7 @@ function Game(props) {
               <h1>{opponentPlayerScore}</h1>
             </div>
             <progress
-              class={
+              className={
                 selfTowerStatus.length > 0
                   ? opponentPlayerScore / selfTowerStatus.length >= 0.333 &&
                     opponentPlayerScore / selfTowerStatus.length <= 0.666
@@ -321,10 +322,10 @@ function Game(props) {
                     onChange={onChange}
                   />
                   <span>
-                    <button type="button" class="nes-btn is-success" onClick={submitCode}>
+                    <button type="button" className="nes-btn is-success" onClick={submitCode}>
                       Submit
                     </button>
-                    <button type="button" class="nes-btn is-error" onClick={closeIDE}>
+                    <button type="button" className="nes-btn is-error" onClick={closeIDE}>
                       Close
                     </button>
                   </span>
@@ -364,7 +365,7 @@ function Game(props) {
           </div>
           {dialogueStatus ? (
             <div id="dialogue">
-              <div class="nes-container is-rounded is-dark">
+              <div className="nes-container is-rounded is-dark">
                 <u>{towerData[currentTower].name}</u>
                 <p> {towerData[currentTower].dialogue[dialogueCounter - 1]}</p>
               </div>
