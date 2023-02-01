@@ -39,3 +39,28 @@ https://github.com/react-bootstrap/react-bootstrap
 react-router
 https://github.com/remix-run/react-router
 
+<h1>Graphical Content Used</h1>
+Tower Defense Kit (Maps)
+https://craftpix.net/product/tower-defense-2d-game-kit/ (License Purchased)
+
+Ness.css (UI)
+https://nostalgic-css.github.io/NES.css/
+
+MarshadowSlime (Sprites)
+https://www.deviantart.com/marshadowslime
+
+YorkieYT (Sprites)
+https://www.spriters-resource.com/submitter/YorkieYT/
+
+TARKAN809 (Sprites)
+https://www.spriters-resource.com/submitter/TARKAN809
+
+Nader X_2 (Sprites)
+https://www.spriters-resource.com/submitter/NaderX_2/
+
+<h1>Sounds Used</h1>
+https://www.youtube.com/watch?v=h8y0JMVwdmM
+https://www.youtube.com/watch?v=ndgsWcd3yUs
+
+
+
