@@ -1,17 +1,25 @@
+import "./App.css";
 import React from "react";
-import { useRouteError } from "react-router-dom";
 
 export default function ErrorPage() {
-  const error = useRouteError();
-  console.error(error);
-
   return (
-    <div id="error-page">
-      <h1>Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-      <p>
-        <i>{error.statusText || error.message}</i>
-      </p>
+    <div className="thank_you_wrapper">
+      <div className="nes-container is-rounded is-dark">
+        <br />
+        <div className="thank-you-buttons">
+          <p>Sorry, This Page Doesn't Exist</p>
+
+          <a href="https://codeleg.herokuapp.com/">
+            <button type="button" class="nes-btn is-primary">
+              Main Page
+            </button>
+          </a>
+        </div>
+        <br />
+        <p style={{ fontSize: "10px", textAlign: "center", color: "gray" }}>
+          Simply close this page to log out & leave
+        </p>
+      </div>
     </div>
   );
 }

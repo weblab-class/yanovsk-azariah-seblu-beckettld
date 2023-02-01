@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
 import Card from "react-bootstrap/Card";
-import { sprites, maps, mapIcons } from "./data.js";
+import { sprites, mapIcons } from "./data.js";
 import clickSound from "../assets/sounds/click.mp3";
 const click = new Audio(clickSound);
 
