@@ -1,7 +1,7 @@
 //==========LIBRARIES===========//
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
-import { Routes, Route, Link, NavLink, useNavigate, Outlet } from "react-router-dom";
+import ErrorPage from "./pages/errorpage.jsx";
+import { Routes, Route } from "react-router-dom";
 
 //==========COMPONENTS===========//
 import Login from "./pages/Login.js";
@@ -15,12 +15,13 @@ const App = () => {
   return (
     <SocketContext.Provider value={socket}>
       <Routes>
-        <Route index element={<Login />} />
+        <Route index element={<Login />} errorElement />
         <Route path="lobby" element={<Lobby />}>
           <Route path="choosemap" element={<ChooseMap />} />
         </Route>
         <Route path="game" element={<Game />} />
         <Route path="thankyou" element={<ThankYou />} />
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </SocketContext.Provider>
   );
