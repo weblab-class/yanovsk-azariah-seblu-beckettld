@@ -30,8 +30,10 @@ const ChooseMap = () => {
 
   const handleSpriteSelection = (sprite_id, spriteName) => {
     click.play();
-    setSpriteSelection(sprite_id);
-    setSpriteName(spriteName);
+    if (submissionMade === false) {
+      setSpriteSelection(sprite_id);
+      setSpriteName(spriteName);
+    }
   };
 
   const handleSubmitSelections = (map_id, map_name) => {
