@@ -68,10 +68,10 @@ function Game(props) {
       .post(url + "/submitCode", {
         code: code,
         questionID: towerData[currentTower].questionID,
+        timeout: 1000,
       })
       .then((res) => {
         if (res.data.err) {
-          console.log("got the error");
           setIDEFeedback([res.data.err]);
         } else {
           const finalArr = [];
@@ -89,7 +89,8 @@ function Game(props) {
             // fromClientToServer(currentTower);
             success.play();
             socket.emit("updateFromClient", currentTower);
-          } else console.log("Too bad!");
+          } else {
+          }
         }
       });
   };
