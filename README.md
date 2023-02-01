@@ -16,7 +16,7 @@ https://github.com/kalkson/react-animated-text-content
 Socket.io
 https://github.com/socketio/socket.io
 
-Ness css
+Nes css
 https://github.com/nostalgic-css/NES.css/
 
 Axios
@@ -47,7 +47,7 @@ https://developers.google.com/identity/protocols/oauth2
 Tower Defense Kit (Maps)
 https://craftpix.net/product/tower-defense-2d-game-kit/ (License Purchased)
 
-Ness.css (UI)
+Nes.css (UI)
 https://nostalgic-css.github.io/NES.css/
 
 MarshadowSlime (Sprites)
