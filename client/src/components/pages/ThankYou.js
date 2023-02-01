@@ -52,9 +52,6 @@ const ThankYou = () => {
         </div>
         <br />
         <div className="thank-you-buttons">
-          <button type="button" className="nes-btn" onClick={handlePlayAgain}>
-            Play Again
-          </button>
           <a href="https://codeleg.herokuapp.com/">
             <button type="button" class="nes-btn is-primary">
               Main Page
