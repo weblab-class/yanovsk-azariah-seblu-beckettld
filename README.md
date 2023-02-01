@@ -63,5 +63,7 @@ https://www.youtube.com/watch?v=h8y0JMVwdmM
 
 https://www.youtube.com/watch?v=ndgsWcd3yUs
 
+<h1>Code Snippets Used</h1>
+Auth.js file from skeleton code
 
 
