@@ -66,4 +66,7 @@ https://www.youtube.com/watch?v=ndgsWcd3yUs
 <h1>Code Snippets Used</h1>
 Auth.js file from skeleton code
 
+Python Shell Inifinite Loop Timeout
+https://stackoverflow.com/questions/2281850/timeout-function-if-it-takes-too-long-to-finish
+
 
