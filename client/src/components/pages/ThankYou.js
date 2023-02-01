@@ -1,11 +1,16 @@
 import "./App.css";
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AnimatedText from "react-animated-text-content";
 import YouLose from "../assets/youlose.png";
 
 const ThankYou = () => {
   const { state } = useLocation();
+  const navigate = useNavigate();
+
+  const handlePlayAgain = () => {
+    navigate("/lobby");
+  };
 
   return (
     <div className="thank_you_wrapper">
@@ -47,11 +52,9 @@ const ThankYou = () => {
         </div>
         <br />
         <div className="thank-you-buttons">
-          <a href="https://codeleg.herokuapp.com/lobby">
-            <button type="button" className="nes-btn">
-              Play Again
-            </button>
-          </a>
+          <button type="button" className="nes-btn" onClick={handlePlayAgain}>
+            Play Again
+          </button>
           <a href="https://codeleg.herokuapp.com/">
             <button type="button" class="nes-btn is-primary">
               Main Page
