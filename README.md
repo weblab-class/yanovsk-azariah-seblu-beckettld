@@ -39,6 +39,9 @@ https://github.com/react-bootstrap/react-bootstrap
 react-router
 https://github.com/remix-run/react-router
 
+Google OAuth2 API
+https://developers.google.com/identity/protocols/oauth2
+
 <h1>Graphical Content Used</h1>
 Tower Defense Kit (Maps)
 https://craftpix.net/product/tower-defense-2d-game-kit/ (License Purchased)
@@ -57,6 +60,7 @@ https://www.spriters-resource.com/submitter/TARKAN809
 
 Nader X_2 (Sprites)
 https://www.spriters-resource.com/submitter/NaderX_2/
+
 
 <h1>Sounds Used</h1>
 https://www.youtube.com/watch?v=h8y0JMVwdmM
