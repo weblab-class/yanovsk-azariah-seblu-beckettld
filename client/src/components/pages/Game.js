@@ -30,7 +30,7 @@ function Game(props) {
   const canvasRef = useRef(null);
   let playerRight, playerLeft, playerUp, playerDown;
   [playerRight, playerLeft, playerUp, playerDown] = [false, false, false, false];
-  const resultHeader = "____Results_____";
+  const resultHeader = "____Results____";
   const [playerData, setPlayerData] = useState({});
   const [selfPlayerPosition, setSelfPlayerPosition] = useState("");
   const [selfPlayerScore, setSelfPlayerScore] = useState(0);
@@ -351,7 +351,9 @@ function Game(props) {
                 </div>
                 <div id="test-results-container">
                   <h1>
-                    {resultHeader} <br />
+                    <div className="resultHeader">
+                      {resultHeader} <br />
+                    </div>
                     <div id="result-list">
                       <ul class="nes-list is-circle">
                         {IDEFeedback.map((message) =>

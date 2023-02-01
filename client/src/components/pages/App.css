@@ -96,6 +96,10 @@ canvas {
   margin-top: 15%;
   margin-bottom: 5%;
 }
+.resultHeader {
+  /* margin-left: 2rem; */
+  margin-right: 3rem;
+}
 /* }
 .rulesText {
   margin-left: 2rem;
