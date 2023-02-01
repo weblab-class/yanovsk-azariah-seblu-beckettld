@@ -33,6 +33,9 @@ https://github.com/MomenSherif/react-oauth
 jwt decode
 https://github.com/auth0/jwt-decode
 
+react bootstrap
+https://github.com/react-bootstrap/react-bootstrap
+
 react-router
 https://github.com/remix-run/react-router
 
