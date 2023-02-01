@@ -124,7 +124,7 @@ app.post("/submitCode", async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.json({ error: err.split(",")[1] });
+      res.json({ err });
     });
 });
 

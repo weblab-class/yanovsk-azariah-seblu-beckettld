@@ -1,18 +1,18 @@
 import sys
 
-#Given an array of milk weights (numbers) return whether the milker 
-#has broken the world record (boolean) 
+#You are given an array of strings that either say “clean” or “dirty.”
+# return an array of the indices of only his clean guns
 
-def milk_record(arr):
-<<<<<<< HEAD
-    return sum(arr)>43.8
-=======
-    return total
->>>>>>> c027b8806eeefda8f58c131e82392f8905fd019e
+def gun_clean(arr):
+    final_arr=[]
+    for i in range(len(arr)):
+      if arr[i]=="clean":
+        final_arr.append(i)
+    return final_arr
 if __name__ == "__main__":
-    arr = sys.argv[1].split(',')
-    arr = [int(x) for x in arr]
-    result = sys.argv[2]
-    print(result)
-    print(milk_record(arr))
-    print(str(milk_record(arr))==result)
+    a = sys.argv[1].split(',')
+    b = sys.argv[2].split(',')
+    b = [int(x) for x in b]    
+    print(b)
+    print(sorted(gun_clean(a)))
+    print(sorted(gun_clean(a))==sorted(b))

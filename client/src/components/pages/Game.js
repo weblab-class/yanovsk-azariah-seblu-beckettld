@@ -9,6 +9,7 @@ import "./App.css";
 import clickSound from "../assets/sounds/click.mp3";
 import successSound from "../assets/sounds/success.mp3";
 import dialogueSound from "../assets/sounds/dialogue.mp3";
+import star from "../assets/towers/star.png";
 
 //==========LOCAL/HEROKU===========//
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -68,8 +69,9 @@ function Game(props) {
         questionID: towerData[currentTower].questionID,
       })
       .then((res) => {
-        if (res.data.error) {
-          setIDEFeedback([res.data.error]);
+        if (res.data.err) {
+          console.log("got the error");
+          setIDEFeedback([res.data.err]);
         } else {
           const finalArr = [];
           for (const obj of res.data.testCaseResultsWithMessages) {
@@ -211,8 +213,9 @@ function Game(props) {
       if (selfTowerStatus[key] === 0) {
         ctx.drawImage(towerImage, value.position.x, value.position.y, 75, 75);
       } else {
-        ctx.fillStyle = "black";
-        ctx.ellipse(value.position.x, value.position.x, 50, 75, Math.PI / 4, 0, 2 * Math.PI);
+        const starImage = new Image();
+        starImage.src = star;
+        ctx.drawImage(starImage, value.position.x + 25, value.position.y + 25, 50, 50);
       }
     }
   };
