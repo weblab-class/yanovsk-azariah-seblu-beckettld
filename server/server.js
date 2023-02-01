@@ -69,12 +69,14 @@ app.post("/problem", (req, res) => {
   });
 });
 
+const runtimeString =
+  "import sys\nimport errno\nimport os\nimport signal\nimport functools\n\nclass TimeoutError(Exception):\n    pass\n\ndef timeout(seconds=10, error_message=os.strerror(errno.ETIME)):\n    def decorator(func):\n        def _handle_timeout(signum, frame):\n            raise TimeoutError(error_message)\n\n        @functools.wraps(func)\n        def wrapper(*args, **kwargs):\n            signal.signal(signal.SIGALRM, _handle_timeout)\n            signal.alarm(seconds)\n            try:\n                result = func(*args, **kwargs)\n            finally:\n                signal.alarm(0)\n            return result\n\n        return wrapper\n\n    return decorator\n\n@timeout(2, os.strerror(errno.ETIMEDOUT))";
 app.post("/submitCode", async (req, res) => {
   const currentProblem = await Problem.find({
     _id: req.body.questionID,
   });
 
-  fs.writeFileSync("test.py", req.body.code + currentProblem[0].problemScript);
+  fs.writeFileSync("test.py", runtimeString + req.body.code + currentProblem[0].problemScript);
   console.log(req.body.code + currentProblem[0].problemScript);
   const testCases = currentProblem[0].testCases;
   const promises = [];
