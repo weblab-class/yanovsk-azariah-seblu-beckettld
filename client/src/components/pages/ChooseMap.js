@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { SocketContext } from "../context/socket.js";
 import Card from "react-bootstrap/Card";
-import Map from "../assets/tile4.gif";
 import { sprites, maps, mapIcons } from "./data.js";
 import clickSound from "../assets/sounds/click.mp3";
 const click = new Audio(clickSound);
@@ -115,7 +114,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[0]}
+            src={sprites[1]}
             onClick={() => handleSpriteSelection(1, "Block Man")}
           />
           <Card.Title>Block</Card.Title>
@@ -123,7 +122,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[1]}
+            src={sprites[2]}
             onClick={() => handleSpriteSelection(2, "Burst Man")}
           />
           <Card.Title>Burst</Card.Title>
@@ -131,7 +130,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[2]}
+            src={sprites[3]}
             onClick={() => handleSpriteSelection(3, "Elec Man")}
           />
           <Card.Title>Elec</Card.Title>
@@ -139,7 +138,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[3]}
+            src={sprites[4]}
             onClick={() => handleSpriteSelection(4, "Heat Man")}
           />
           <Card.Title>Heat</Card.Title>
@@ -147,7 +146,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[4]}
+            src={sprites[5]}
             onClick={() => handleSpriteSelection(5, "Plant Man")}
           />
           <Card.Title>Plant</Card.Title>
@@ -155,7 +154,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[5]}
+            src={sprites[6]}
             onClick={() => handleSpriteSelection(6, "Mega Man")}
           />
           <Card.Title>Mega</Card.Title>
@@ -171,7 +170,7 @@ const ChooseMap = () => {
         <Card className="sprite_tile">
           <Card.Img
             className="sprite_img"
-            src={sprites[6]}
+            src={sprites[8]}
             onClick={() => handleSpriteSelection(8, "Spring Man")}
           />
           <Card.Title>Spring</Card.Title>

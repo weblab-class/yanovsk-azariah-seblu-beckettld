@@ -11,7 +11,8 @@ import Tower1_0 from "../assets/towers/tower1_0.png";
 import Tower1_1 from "../assets/towers/tower1_1.png";
 import Tower1_2 from "../assets/towers/tower1_2.png";
 
-import Tower2_0 from "../assets/towers/tower2_0.png";
+//import Tower2_0 from "../assets/towers/tower2_0.png";
+import Tower2_0 from "../assets/towers/tower2_0.svg";
 import Tower2_1 from "../assets/towers/tower2_1.png";
 import Tower2_2 from "../assets/towers/tower2_2.png";
 
@@ -52,7 +53,17 @@ import MapIcon5 from "../assets/maps/map5_icon.png";
 import MapIcon6 from "../assets/maps/map6_icon.png";
 import MapIcon7 from "../assets/maps/map7_icon.png";
 
-export const sprites = [Sprite1, Sprite2, Sprite3, Sprite4, Sprite5, Sprite6, Sprite7, Sprite8];
+export const sprites = [
+  Sprite1,
+  Sprite1,
+  Sprite2,
+  Sprite3,
+  Sprite4,
+  Sprite5,
+  Sprite6,
+  Sprite7,
+  Sprite8,
+];
 
 export const towers = [
   [Tower1_0, Tower1_1, Tower1_2],
