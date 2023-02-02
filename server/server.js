@@ -318,6 +318,15 @@ function connected(socket) {
         maps.push(value.map_id);
       }
       let random_map_id = maps[Math.floor(Math.random() * 2)];
+      for (const [key, value] of Object.entries(allGameStates[room_id])) {
+        value.map_id = random_map_id;
+        value.tower_status =
+          random_map_id == 1 || random_map_id == 2
+            ? [0, 0, 0]
+            : random_map_id == 3 || random_map_id == 4
+            ? [0, 0, 0, 0]
+            : [0, 0, 0, 0, 0];
+      }
       io.to(`${room_id}`).emit("startGame", random_map_id, allGameStates[room_id]); //emit random map from maps array to Game.js
       io.to(`${room_id}`).emit("updateFromServer", allGameStates[room_id]);
       initTowers(random_map_id);
