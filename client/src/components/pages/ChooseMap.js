@@ -100,15 +100,6 @@ const ChooseMap = () => {
           />
           <Card.Title class="nes-text is-error">Lava</Card.Title>
         </Card>
-        <Card className="map_tile">
-          <Card.Img
-            className="map_image"
-            variant="top"
-            src={mapIcons[6]}
-            onClick={() => handleMapSelection(7, "Random")}
-          />
-          <Card.Title class="nes-text is-disabled">Random</Card.Title>
-        </Card>
       </div>
       <br />
       {spriteSelection ? "Selected: " + spriteName : "Make a Sprite Selection"}
