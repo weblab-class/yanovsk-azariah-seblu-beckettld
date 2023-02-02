@@ -3,6 +3,8 @@
 
 <h1>Code Legend</h1>
 
+Our website aims to make coding fun. You race against your friend in a multiplayer map to complete all the coding challenges first by interacting with different characters on the map.
+
 Submission for 2023 weblab competition by Azariah Seblu and Dima Yanovsky.
 
 <h1>Packages Used</h1>
