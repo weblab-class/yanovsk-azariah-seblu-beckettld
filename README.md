@@ -1,7 +1,7 @@
 ![alt text](https://github.com/weblab-class/yanovsk-azariah-seblu-beckettld/blob/main/client/src/components/assets/logo.png)
 ------
 
-Code Legend
+<h1>Code Legend</h1>
 
 Submission for 2023 weblab competition by Azariah Seblu and Dima Yanovsky.
 
