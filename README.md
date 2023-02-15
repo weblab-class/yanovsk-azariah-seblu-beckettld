@@ -1,6 +1,6 @@
 ![alt text](https://github.com/weblab-class/yanovsk-azariah-seblu-beckettld/blob/main/client/src/components/assets/logo.png)
 ------
-[<h1>Code Legend</h1>](https://codeleg.herokuapp.com/)
+### [Code Legend](https://codeleg.herokuapp.com/)
 
 Our website aims to make coding fun. You race against your friend in a multiplayer lobby to complete all the coding challenges first by interacting with different characters on the map.
 
